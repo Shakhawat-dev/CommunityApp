@@ -1,0 +1,162 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+
+    <com.otaliastudios.cameraview.CameraView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        app:cameraVideoSizeMaxHeight="800"
+        app:cameraVideoSizeMaxWidth="1920"
+        app:cameraFrameProcessingFormat="30"
+        android:id="@+id/camera"
+        app:cameraGestureLongTap="none"
+        android:keepScreenOn="true"
+        app:cameraGesturePinch="zoom"
+        app:cameraEngine="camera2"
+        app:cameraGestureTap="autoFocus"
+        app:cameraPreview="glSurface"
+        app:cameraPreviewFrameRateExact="true"
+        app:cameraFacing="back"
+        app:cameraHdr="on"
+        app:cameraFlash="off"
+        app:cameraWhiteBalance="auto"
+        app:cameraMode="video"
+        app:cameraAudio="on"
+        app:cameraGrid="off"
+        app:cameraGridColor="@color/white"
+        app:cameraPlaySounds="true"
+        app:cameraVideoMaxDuration="20"
+        app:cameraVideoCodec="deviceDefault"
+        app:cameraAutoFocusResetDelay="0"
+        app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
+        app:cameraUseDeviceOrientation="true"
+        app:cameraPictureMetering="true"
+        app:cameraPictureSnapshotMetering="true"
+        app:cameraPictureFormat="jpeg"
+        app:cameraRequestPermissions="true"
+        app:cameraExperimental="false">
+
+        <!-- Watermark! -->
+        <ImageView
+            android:layout_width="130dp"
+            android:layout_height="100dp"
+            android:layout_gravity="bottom|end"
+            app:layout_drawOnPreview="true"
+            android:scaleType="centerCrop"
+            android:id="@+id/watermark"
+            android:layout_marginEnd="-12dp"
+            android:layout_marginBottom="-5dp"
+            app:layout_drawOnPictureSnapshot="true"
+            app:layout_drawOnVideoSnapshot="true"/>
+
+    </com.otaliastudios.cameraview.CameraView>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="#80000000"
+        android:layout_alignParentBottom="true"
+        android:layout_height="120dp"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="70dp"
+            android:id="@+id/lastImage"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:src="@color/gray_light"
+            android:focusable="true"
+            android:layout_marginStart="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_height="70dp"/>
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="52dp"
+            android:id="@+id/captureBtn"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+
+            />
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="false"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginStart="25dp"
+            android:layout_toRightOf="@+id/component"
+            android:layout_centerVertical="true"
+            android:id="@+id/changeCameraBtn"
+            android:background="@drawable/change_camera"
+            />
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:visibility="gone"
+            android:layout_margin="15dp"
+            android:id="@+id/videoBTN"
+            />
+
+        <Chronometer
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/timer"
+            android:visibility="gone"
+            android:layout_alignParentTop="true"/>
+        <com.iammert.library.cameravideobuttonlib.CameraVideoButton
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:id="@+id/component"
+            app:enableVideoRecording="true"
+            app:progressColor="#FF5722"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/closeBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/ic_clear_black_24dp"
+        android:backgroundTint="@color/white"
+        android:focusable="true" />
+    <ImageView
+        android:id="@+id/flashBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_flash_on_black_24dp"
+        android:focusable="true" />
+
+
+</RelativeLayout>
