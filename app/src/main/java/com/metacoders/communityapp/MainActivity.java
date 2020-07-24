@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
+                Intent videoActivity = new Intent(getApplicationContext() , Voice_Recoder_Activity.class);
+                startActivity(videoActivity);
 
             }
         });

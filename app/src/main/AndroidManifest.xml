@@ -20,22 +20,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Video_Record_Activity"
+        <activity android:name=".Voice_Recoder_Activity"
             android:theme="@style/AppThemeNoActionBar">
 
+        </activity>
+        <activity
+            android:name=".Video_Record_Activity"
+            android:theme="@style/AppThemeNoActionBar">
 
         </activity>
         <activity android:name=".RegistrationActivity" />
-        <activity android:name=".LoginActivity">
-
-        </activity>
+        <activity android:name=".LoginActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 
