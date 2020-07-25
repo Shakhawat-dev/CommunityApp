@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -43,7 +45,9 @@ import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.overlay.OverlayLayout;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -56,19 +60,23 @@ public class Video_Record_Activity extends AppCompatActivity {
     ImageView closeBtn , flashBTn ;
     Boolean isFlashOn = false ;
     Uri uri  ;
+    TextView timer ;
     Context context;
     ImageButton imageButton, changeCameraBtn, VideoBTn;
-    CameraVideoButton videoButton;
+    CircleImageView videoButton;
     CircleImageView circleImageView;
     String category = "all" ;
-    Boolean isprressed = false;
+    Boolean isprressed = false , isRecording = false;
     File file ;
+    CountDownTimer countDownTimer  ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video__record_);
 
         context = Video_Record_Activity.this;
+
 
         Dexter.withContext(context)
                 .withPermissions(
@@ -109,10 +117,9 @@ public class Video_Record_Activity extends AppCompatActivity {
         videoButton = findViewById(R.id.component);
         circleImageView = findViewById(R.id.lastImage);
         flashBTn = findViewById(R.id.flashBtn) ;
-        videoButton.setVideoDuration(20000);
         closeBtn = findViewById(R.id.closeBtn) ;
 
-        Chronometer timer =findViewById(R.id.timer);
+         timer =findViewById(R.id.timer);
 
 
      //   VideoBTn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_camera_black_24dp));
@@ -237,51 +244,116 @@ public class Video_Record_Activity extends AppCompatActivity {
 
 
 
-
-        videoButton.setVideoDuration(21000);
-
-
-        videoButton.setActionListener(new CameraVideoButton.ActionListener() {
+        videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onStartRecord() {
+            public void onClick(View v) {
+
 
                 camera.setMode(Mode.VIDEO);
-                camera.setVideoMaxDuration(21000);
+                camera.setVideoMaxDuration(310000);
                 long time = System.currentTimeMillis() / 100000;
                 String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
                 file = new File(ROOT_DIR + "/test" + time + ".mp4");
-                camera.takeVideo(file);
+
+                if(!isRecording)
+                {
+                    // stop the camera
+                    videoButton.setImageResource(R.color.red);
+                    isRecording = true ;
+
+                    camera.takeVideo(file);
+
+                  countDownTimer  =   new CountDownTimer(300000, 1000) {
+
+                        public void onTick(long millisUntilFinished) {
+                            // timer.setText("seconds remaining: " + millisUntilFinished / 1000);
+
+//                            long  min =  TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)  ;
+//                            long ss =TimeUnit.MINUTES.toMillis(min);
+//                            String sec = TimeUnit.MILLISECONDS.toSeconds(ss) + "" ;
+
+                            timer.setText(getIntervalTime(millisUntilFinished));
 
 
-            }
+                        }
 
-            @Override
-            public void onEndRecord() {
+                        public void onFinish() {
+                            timer.setText("done!");
 
-
-                camera.stopVideo();
-
-//                Uri uri11 = Uri.fromFile(file) ;
-//
-//
-//                getToCreatePostPage("video" , uri11);
-
-            }
-
-            @Override
-            public void onDurationTooShortError() {
+                            camera.stopVideo();
+                            videoButton.setImageResource(R.color.white);
+                            isRecording = false ;
+                        }
+                    }.start();
 
 
-            }
 
-            @Override
-            public void onSingleTap() {
+                }
+                else
+                {
 
-                Toast.makeText(getApplicationContext(), "Press And Hold" , Toast.LENGTH_SHORT).show();
 
-               // camera.takePictureSnapshot();
+                    camera.stopVideo();
+                    timer.setText("done!");
+                    countDownTimer.cancel();
+                    videoButton.setImageResource(R.color.white);
+                    isRecording = false ;
+
+
+//                    isRecording = true ;
+//                    camera.setMode(Mode.VIDEO);
+//                    camera.setVideoMaxDuration(310000);
+//                    long time = System.currentTimeMillis() / 100000;
+//                    String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
+//                    file = new File(ROOT_DIR + "/test" + time + ".mp4");
+//                    camera.takeVideo(file);
+
+
+                }
+
             }
         });
+
+
+
+//        videoButton.setActionListener(new CameraVideoButton.ActionListener() {
+//            @Override
+//            public void onStartRecord() {
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void onEndRecord() {
+//
+//
+//
+//
+////                Uri uri11 = Uri.fromFile(file) ;
+////
+////
+////                getToCreatePostPage("video" , uri11);
+//
+//            }
+//
+//            @Override
+//            public void onDurationTooShortError() {
+//
+//
+//            }
+//
+//            @Override
+//            public void onSingleTap() {
+//
+//                Toast.makeText(getApplicationContext(), "Press And Hold" , Toast.LENGTH_SHORT).show();
+//
+//               // camera.takePictureSnapshot();
+//            }
+//        });
+
+
+
 
         circleImageView.setImageResource(R.color.gray_light);
 
@@ -458,7 +530,29 @@ public class Video_Record_Activity extends AppCompatActivity {
         return s;
     }
 
+    public static String getIntervalTime(long longInterval) {
+
+        long intMillis = longInterval;
+        long dd = TimeUnit.MILLISECONDS.toDays(intMillis);
+        long daysMillis = TimeUnit.DAYS.toMillis(dd);
+        intMillis -= daysMillis;
+        long hh = TimeUnit.MILLISECONDS.toHours(intMillis);
+        long hoursMillis = TimeUnit.HOURS.toMillis(hh);
+        intMillis -= hoursMillis;
+        long mm = TimeUnit.MILLISECONDS.toMinutes(intMillis);
+        long minutesMillis = TimeUnit.MINUTES.toMillis(mm);
+        intMillis -= minutesMillis;
+        long ss = TimeUnit.MILLISECONDS.toSeconds(intMillis);
+        long secondsMillis = TimeUnit.SECONDS.toMillis(ss);
+        intMillis -= secondsMillis;
+
+        String stringInterval = "%02d:%02d";
+        return String.format(stringInterval ,mm, ss);
+    }
+
 }
+
+
 
 
 
