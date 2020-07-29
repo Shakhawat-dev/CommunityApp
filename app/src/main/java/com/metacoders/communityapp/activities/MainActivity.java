@@ -1,4 +1,4 @@
-package com.metacoders.communityapp;
+package com.metacoders.communityapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +13,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.metacoders.communityapp.R;
 
 import java.util.List;
 

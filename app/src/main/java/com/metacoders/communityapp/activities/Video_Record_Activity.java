@@ -1,12 +1,9 @@
-package com.metacoders.communityapp;
+package com.metacoders.communityapp.activities;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,22 +18,20 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.iammert.library.cameravideobuttonlib.CameraVideoButton;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.metacoders.communityapp.R;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.FileCallback;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
 import com.otaliastudios.cameraview.controls.Facing;
@@ -45,7 +40,6 @@ import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.overlay.OverlayLayout;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
