@@ -19,9 +19,11 @@ public interface NewsRmeApi {
             @Field("password") String password
     );
 
+    @FormUrlEncoded
     @POST("profile/change-password")
-    Call<ResponseBody> updateTaskDetails(
-
+    Call<ResponseBody> changePassword(
+            @Field("old_password") String old_password,
+            @Field("new_password") String new_password
     );
 
 

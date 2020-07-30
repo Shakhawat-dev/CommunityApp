@@ -13,9 +13,14 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.RetrofitClient;
+import com.metacoders.communityapp.api.TokenInterceptor;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.utils.Utils;
 
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         initializations();
 
+
         registerTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,6 +51,35 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 login();
+                changePassword();
+            }
+        });
+    }
+
+    //TODO: Checking Purpose, functionality will be changed
+    private void changePassword() {
+
+        Call<ResponseBody> call = RetrofitClient
+                .getInstance()
+                .getApi()
+                .changePassword("123456", "sms123456");
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.body() != null ) {
+                    try {
+                        Log.d(Utils.TAG, "onResponse: change pass " + response.body().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(Utils.TAG, "onResponse: change pass " + t.toString());
             }
         });
     }
@@ -52,10 +87,11 @@ public class LoginActivity extends AppCompatActivity {
     private void login() {
 
         String userName, password;
-        userName = mUsername.getText().toString().trim();
-        password = mPassword.getText().toString().trim();
 
-        if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(password)) {
+        if (!TextUtils.isEmpty(mUsername.getText().toString().trim()) && !TextUtils.isEmpty(mPassword.getText().toString().trim())) {
+
+            userName = mUsername.getText().toString().trim();
+            password = mPassword.getText().toString().trim();
 
             Call<LoginResponse> call = RetrofitClient
                     .getInstance()
