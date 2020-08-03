@@ -25,7 +25,6 @@ import com.metacoders.communityapp.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import maes.tech.intentanim.CustomIntent;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

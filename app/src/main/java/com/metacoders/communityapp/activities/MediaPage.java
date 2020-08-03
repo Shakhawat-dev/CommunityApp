@@ -19,7 +19,7 @@ import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.utils.CallBacks;
 import com.metacoders.communityapp.utils.PlayerManager;
 
-import maes.tech.intentanim.CustomIntent;
+
 
 public class MediaPage extends AppCompatActivity  implements CallBacks.playerCallBack {
 

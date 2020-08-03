@@ -62,8 +62,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     // multi screen support
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
-    //anim
-    implementation 'com.github.hajiyevelnur92:intentanimation:1.0'
+
 
 
 
