@@ -10,6 +10,7 @@ public class TokenInterceptor implements Interceptor {
 
     private String accessToken;
 
+
     @Override
     public Response intercept(Chain chain) throws IOException {
 
