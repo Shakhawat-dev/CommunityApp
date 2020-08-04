@@ -5,6 +5,17 @@
         android:title="Newsfeed"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/video"
+        android:title="Video"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/audio"
+        android:title="Audio"
+        app:showAsAction="ifRoom"
+        />
 
 
 </menu>

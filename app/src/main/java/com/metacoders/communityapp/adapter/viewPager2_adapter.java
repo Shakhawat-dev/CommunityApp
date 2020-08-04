@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.metacoders.communityapp.Fragments.AudioFragment;
 import com.metacoders.communityapp.Fragments.NewsFragment;
+import com.metacoders.communityapp.Fragments.VideoFragment;
 
 public class viewPager2_adapter extends FragmentStateAdapter {
 
-    private String[] titles = new String[]{"Home", "Products", "Cart", "Profile"};
+  //  private String[] titles = new String[]{"Home", "Products", "Cart", "Profile"};
 
     public viewPager2_adapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
@@ -22,6 +24,10 @@ public class viewPager2_adapter extends FragmentStateAdapter {
         switch (position) {
             case 0:
                 return new NewsFragment();
+            case 1:
+                return new VideoFragment();
+            case 2:
+                return new AudioFragment();
 
         }
 
@@ -31,6 +37,6 @@ public class viewPager2_adapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 3;
     }
 }

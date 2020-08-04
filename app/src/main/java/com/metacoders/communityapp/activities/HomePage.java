@@ -51,12 +51,12 @@ public class HomePage extends AppCompatActivity {
                     case 0:
                         navigationBar.getMenu().findItem(R.id.newsfeed).setChecked(true);
                         break;
-//                    case 1:
-//                        navigationBar.getMenu().findItem(R.id.products).setChecked(true);
-//                        break;
-//                    case 2:
-//                        navigationBar.getMenu().findItem(R.id.favorites).setChecked(true);
-//                        break;
+                    case 1:
+                        navigationBar.getMenu().findItem(R.id.video).setChecked(true);
+                        break;
+                    case 2:
+                        navigationBar.getMenu().findItem(R.id.audio).setChecked(true);
+                        break;
 //                    case 3:
 //                        navigationBar.getMenu().findItem(R.id.profile).setChecked(true);
 //                        break;
@@ -84,6 +84,12 @@ public class HomePage extends AppCompatActivity {
                     {
                         case R.id.newsfeed :
                             viewPager.setCurrentItem(0 ,false);
+                            break;
+                        case R.id.audio :
+                            viewPager.setCurrentItem(2 ,false);
+                            break;
+                        case R.id.video :
+                            viewPager.setCurrentItem(1 ,false);
                             break;
 
                     }

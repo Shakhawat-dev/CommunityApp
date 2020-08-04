@@ -1,7 +1,9 @@
 package com.metacoders.communityapp.api;
 
+import com.metacoders.communityapp.models.Audio_List_Model;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.News_List_Model;
+import com.metacoders.communityapp.models.Video_List_Model;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -31,5 +33,10 @@ public interface NewsRmeApi {
     @GET("common/get-news-lists")
     Call<News_List_Model> getNewsList();
 
+    @GET("common/get-news-audio-lists")
+    Call<Audio_List_Model> getAudioList();
+
+    @GET("common/get-news-video-lists")
+    Call<Video_List_Model> getVideoList();
 
 }
