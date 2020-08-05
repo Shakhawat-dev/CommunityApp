@@ -57,9 +57,9 @@ public class HomePage extends AppCompatActivity {
                     case 2:
                         navigationBar.getMenu().findItem(R.id.audio).setChecked(true);
                         break;
-//                    case 3:
-//                        navigationBar.getMenu().findItem(R.id.profile).setChecked(true);
-//                        break;
+                    case 3:
+                        navigationBar.getMenu().findItem(R.id.profile).setChecked(true);
+                        break;
                 }
 
                 super.onPageSelected(position);
@@ -90,6 +90,9 @@ public class HomePage extends AppCompatActivity {
                             break;
                         case R.id.video :
                             viewPager.setCurrentItem(1 ,false);
+                            break;
+                        case R.id.profile :
+                            viewPager.setCurrentItem(3 ,false);
                             break;
 
                     }

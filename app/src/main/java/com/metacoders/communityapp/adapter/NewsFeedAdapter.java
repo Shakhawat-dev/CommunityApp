@@ -15,9 +15,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.models.Post_Model;
+import com.metacoders.communityapp.utils.ConvertTime;
 import com.metacoders.communityapp.utils.Utils;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHolder> {
@@ -48,9 +52,26 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         holder.title.setText(newsFeed.getTitle());
 //        holder.price.setText("$" + newsFeed.getProduct_price().toString());
 //        holder.description.setText(newsFeed.getDescription());
+        holder.viewCount.setText(newsFeed.getHit()+"");
+        holder.commentCount.setText("0");
+        // convert time
+        SimpleDateFormat df = new SimpleDateFormat(Utils.CREATED_AT_FORMAT);
+        try {
+            Date date = df.parse(newsFeed.getCreatedAt());
+            holder.date.setText(ConvertTime.getTimeAgo(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+           holder.date.setText(newsFeed.getCreatedAt());
+        }
+        String link ;
 
+        if(newsFeed.getImageMid().isEmpty() || newsFeed.getImageMid() == null)
+        {
+            link = newsFeed.getImageUrl() ;
+        }
+        else   link = Utils.IMAGE_URL + newsFeed.getImageMid() ;
         Glide.with(ctx)
-                .load(Utils.IMAGE_URL +newsFeed.getImageMid())
+                .load(link)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .thumbnail(/*sizeMultiplier=*/ 0.25f)
@@ -78,8 +99,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
         public TextView title;
         public ImageView image , playBtn;
-        public TextView description;
-        public TextView price;
+        public TextView author , viewCount , date ;
+        public TextView commentCount;
 
         ItemClickListenter itemClickListenter;
 
@@ -91,6 +112,10 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             title = itemView.findViewById(R.id.title_view);
             image = itemView.findViewById(R.id.video_thumb);
             playBtn = itemView.findViewById(R.id.play_btn);
+            author = itemView.findViewById(R.id.video_author);
+            viewCount = itemView.findViewById(R.id.video_view) ;
+            date = itemView.findViewById(R.id.video_date);
+            commentCount = itemView.findViewById(R.id.video_comment);
             this.itemClickListenter = itemClickListenter;
         }
 

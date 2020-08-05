@@ -3,6 +3,7 @@ package com.metacoders.communityapp.api;
 import com.metacoders.communityapp.models.Audio_List_Model;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.News_List_Model;
+import com.metacoders.communityapp.models.Profile_Model;
 import com.metacoders.communityapp.models.Video_List_Model;
 
 import okhttp3.ResponseBody;
@@ -38,5 +39,8 @@ public interface NewsRmeApi {
 
     @GET("common/get-news-video-lists")
     Call<Video_List_Model> getVideoList();
+
+    @GET("profile/get-profile-info")
+    Call<Profile_Model.Profile_Response> getProfileInfo();
 
 }
