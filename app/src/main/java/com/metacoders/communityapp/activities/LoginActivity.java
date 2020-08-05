@@ -109,6 +109,11 @@ public class LoginActivity extends AppCompatActivity {
 
                     SharedPrefManager.getInstance(getApplicationContext())
                             .userLogin(userModel.getId(), userModel.getUsername(), userModel.getEmail(), userModel.getToken(), userModel.getRole(), userModel.getUserType());
+
+                    Intent intent = new Intent(LoginActivity.this, HomePage.class);
+                    startActivity(intent);
+                    finish();
+
                 }
 
                 @Override

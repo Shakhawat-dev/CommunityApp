@@ -76,6 +76,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
                             startActivity(intent);
+                            finish();
                         }
 
                     } else {
