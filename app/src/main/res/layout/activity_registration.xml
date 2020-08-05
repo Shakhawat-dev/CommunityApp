@@ -53,7 +53,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 app:hintTextColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/name"
+                    android:id="@+id/regi_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter your name"
@@ -72,7 +72,26 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 app:hintTextColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/mail"
+                    android:id="@+id/regi_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter a user name"
+                    android:inputType="textPersonName" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                app:boxStrokeColor="@color/colorPrimary"
+                app:hintAnimationEnabled="true"
+                app:hintTextColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/regi_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter your Email"
@@ -92,7 +111,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/pass"
+                    android:id="@+id/regi_pass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
@@ -100,23 +119,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:boxStrokeColor="@color/colorPrimary"
-                app:hintAnimationEnabled="true"
-                app:hintTextColor="@color/black">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ph"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Phone Number"
-                    android:inputType="phone" />
-
-            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </LinearLayout>
 

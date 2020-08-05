@@ -176,6 +176,15 @@ public class UserModel {
         this.lastDegree = lastDegree;
     }
 
+    public UserModel(String id, String username, String email, String token, String role, String userType) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.token = token;
+        this.role = role;
+        this.userType = userType;
+    }
+
     public String getId() {
         return id;
     }

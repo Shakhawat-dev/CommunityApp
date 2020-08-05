@@ -18,9 +18,8 @@ import com.metacoders.communityapp.activities.MediaPage;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.models.Audio_List_Model;
-import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
-import com.metacoders.communityapp.utils.Utils;
+import com.metacoders.communityapp.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +100,7 @@ public class AudioFragment extends Fragment {
             @Override
             public void onItemClick(View view, int pos) {
                 Intent p = new Intent(context, MediaPage.class);
-                p.putExtra("media_link", Utils.IMAGE_URL + postsList.get(pos).getVideoPath());
+                p.putExtra("media_link", Constants.IMAGE_URL + postsList.get(pos).getVideoPath());
                 context.startActivity(p);
                 try {
                     getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

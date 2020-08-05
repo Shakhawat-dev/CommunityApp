@@ -24,11 +24,7 @@
             android:configChanges="orientation|screenSize|layoutDirection"/>
 
         <activity android:name=".activities.HomePage">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.Voice_Recoder_Activity"
@@ -37,7 +33,13 @@
             android:name=".activities.Video_Record_Activity"
             android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".activities.RegistrationActivity" />
-        <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.MainActivity" />
     </application>
 
