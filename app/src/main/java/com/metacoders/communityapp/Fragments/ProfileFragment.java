@@ -144,8 +144,7 @@ public class ProfileFragment extends Fragment {
             // load the proifle image
             Glide.with(context).load(Utils.IMAGE_URL + singleProfile.getAvatar())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .into(pp)
-            ;
+            .into(pp);
 
 
 
