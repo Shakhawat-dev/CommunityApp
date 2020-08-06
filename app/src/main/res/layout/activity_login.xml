@@ -81,6 +81,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 android:id="@+id/login_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="shaakhawat@gmail.com"
                 android:hint="Username" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -91,6 +92,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:hint="Password"
+
             app:boxStrokeColor="@color/colorPrimary"
             app:hintAnimationEnabled="true"
             app:hintTextColor="@color/black"
@@ -99,6 +101,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_password"
                 android:layout_width="match_parent"
+                android:text="123456"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword" />
 

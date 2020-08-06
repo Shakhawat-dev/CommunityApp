@@ -16,10 +16,14 @@ import android.view.ViewGroup;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.MediaPage;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
+import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
+import com.metacoders.communityapp.api.ServiceGenerator;
+import com.metacoders.communityapp.api.TokenInterceptor;
 import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.utils.Constants;
+import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +44,7 @@ public class NewsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-
+   public SharedPrefManager sharedPrefManager;
     private String mParam1;
     private String mParam2;
 
@@ -118,12 +122,24 @@ public class NewsFragment extends Fragment {
         return view;
     }
 
-    private void loadList() {
-        Call<News_List_Model> NetworkCall = RetrofitClient
-                .getInstance()
-                .getApi()
-                .getNewsList();
 
+
+    private void loadList() {
+
+
+        sharedPrefManager = new SharedPrefManager(context) ;
+        String   accessTokens = sharedPrefManager.getUserToken();
+        Log.d("TAG", "loadList: activity " + accessTokens);
+
+
+//        Call<News_List_Model> NetworkCall = RetrofitClient
+//                .getInstance()
+//                .getApi()
+//                .getNewsList();
+
+      NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
+
+        Call<News_List_Model> NetworkCall = api.getNewsList() ;
 
         NetworkCall.enqueue(new Callback<News_List_Model>() {
             @Override

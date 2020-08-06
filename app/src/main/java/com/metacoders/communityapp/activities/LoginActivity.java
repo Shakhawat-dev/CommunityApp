@@ -18,6 +18,7 @@ import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.UserModel;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.metacoders.communityapp.utils.Constants;
+import com.metacoders.communityapp.utils.StringGen;
 
 import java.io.IOException;
 
@@ -110,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPrefManager.getInstance(getApplicationContext())
                             .userLogin(userModel.getId(), userModel.getUsername(), userModel.getEmail(), userModel.getToken(), userModel.getRole(), userModel.getUserType());
 
+                    StringGen.token = userModel.getToken() ;
                     Intent intent = new Intent(LoginActivity.this, HomePage.class);
                     startActivity(intent);
                     finish();

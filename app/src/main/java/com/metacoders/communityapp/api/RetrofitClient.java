@@ -1,5 +1,7 @@
 package com.metacoders.communityapp.api;
 
+import android.content.Context;
+
 import com.metacoders.communityapp.utils.Constants;
 
 import okhttp3.OkHttpClient;
@@ -9,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private static RetrofitClient mInstance;
     private Retrofit retrofit;
+    private  Context context ;
 
     TokenInterceptor tokenInterceptor = new TokenInterceptor();
 
