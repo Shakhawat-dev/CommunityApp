@@ -33,7 +33,7 @@ public class tokenInterceptor2 implements Interceptor {
 
        // accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTYxNDQyMDcsImV4cCI6MTYwMTUwMTAwNywianRpIjoidmoxSnhQMFZsOFlZeVhyRTJXRWxEIiwidXNlciI6eyJuYW1lIjoic2hhYWtoYXdhdCIsImlkIjoiNCJ9fQ.vOfr6sByA1CpxvnxmGMeIovCRjZbH7F2AXjovp5EBdM";
         //  String   accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "intercept: " + StringGen.token);
+        Log.d("TAG", "intercept2 : " +accessToken);
         Request newRequest = chain.request().newBuilder()
                 .header("Authorization", "Bearer " + accessToken)
                 .build();

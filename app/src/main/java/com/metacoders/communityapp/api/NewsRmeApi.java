@@ -10,12 +10,15 @@ import com.metacoders.communityapp.models.Video_List_Model;
 
 import org.json.JSONObject;
 
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface NewsRmeApi {
 
@@ -54,6 +57,9 @@ public interface NewsRmeApi {
     Call<Video_List_Model> getVideoList();
 
     @GET("profile/get-profile-info")
-    Call<Profile_Model.Profile_Response> getProfileInfo();
+    Call<Profile_Model.Profile_Response> getProfileInfo(); //http://api.newsrme.com/v1/profile/store-photo
 
+    @Multipart
+    @POST("profile/store-photo")
+    Call<UploadResult> uploadImage(@Part("image\"; filename=\"myfijjle.jpg\" ") RequestBody file);
 }
