@@ -15,11 +15,12 @@ import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.TokenInterceptor;
 import com.metacoders.communityapp.models.LoginResponse;
-import com.metacoders.communityapp.utils.Utils;
+import com.metacoders.communityapp.models.UserModel;
+import com.metacoders.communityapp.utils.SharedPrefManager;
+import com.metacoders.communityapp.utils.Constants;
 
 import java.io.IOException;
 
-import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 login();
-                changePassword();
+//                changePassword();
             }
         });
     }
@@ -69,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.body() != null ) {
                     try {
-                        Log.d(Utils.TAG, "onResponse: change pass " + response.body().string());
+                        Log.d(Constants.TAG, "onResponse: change pass " + response.body().string());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -79,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(Utils.TAG, "onResponse: change pass " + t.toString());
+                Log.d(Constants.TAG, "onResponse: change pass " + t.toString());
             }
         });
     }
@@ -101,12 +102,23 @@ public class LoginActivity extends AppCompatActivity {
             call.enqueue(new Callback<LoginResponse>() {
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                    Log.d(Utils.TAG, "onResponse: " + response.body().toString());
+                    Log.d(Constants.TAG, "onResponse: " + response.body().toString());
+
+                    UserModel userModel = new UserModel();
+                    userModel = response.body().getUser();
+
+                    SharedPrefManager.getInstance(getApplicationContext())
+                            .userLogin(userModel.getId(), userModel.getUsername(), userModel.getEmail(), userModel.getToken(), userModel.getRole(), userModel.getUserType());
+
+                    Intent intent = new Intent(LoginActivity.this, HomePage.class);
+                    startActivity(intent);
+                    finish();
+
                 }
 
                 @Override
                 public void onFailure(Call<LoginResponse> call, Throwable t) {
-                    Log.d(Utils.TAG, "onResponse: " + t.toString());
+                    Log.d(Constants.TAG, "onResponse: " + t.toString());
                 }
             });
         }

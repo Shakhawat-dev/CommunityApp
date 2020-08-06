@@ -1,10 +1,14 @@
 package com.metacoders.communityapp.api;
 
+import com.google.gson.JsonObject;
 import com.metacoders.communityapp.models.Audio_List_Model;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Profile_Model;
+import com.metacoders.communityapp.models.RegistrationResponse;
 import com.metacoders.communityapp.models.Video_List_Model;
+
+import org.json.JSONObject;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -19,6 +23,15 @@ public interface NewsRmeApi {
     @POST("auth/user-login")
     Call<LoginResponse> login (
             @Field("user_name") String userName,
+            @Field("password") String password
+    );
+
+    @FormUrlEncoded
+    @POST("registration/user-registration")
+    Call<RegistrationResponse> registration (
+            @Field("name") String name,
+            @Field("username") String username,
+            @Field("email") String email,
             @Field("password") String password
     );
 

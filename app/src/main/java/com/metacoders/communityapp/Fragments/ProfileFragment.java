@@ -16,8 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.models.Profile_Model;
-import com.metacoders.communityapp.models.Video_List_Model;
-import com.metacoders.communityapp.utils.Utils;
+import com.metacoders.communityapp.utils.Constants;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -142,7 +141,7 @@ public class ProfileFragment extends Fragment {
            email.setText(singleProfile.getEmail());
            emailHeader.setText(singleProfile.getEmail());
             // load the proifle image
-            Glide.with(context).load(Utils.IMAGE_URL + singleProfile.getAvatar())
+            Glide.with(context).load(Constants.IMAGE_URL + singleProfile.getAvatar())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(pp);
 

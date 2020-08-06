@@ -1,6 +1,6 @@
 package com.metacoders.communityapp.api;
 
-import com.metacoders.communityapp.utils.Utils;
+import com.metacoders.communityapp.utils.Constants;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -19,7 +19,7 @@ public class RetrofitClient {
     private RetrofitClient() {
         retrofit = new Retrofit.Builder()
                 .client(client)
-                .baseUrl(Utils.ROOT_URL)
+                .baseUrl(Constants.ROOT_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }

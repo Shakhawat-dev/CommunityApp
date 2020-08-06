@@ -1,7 +1,6 @@
 package com.metacoders.communityapp.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.utils.ConvertTime;
-import com.metacoders.communityapp.utils.Utils;
+import com.metacoders.communityapp.utils.Constants;
 
 
 import java.text.ParseException;
@@ -55,7 +54,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         holder.viewCount.setText(newsFeed.getHit()+"");
         holder.commentCount.setText("0");
         // convert time
-        SimpleDateFormat df = new SimpleDateFormat(Utils.CREATED_AT_FORMAT);
+        SimpleDateFormat df = new SimpleDateFormat(Constants.CREATED_AT_FORMAT);
         try {
             Date date = df.parse(newsFeed.getCreatedAt());
             holder.date.setText(ConvertTime.getTimeAgo(date));
@@ -69,7 +68,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         {
             link = newsFeed.getImageUrl() ;
         }
-        else   link = Utils.IMAGE_URL + newsFeed.getImageMid() ;
+        else   link = Constants.IMAGE_URL + newsFeed.getImageMid() ;
         Glide.with(ctx)
                 .load(link)
                 .centerCrop()
