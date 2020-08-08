@@ -73,32 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //TODO: Checking Purpose, functionality will be changed
-    private void changePassword() {
 
-        Call<ResponseBody> call = RetrofitClient
-                .getInstance()
-                .getApi()
-                .changePassword("123456", "sms123456");
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.body() != null ) {
-                    try {
-                        Log.d(Constants.TAG, "onResponse: change pass " + response.body().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(Constants.TAG, "onResponse: change pass " + t.toString());
-            }
-        });
-    }
 
     private void login() {
 

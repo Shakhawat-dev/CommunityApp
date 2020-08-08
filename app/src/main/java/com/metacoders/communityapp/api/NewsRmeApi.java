@@ -49,7 +49,7 @@ public interface NewsRmeApi {
 
     @FormUrlEncoded
     @POST("profile/change-password")
-    Call<ResponseBody> changePassword(
+    Call<LoginResponse.forgetPassResponse> changePassword(
             @Field("old_password") String old_password,
             @Field("new_password") String new_password
     );

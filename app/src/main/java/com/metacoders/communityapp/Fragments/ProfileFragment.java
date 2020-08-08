@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -27,6 +28,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.activities.ChangePasswordActivity;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -104,6 +106,8 @@ public class ProfileFragment extends Fragment {
     TextView  nameHeader , emailHeader , name , phone , email , address ;
     CircleImageView pp  ;
     ProgressDialog mprogressDialog;
+    CardView  changePassCard ;
+
     private Bitmap compressedImageFile;
     Uri mFilePathUri;
     @Override
@@ -118,12 +122,20 @@ public class ProfileFragment extends Fragment {
         mprogressDialog.setMessage("Uploading The Image...");
         // views
         name = view.findViewById(R.id.user_name_txt) ;
+        changePassCard = view.findViewById(R.id.change_pass_card) ;
         nameHeader = view.findViewById(R.id.profile_name_txt) ;
         phone = view.findViewById(R.id.user_phone_txt) ;
         email = view.findViewById(R.id.user_email_txt) ;
         address = view.findViewById(R.id.user_address_txt) ;
         emailHeader = view.findViewById(R.id.profile_email_txt) ;
         pp = view.findViewById(R.id.profile_pic) ;
+
+        changePassCard.setOnClickListener(v->{
+
+            Intent o = new Intent(context , ChangePasswordActivity.class);
+            startActivity(o);
+
+        });
 
         pp.setOnClickListener(v -> {
             // open the gallery to

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public  class Audio_List_Model {
-    @SerializedName("getNewsAudioList")
+     @SerializedName("getNewsAudioList")
     @Expose
     private List<Post_Model> getNewsList = null;
 
