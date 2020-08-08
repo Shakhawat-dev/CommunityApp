@@ -137,6 +137,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 android:text="Remember me" />
 
             <TextView
+                android:id="@+id/forget_passwordBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

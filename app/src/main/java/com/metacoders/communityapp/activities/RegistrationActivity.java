@@ -15,7 +15,9 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
+import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.RegistrationResponse;
 import com.metacoders.communityapp.models.UserModel;
@@ -61,10 +63,14 @@ public class RegistrationActivity extends AppCompatActivity {
             email = mEmail.getText().toString().trim();
             password = mPassword.getText().toString().trim();
 
-            Call<RegistrationResponse> call = RetrofitClient
-                    .getInstance()
-                    .getApi()
-                    .registration(name, userName, email, password);
+//            Call<RegistrationResponse> call = RetrofitClient
+//                    .getInstance()
+//                    .getApi()
+//                    .registration(name, userName, email, password);
+
+            NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
+
+            Call<RegistrationResponse> call = api.registration(name, userName, email, password) ;
 
             call.enqueue(new Callback<RegistrationResponse>() {
                 @Override

@@ -13,15 +13,12 @@ public class RetrofitClient {
     private Retrofit retrofit;
     private  Context context ;
 
-    TokenInterceptor tokenInterceptor = new TokenInterceptor();
 
-    OkHttpClient client = new OkHttpClient.Builder()
-            .addInterceptor(tokenInterceptor)
-            .build();
+
+
 
     private RetrofitClient() {
         retrofit = new Retrofit.Builder()
-                .client(client)
                 .baseUrl(Constants.ROOT_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

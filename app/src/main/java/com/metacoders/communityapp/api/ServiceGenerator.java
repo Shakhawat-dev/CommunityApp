@@ -13,8 +13,7 @@ public class ServiceGenerator {
     public static final String API_BASE_URL = Constants.ROOT_URL;
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-    private static Retrofit retrofit  ;
-
+    private static Retrofit retrofit;
 
 
     public static <S> S createService(Class<S> serviceClass) {
@@ -38,6 +37,12 @@ public class ServiceGenerator {
 
 
             }
+        } else if ( authToken.equals("00")){
+            retrofit =
+                    new Retrofit.Builder()
+                            .baseUrl(API_BASE_URL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
         }
 
         return retrofit.create(serviceClass);

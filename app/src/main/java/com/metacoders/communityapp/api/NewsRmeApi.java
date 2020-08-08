@@ -33,10 +33,19 @@ public interface NewsRmeApi {
     @POST("registration/user-registration")
     Call<RegistrationResponse> registration (
             @Field("name") String name,
-            @Field("username") String username,
+            @Field("user_name") String username,
             @Field("email") String email,
             @Field("password") String password
     );
+
+
+    @FormUrlEncoded
+    @POST("auth/forget-password")
+    Call<LoginResponse.forgetPassResponse> forget_password (
+            @Field("user_name") String user_name ,
+            @Field("email") String email
+    );
+
 
     @FormUrlEncoded
     @POST("profile/change-password")
@@ -57,9 +66,11 @@ public interface NewsRmeApi {
     Call<Video_List_Model> getVideoList();
 
     @GET("profile/get-profile-info")
-    Call<Profile_Model.Profile_Response> getProfileInfo(); //http://api.newsrme.com/v1/profile/store-photo
+    Call<Profile_Model.Profile_Response> getProfileInfo();
 
     @Multipart
     @POST("profile/store-photo")
     Call<UploadResult> uploadImage(@Part("image\"; filename=\"myfile.jpg\" ") RequestBody file);
+
+
 }

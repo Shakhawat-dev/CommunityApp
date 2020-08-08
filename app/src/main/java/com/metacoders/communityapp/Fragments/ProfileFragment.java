@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -28,9 +29,12 @@ import com.google.gson.GsonBuilder;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
+import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.api.UploadResult;
+import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Profile_Model;
 import com.metacoders.communityapp.utils.Constants;
+import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -169,10 +173,19 @@ public class ProfileFragment extends Fragment {
     }
 
     private void LoadData() {
-        Call<Profile_Model.Profile_Response> NetworkCall = RetrofitClient
-                .getInstance()
-                .getApi()
-                .getProfileInfo();
+        SharedPrefManager     sharedPrefManager = new SharedPrefManager(context) ;
+        String   accessTokens = sharedPrefManager.getUserToken();
+        Log.d("TAG", "loadList: activity " + accessTokens);
+
+
+//        Call<News_List_Model> NetworkCall = RetrofitClient
+//                .getInstance()
+//                .getApi()
+//                .getNewsList();
+
+        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
+
+        Call<Profile_Model.Profile_Response> NetworkCall = api.getProfileInfo() ;
 
         NetworkCall.enqueue(new Callback<Profile_Model.Profile_Response>() {
             @Override

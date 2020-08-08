@@ -81,5 +81,36 @@ public class LoginResponse {
                 ", user=" + user +
                 '}';
     }
+
+    public class forgetPassResponse {
+
+        @SerializedName("error")
+        @Expose
+        private Boolean error;
+        @SerializedName("message")
+        @Expose
+        private String message;
+
+        public forgetPassResponse(Boolean error, String message) {
+            this.error = error;
+            this.message = message;
+        }
+
+        public Boolean getError() {
+            return error;
+        }
+
+        public void setError(Boolean error) {
+            this.error = error;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
 }
 

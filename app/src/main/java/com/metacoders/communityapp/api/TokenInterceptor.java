@@ -28,9 +28,16 @@ public class TokenInterceptor implements Interceptor {
 
         accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTYxNDQyMDcsImV4cCI6MTYwMTUwMTAwNywianRpIjoidmoxSnhQMFZsOFlZeVhyRTJXRWxEIiwidXNlciI6eyJuYW1lIjoic2hhYWtoYXdhdCIsImlkIjoiNCJ9fQ.vOfr6sByA1CpxvnxmGMeIovCRjZbH7F2AXjovp5EBdM";
    //  String   accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "intercept: " + StringGen.token);
+        if(StringGen.token.isEmpty())
+        {
+            token = "cc" ;
+        }
+        else token = StringGen.token  ;
+
+
+        Log.d("TAG", "intercept: " + token);
         Request newRequest = chain.request().newBuilder()
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", "Bearer " + token)
                 .build();
 
         return chain.proceed(newRequest);

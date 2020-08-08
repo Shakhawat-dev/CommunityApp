@@ -49,7 +49,7 @@ public class Video_Record_Activity extends AppCompatActivity {
     private static final String TAG = "VIDEO_RECORD";
 
     private static final int IMAGE_PICKER_SELECT = 99;
-
+    private static final int VIDEOMAXTIME  = 600000;
     SurfaceView sampleGLView;
     ImageView closeBtn , flashBTn ;
     Boolean isFlashOn = false ;
@@ -244,7 +244,7 @@ public class Video_Record_Activity extends AppCompatActivity {
 
 
                 camera.setMode(Mode.VIDEO);
-                camera.setVideoMaxDuration(310000);
+                camera.setVideoMaxDuration(VIDEOMAXTIME+100);
                 long time = System.currentTimeMillis() / 100000;
                 String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
                 file = new File(ROOT_DIR + "/test" + time + ".mp4");
@@ -257,7 +257,7 @@ public class Video_Record_Activity extends AppCompatActivity {
 
                     camera.takeVideo(file);
 
-                  countDownTimer  =   new CountDownTimer(300000, 1000) {
+                  countDownTimer  =   new CountDownTimer(VIDEOMAXTIME, 1000) {
 
                         public void onTick(long millisUntilFinished) {
                             // timer.setText("seconds remaining: " + millisUntilFinished / 1000);

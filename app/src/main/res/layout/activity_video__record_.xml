@@ -35,7 +35,6 @@
         app:cameraGrid="off"
         app:cameraGridColor="@color/white"
         app:cameraPlaySounds="true"
-        app:cameraVideoMaxDuration="20"
         app:cameraVideoCodec="deviceDefault"
         app:cameraAutoFocusResetDelay="0"
         app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
@@ -120,7 +119,7 @@
             android:id="@+id/timer"
             android:textColor="@color/white"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:text="05:00"
+            android:text="10:00"
             android:textSize="15sp"
             android:visibility="visible"
             android:layout_alignParentTop="true"/>
