@@ -61,5 +61,5 @@ public interface NewsRmeApi {
 
     @Multipart
     @POST("profile/store-photo")
-    Call<UploadResult> uploadImage(@Part("image\"; filename=\"myfijjle.jpg\" ") RequestBody file);
+    Call<UploadResult> uploadImage(@Part("image\"; filename=\"myfile.jpg\" ") RequestBody file);
 }

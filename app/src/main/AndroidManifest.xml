@@ -20,12 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.MediaPage"
-            android:configChanges="orientation|screenSize|layoutDirection"/>
-
-        <activity android:name=".activities.HomePage">
-
-        </activity>
+        <activity android:name=".activities.ForgotPasswordActivity"></activity>
+        <activity android:name=".activities.ChangePasswordActivity" />
+        <activity
+            android:name=".activities.MediaPage"
+            android:configChanges="orientation|screenSize|layoutDirection" />
+        <activity android:name=".activities.HomePage" />
         <activity
             android:name=".activities.Voice_Recoder_Activity"
             android:theme="@style/AppThemeNoActionBar" />
@@ -33,8 +33,9 @@
             android:name=".activities.Video_Record_Activity"
             android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".activities.RegistrationActivity" />
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"/>
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

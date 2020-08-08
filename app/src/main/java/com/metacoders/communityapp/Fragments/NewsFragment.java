@@ -26,6 +26,8 @@ import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -149,6 +151,7 @@ public class NewsFragment extends Fragment {
                     News_List_Model model = response.body();
 
                     postsList = model.getGetNewsList();
+
 
                     if (postsList != null && !postsList.isEmpty()) {
                         // i know its werid but thats r8 cheaking list is popluted
