@@ -51,7 +51,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         holder.title.setText(newsFeed.getTitle());
 //        holder.price.setText("$" + newsFeed.getProduct_price().toString());
 //        holder.description.setText(newsFeed.getDescription());
-        holder.viewCount.setText(newsFeed.getHit()+"");
+        holder.viewCount.setText(newsFeed.getHit() + "");
         holder.commentCount.setText("0");
         // convert time
         SimpleDateFormat df = new SimpleDateFormat(Constants.CREATED_AT_FORMAT);
@@ -60,26 +60,27 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             holder.date.setText(ConvertTime.getTimeAgo(date));
         } catch (ParseException e) {
             e.printStackTrace();
-           holder.date.setText(newsFeed.getCreatedAt());
+            holder.date.setText(newsFeed.getCreatedAt());
         }
-        String link ;
+        String link;
 
-        if(newsFeed.getImageMid().isEmpty() || newsFeed.getImageMid() == null)
-        {
-            link = newsFeed.getImageUrl() ;
+        if (newsFeed.getImageMid() == null) {
+//            link = newsFeed.getImageUrl();
+        } else {
+            link = Constants.IMAGE_URL + newsFeed.getImageMid();
+            Glide.with(ctx)
+                    .load(link)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .thumbnail(/*sizeMultiplier=*/ 0.25f)
+                    .placeholder(R.drawable.placeholder)
+                    .into(holder.image);
         }
-        else   link = Constants.IMAGE_URL + newsFeed.getImageMid() ;
-        Glide.with(ctx)
-                .load(link)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .thumbnail(/*sizeMultiplier=*/ 0.25f)
-               // .placeholder(R.drawable.placeholder)
-                .into(holder.image);
 
-        if(newsFeed.getPostType().contains("video"))
-        {
-           // holder.price.setVisibility(View.VISIBLE);
+
+
+        if (newsFeed.getPostType().contains("video")) {
+            // holder.price.setVisibility(View.VISIBLE);
         }
 //        else  holder.price.setVisibility(View.VISIBLE);
 
@@ -97,8 +98,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView title;
-        public ImageView image , playBtn;
-        public TextView author , viewCount , date ;
+        public ImageView image, playBtn;
+        public TextView author, viewCount, date;
         public TextView commentCount;
 
         ItemClickListenter itemClickListenter;
@@ -112,7 +113,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             image = itemView.findViewById(R.id.video_thumb);
             playBtn = itemView.findViewById(R.id.play_btn);
             author = itemView.findViewById(R.id.video_author);
-            viewCount = itemView.findViewById(R.id.video_view) ;
+            viewCount = itemView.findViewById(R.id.video_view);
             date = itemView.findViewById(R.id.video_date);
             commentCount = itemView.findViewById(R.id.video_comment);
             this.itemClickListenter = itemClickListenter;
@@ -122,7 +123,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         public void onClick(View v) {
 
 
-           itemClickListenter.onItemClick( v, getAdapterPosition());
+            itemClickListenter.onItemClick(v, getAdapterPosition());
 
 //            if (newsfeedList.get(position).getIs_product().equals("false")) {
 //                Intent intent = new Intent(ctx, NewsDetailsActivity.class);
