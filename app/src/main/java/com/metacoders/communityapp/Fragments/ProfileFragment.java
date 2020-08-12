@@ -173,7 +173,7 @@ public class ProfileFragment extends Fragment {
     private void BringImagePicker() {
 
 
-    CropImage.activity()
+        CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setAspectRatio(1, 1)
                 .setCropShape(CropImageView.CropShape.OVAL) //shaping the image

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.MediaPage;
+import com.metacoders.communityapp.activities.Video_Record_Activity;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
@@ -100,7 +101,13 @@ public class NewsFragment extends Fragment {
         context = view.getContext();
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
-
+        view.findViewById(R.id.videoBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent o = new Intent(getContext() , Video_Record_Activity.class);
+                startActivity(o);
+            }
+        });
         loadList();
 
         // calling the interface for click
