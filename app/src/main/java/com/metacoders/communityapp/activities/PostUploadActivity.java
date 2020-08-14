@@ -6,23 +6,20 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
-import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
-import com.metacoders.communityapp.api.UploadResult;
 import com.metacoders.communityapp.models.LoginResponse;
-import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -41,41 +38,42 @@ public class PostUploadActivity extends AppCompatActivity {
 
     Uri mediaUri = null ;
     String uriPath = null ;
-    ImageView image_View ;
-
+    ImageView addImage ;
+    String postType ;
+    ProgressDialog progressDialog ;
+    MultipartBody.Part body1 ;
+    MultipartBody.Part body2 ;
+    NewsRmeApi api;
+    Intent o ;
+    Call<LoginResponse.forgetPassResponse> NetworkCall ;
     private Bitmap compressedImageFile;
     Uri mFilePathUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_upload);
-        Intent o =  getIntent() ;
-        uriPath = o.getStringExtra("path");
-        //media Uri has the all the link in it ;
-        mediaUri = Uri.parse(uriPath) ;
-        // now do whatever u  neeed
+        progressDialog = new ProgressDialog(PostUploadActivity.this) ;
+        progressDialog.setMessage("Uploading...");
 
-        findViewById(R.id.add_image).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        o =  getIntent() ;
+        // take the media type ....
+        postType = o.getStringExtra("media");
+        // define Views ...
+        addImage = findViewById(R.id.add_image);
 
-                // open the gallery to
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        addImage.setOnClickListener(v -> {
 
-                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // open the gallery to
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-                        ActivityCompat.requestPermissions(PostUploadActivity.this,
-                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                        BringImagePicker();
+                    ActivityCompat.requestPermissions(PostUploadActivity.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+
+                    BringImagePicker();
 
 
-
-                    } else {
-
-                        BringImagePicker();
-
-                    }
 
                 } else {
 
@@ -83,7 +81,12 @@ public class PostUploadActivity extends AppCompatActivity {
 
                 }
 
+            } else {
+
+                BringImagePicker();
+
             }
+
         });
 
 
@@ -102,8 +105,9 @@ public class PostUploadActivity extends AppCompatActivity {
                 mFilePathUri = result.getUri();
 
                 //    uploadPicToServer(mFilePathUri) ;
+                addImage.setImageURI(mFilePathUri);
 
-                createPostServer(mFilePathUri);
+                createPostServer(mFilePathUri , postType);
 
                 //sending data once  user select the image
 
@@ -116,17 +120,13 @@ public class PostUploadActivity extends AppCompatActivity {
 
     }
 
-    private void createPostServer(Uri mFilePathUri) {
-        if(mFilePathUri != null){
-            // upload the data
-            File mediaFile  = null;
-            File file = new File(mFilePathUri.getPath());
-            if( mediaUri != null)
-            {
-                mediaFile  = new File(mediaUri.getPath()) ;
-            }
-            else Toast.makeText(getApplicationContext() , "Video IS empty" , Toast.LENGTH_LONG).show();
+    private void createPostServer(Uri mFilePathUri, String postType) {
 
+        if(mFilePathUri != null) {
+            // upload the data
+
+
+            File file = new File(mFilePathUri.getPath());
             File compressed;
 
             try {
@@ -138,56 +138,114 @@ public class PostUploadActivity extends AppCompatActivity {
             } catch (Exception e) {
                 compressed = file;
             }
+            progressDialog.show();
+            progressDialog.setCancelable(false);
 
-            //creating request body for file
-           RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
-            RequestBody requestMediaFile = RequestBody.create(MediaType.parse("video/mp4"), mediaFile);
+             api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
 
-            //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
+            if (postType.equals("post")) {
 
-            MultipartBody.Part body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile) ;
-            MultipartBody.Part body2 = MultipartBody.Part.createFormData("video" , mediaFile.getName()  , requestMediaFile) ;
+                //creating request body for file
+                RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
 
-            SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
-            String   accessTokens = sharedPrefManager.getUserToken();
-            NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
-            Call<LoginResponse.forgetPassResponse> NetworkCall = api .uploadPost(body2 , createPartFromString("this is form Mobile") , createPartFromString("this is from mobile"),
-                    createPartFromString("Content"),
-                    createPartFromString("video") ,createPartFromString("1"),
-                    createPartFromString("1") , createPartFromString("1"),
-                    body1) ;
+                body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+                //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
 
 
+                NetworkCall = api.uploadPost( createPartFromString("this is a Post Mobile Part 2 "), createPartFromString("this is from mobile part 2 "),
+                        createPartFromString("Content is a test from the data "),
+                        createPartFromString(postType), createPartFromString("1"),
+                        createPartFromString("1"), createPartFromString("1"),
+                        body1);
+
+
+
+            } else {
+
+                Intent p = getIntent() ;
+                uriPath = p.getStringExtra("path");
+                //media Uri has the all the link in it ;
+                mediaUri = Uri.parse(uriPath) ;
+
+                File mediaFile = null;
+
+                if (mediaUri != null) {
+                    mediaFile = new File(mediaUri.getPath());
+                } else
+                    Toast.makeText(getApplicationContext(), "Video Is empty", Toast.LENGTH_LONG).show();
+
+                //creating request body for file
+                RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
+                // changing media_type
+                RequestBody requestMediaFile ;
+
+                if(postType.equals("audio"))
+                {
+                    requestMediaFile = RequestBody.create(MediaType.parse("audio/mp3*"), mediaFile);
+
+                    body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), requestMediaFile);
+                }
+                else {
+                    requestMediaFile = RequestBody.create(MediaType.parse("video/mp4"), mediaFile);
+                    body2 = MultipartBody.Part.createFormData("video", mediaFile.getName(), requestMediaFile);
+                }
+
+                body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+                //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
+
+
+
+                NetworkCall = api.uploadFilePost(body2, createPartFromString("this is form Mobile Part 2 "), createPartFromString("this is from mobile part 2 "),
+                        createPartFromString("Content is a test from the data "),
+                        createPartFromString(postType), createPartFromString("1"),
+                        createPartFromString("1"), createPartFromString("1"),
+                        body1);
+
+
+
+            }
 
             NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
                 @Override
                 public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
 
-                    if(response.code() == 201){
-                        LoginResponse.forgetPassResponse testRes = response.body() ;
-                        Toast.makeText(getApplicationContext() , testRes.getMessage() + "\n"+ testRes.getError() , Toast.LENGTH_LONG)
+                    if (response.code() == 201) {
+                        LoginResponse.forgetPassResponse testRes = response.body();
+                        Toast.makeText(getApplicationContext(), testRes.getMessage() + "\n" + testRes.getError(), Toast.LENGTH_LONG)
                                 .show();
+                        progressDialog.dismiss();
 
-                    }else {
-                        Toast.makeText(getApplicationContext() ,""+ response.code() , Toast.LENGTH_LONG)
+                    } else {
+                        Toast.makeText(getApplicationContext(), "" + response.code(), Toast.LENGTH_LONG)
                                 .show();
+                        progressDialog.dismiss();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
-                    Toast.makeText(getApplicationContext() , t.getMessage() , Toast.LENGTH_LONG)
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG)
                             .show();
-
+                    progressDialog.dismiss();
                 }
             });
+
         }
+        else{
+
+                Toast.makeText(getApplicationContext(), "Please Pick An Image!!", Toast.LENGTH_LONG).show();
+            }
+
+
     }
     @NonNull
     private RequestBody createPartFromString(String descriptionString) {
         return RequestBody.create(
                 okhttp3.MultipartBody.FORM, descriptionString);
     }
+
     private void BringImagePicker() {
 
 
@@ -201,4 +259,11 @@ public class PostUploadActivity extends AppCompatActivity {
 
 
     }
+    public  String getToken(){
+        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
+        String accessTokens = sharedPrefManager.getUserToken();
+       return  accessTokens ;
+    }
+
+
 }

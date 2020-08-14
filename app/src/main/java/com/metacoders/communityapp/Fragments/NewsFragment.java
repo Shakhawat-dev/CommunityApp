@@ -12,10 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.MediaPage;
+import com.metacoders.communityapp.activities.PostUploadActivity;
 import com.metacoders.communityapp.activities.Video_Record_Activity;
+import com.metacoders.communityapp.activities.Voice_Recoder_Activity;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
@@ -89,6 +92,7 @@ public class NewsFragment extends Fragment {
     Context context;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
+    Button audioBtn , imageBtn ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,13 +105,36 @@ public class NewsFragment extends Fragment {
         context = view.getContext();
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
+        audioBtn = view.findViewById(R.id.audioBtn) ;
+        imageBtn = view.findViewById(R.id.photoBtn);
+
+        audioBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent o = new Intent(getContext() , Voice_Recoder_Activity.class);
+
+                startActivity(o);
+            }
+        });
+
+        imageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent o = new Intent(getContext() , PostUploadActivity.class);
+                o.putExtra("media", "post") ;
+                startActivity(o);
+            }
+        });
+
         view.findViewById(R.id.videoBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent o = new Intent(getContext() , Video_Record_Activity.class);
+
                 startActivity(o);
             }
         });
+
         loadList();
 
         // calling the interface for click

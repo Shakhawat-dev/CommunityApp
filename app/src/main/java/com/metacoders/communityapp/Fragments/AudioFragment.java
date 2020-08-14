@@ -100,6 +100,7 @@ public class AudioFragment extends Fragment {
             @Override
             public void onItemClick(View view, int pos) {
                 Intent p = new Intent(context, MediaPage.class);
+
                 p.putExtra("media_link", Constants.IMAGE_URL + postsList.get(pos).getVideoPath());
                 context.startActivity(p);
                 try {

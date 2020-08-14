@@ -493,9 +493,8 @@ public class Video_Record_Activity extends AppCompatActivity {
 
     public  void getToCreatePostPage(String FileMime , Uri uri ) {
         Intent post = new Intent(context , PostUploadActivity.class);
-        post.putExtra("type" , FileMime);
         post.putExtra("path", uri.toString()) ;
-        post.putExtra("category" , category) ;
+        post.putExtra("media", "video") ;
         startActivity(post);
 
         Toast.makeText(getApplicationContext() , "Video Taken  LINK : " + uri.toString() , Toast.LENGTH_SHORT).show();

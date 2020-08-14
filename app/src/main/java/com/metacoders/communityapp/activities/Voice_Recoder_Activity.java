@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -104,12 +105,14 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
 
     private void uploadAudio() {
         final ProgressDialog dialog = new ProgressDialog(Voice_Recoder_Activity.this) ;
-
-        File file;
+        Toast.makeText(getApplicationContext(), "Recordings Saved !!!"  ,Toast.LENGTH_SHORT).show();
+        // get the uri ...
         Uri uri = Uri.fromFile(new File(mFileName));
 
-
-        Toast.makeText(getApplicationContext(), "Recordings Saved !!!"  ,Toast.LENGTH_SHORT).show();
+        Intent post = new Intent(getApplicationContext() , PostUploadActivity.class);
+        post.putExtra("path", uri.toString()) ;
+        post.putExtra("media", "audio") ;
+       startActivity(post);
 
 
 
@@ -123,12 +126,12 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss", Locale.CANADA);
         Date now = new Date();
         time = formatter.format(now);
-        mFileName = Root + "/recorded_audio"+formatter.format(now) +".3gp" ;
+        mFileName = Root + "/recorded_audio"+formatter.format(now) +".aac" ;
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         mediaRecorder.setOutputFile(mFileName);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
 
         try{
