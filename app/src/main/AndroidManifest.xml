@@ -20,8 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.PostUploadActivity"></activity>
-        <activity android:name=".activities.ForgotPasswordActivity"></activity>
+        <activity android:name=".activities.SplashScreen"></activity>
+        <activity android:name=".activities.PostUploadActivity" />
+        <activity android:name=".activities.ForgotPasswordActivity" />
         <activity android:name=".activities.ChangePasswordActivity" />
         <activity
             android:name=".activities.MediaPage"
@@ -34,7 +35,6 @@
             android:name=".activities.Video_Record_Activity"
             android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".activities.RegistrationActivity" />
-
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

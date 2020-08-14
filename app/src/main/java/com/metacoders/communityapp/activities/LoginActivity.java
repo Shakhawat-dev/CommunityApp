@@ -3,6 +3,7 @@ package com.metacoders.communityapp.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,12 +37,13 @@ public class LoginActivity extends AppCompatActivity {
     private TextView registerTV , forget_pass_tv ;
     private TextInputEditText mUsername, mPassword;
     private Button mLoginBtn;
+    SharedPrefManager manager ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        manager = new SharedPrefManager( getApplicationContext() ) ;
         initializations();
 
 
@@ -123,7 +125,9 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPrefManager.getInstance(getApplicationContext())
                                 .userLogin(userModel.getId(), userModel.getUsername(), userModel.getEmail(), userModel.getToken(), userModel.getRole(), userModel.getUserType());
 
+
                         StringGen.token = userModel.getToken() ;
+                        manager.saveUser(userModel.getEmail());
                         Intent intent = new Intent(LoginActivity.this, HomePage.class);
                         startActivity(intent);
                         finish();

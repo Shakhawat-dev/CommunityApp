@@ -121,6 +121,7 @@
             app:hintTextColor="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/title_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword" />
@@ -141,6 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
+                android:id="@+id/desc_et"
                 android:inputType="textMultiLine"
                 android:minLines="4" />
 
@@ -168,6 +170,7 @@
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/colorPrimary"
             android:text="Publish"
+            android:id="@+id/publish_btn"
             android:textColor="@color/white" />
 
     </LinearLayout>

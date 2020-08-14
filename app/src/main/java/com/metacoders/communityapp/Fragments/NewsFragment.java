@@ -26,6 +26,7 @@ import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.api.TokenInterceptor;
 import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
+import com.metacoders.communityapp.models.UserModel;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
@@ -155,6 +156,9 @@ public class NewsFragment extends Fragment {
             }
         };
 
+        SharedPrefManager manager = new SharedPrefManager(context) ;
+        UserModel model = manager.getUser() ;
+        Log.d("TAG" , model.getEmail() + " "  + model.getName()+ " " + model.getId()+ " " + model.getRole()) ;
         return view;
     }
 

@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.ChangePasswordActivity;
+import com.metacoders.communityapp.activities.LoginActivity;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -106,7 +107,7 @@ public class ProfileFragment extends Fragment {
     TextView  nameHeader , emailHeader , name , phone , email , address ;
     CircleImageView pp  ;
     ProgressDialog mprogressDialog;
-    CardView  changePassCard ;
+    CardView  changePassCard , LogOutCard  ;
 
     private Bitmap compressedImageFile;
     Uri mFilePathUri;
@@ -129,6 +130,21 @@ public class ProfileFragment extends Fragment {
         address = view.findViewById(R.id.user_address_txt) ;
         emailHeader = view.findViewById(R.id.profile_email_txt) ;
         pp = view.findViewById(R.id.profile_pic) ;
+        LogOutCard = view.findViewById(R.id.logout_card);
+
+        LogOutCard.setOnClickListener(v -> {
+
+            Intent o = new Intent(context , LoginActivity.class);
+            SharedPrefManager manager = new SharedPrefManager(context) ;
+            manager.logout();
+            startActivity(o);
+            try {
+                getActivity().finish();
+            }
+            catch (Exception e){
+
+            }
+        });
 
         changePassCard.setOnClickListener(v->{
 

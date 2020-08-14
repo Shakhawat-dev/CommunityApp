@@ -13,9 +13,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -45,13 +48,18 @@ public class PostUploadActivity extends AppCompatActivity {
     MultipartBody.Part body2 ;
     NewsRmeApi api;
     Intent o ;
+    Button submitBtn ;
+    TextInputEditText title , desc ;
+    String Title  , Desc ;
+
     Call<LoginResponse.forgetPassResponse> NetworkCall ;
     private Bitmap compressedImageFile;
-    Uri mFilePathUri;
+    Uri mFilePathUri = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_upload);
+
         progressDialog = new ProgressDialog(PostUploadActivity.this) ;
         progressDialog.setMessage("Uploading...");
 
@@ -60,6 +68,9 @@ public class PostUploadActivity extends AppCompatActivity {
         postType = o.getStringExtra("media");
         // define Views ...
         addImage = findViewById(R.id.add_image);
+        title = findViewById(R.id.title_et) ;
+        desc = findViewById(R.id.desc_et);
+        submitBtn = findViewById(R.id.publish_btn);
 
         addImage.setOnClickListener(v -> {
 
@@ -89,6 +100,19 @@ public class PostUploadActivity extends AppCompatActivity {
 
         });
 
+        submitBtn.setOnClickListener(v->{
+
+            Desc = desc.getText().toString() ;
+            Title = title.getText().toString() ;
+
+            if(!TextUtils.isEmpty(Title) || !TextUtils.isEmpty(Desc) || mFilePathUri != null){
+
+                createPostServer(mFilePathUri , postType , Title , Desc);
+
+            }
+
+        });
+
 
     }
     @Override
@@ -107,7 +131,7 @@ public class PostUploadActivity extends AppCompatActivity {
                 //    uploadPicToServer(mFilePathUri) ;
                 addImage.setImageURI(mFilePathUri);
 
-                createPostServer(mFilePathUri , postType);
+               // createPostServer(mFilePathUri , postType);
 
                 //sending data once  user select the image
 
@@ -120,7 +144,7 @@ public class PostUploadActivity extends AppCompatActivity {
 
     }
 
-    private void createPostServer(Uri mFilePathUri, String postType) {
+    private void createPostServer(Uri mFilePathUri, String postType  ,String title , String desc ) {
 
         if(mFilePathUri != null) {
             // upload the data
@@ -153,8 +177,8 @@ public class PostUploadActivity extends AppCompatActivity {
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
 
 
-                NetworkCall = api.uploadPost( createPartFromString("this is a Post Mobile Part 2 "), createPartFromString("this is from mobile part 2 "),
-                        createPartFromString("Content is a test from the data "),
+                NetworkCall = api.uploadPost( createPartFromString(title), createPartFromString(title.toLowerCase()),
+                        createPartFromString(desc),
                         createPartFromString(postType), createPartFromString("1"),
                         createPartFromString("1"), createPartFromString("1"),
                         body1);
@@ -197,8 +221,8 @@ public class PostUploadActivity extends AppCompatActivity {
 
 
 
-                NetworkCall = api.uploadFilePost(body2, createPartFromString("this is form Mobile Part 2 "), createPartFromString("this is from mobile part 2 "),
-                        createPartFromString("Content is a test from the data "),
+                NetworkCall = api.uploadFilePost(body2, createPartFromString(title), createPartFromString(title.toLowerCase()),
+                        createPartFromString(desc),
                         createPartFromString(postType), createPartFromString("1"),
                         createPartFromString("1"), createPartFromString("1"),
                         body1);
@@ -241,9 +265,9 @@ public class PostUploadActivity extends AppCompatActivity {
 
     }
     @NonNull
-    private RequestBody createPartFromString(String descriptionString) {
+    private RequestBody createPartFromString(String value) {
         return RequestBody.create(
-                okhttp3.MultipartBody.FORM, descriptionString);
+                okhttp3.MultipartBody.FORM, value);
     }
 
     private void BringImagePicker() {

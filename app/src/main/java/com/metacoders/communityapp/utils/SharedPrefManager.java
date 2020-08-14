@@ -9,10 +9,11 @@ public class SharedPrefManager {
 
     private static SharedPrefManager mInstance;
     private static Context mCtx;
-
+    private static final String SHARED_PREF_NAME_LOGIN = "newsrmeLogInprefs";
     private static final String SHARED_PREF_NAME = "newsrmesharedprefs";
     private static final String KEY_USER_NAME = "username";
     private static final String KEY_USER_EMAIL = "useremail";
+    private static final String IS_USER_LOGGED_IN = "useremail";
     private static final String KEY_USER_ID = "userid";
     private static final String KEY_USER_ROLE = "userrole";
     private static final String KEY_USER_TOKEN = "usertoken";
@@ -76,15 +77,44 @@ public class SharedPrefManager {
         return false;
     }*/
 
-    public boolean logout() {
+    public void logout() {
 
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
+        editor.putString(KEY_USER_EMAIL, "null");
+        editor.putString(IS_USER_LOGGED_IN, "no");
+        editor.apply();
+    }
+
+    public boolean isUserLoggedIn() {
+
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String value =  sharedPreferences.getString(IS_USER_LOGGED_IN, "no") ;
+
+        return value.equals("yes");
+
+
+
+    }
+
+    public void saveUser(String email) {
+
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString(KEY_USER_EMAIL, email);
+        editor.putString(IS_USER_LOGGED_IN, "yes");
+
+
         editor.apply();
 
-        return true;
+
     }
+
+
+
 
 
 }
