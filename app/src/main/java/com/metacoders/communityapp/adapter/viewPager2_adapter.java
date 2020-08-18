@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.metacoders.communityapp.Fragments.AudioFragment;
 import com.metacoders.communityapp.Fragments.NewsFragment;
-import com.metacoders.communityapp.Fragments.ProfileFragment;
+import com.metacoders.communityapp.Fragments.CategoryFragment;
 import com.metacoders.communityapp.Fragments.VideoFragment;
 
 public class viewPager2_adapter extends FragmentStateAdapter {
@@ -30,7 +30,7 @@ public class viewPager2_adapter extends FragmentStateAdapter {
             case 2:
                 return new AudioFragment();
             case 3:
-                return new ProfileFragment();
+                return new CategoryFragment();
 
         }
 

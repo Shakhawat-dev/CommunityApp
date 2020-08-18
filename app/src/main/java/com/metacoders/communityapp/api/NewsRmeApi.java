@@ -7,6 +7,7 @@ import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Profile_Model;
 import com.metacoders.communityapp.models.RegistrationResponse;
 import com.metacoders.communityapp.models.Video_List_Model;
+import com.metacoders.communityapp.models.allDataResponse;
 
 import org.json.JSONObject;
 
@@ -58,6 +59,9 @@ public interface NewsRmeApi {
 
     @GET("common/get-news-lists")
     Call<News_List_Model> getNewsList();
+
+    @GET("common/get-all-data-list")
+    Call<allDataResponse> getCategoryList();
 
     @GET("common/get-news-audio-lists")
     Call<Audio_List_Model> getAudioList();

@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -18,7 +20,7 @@ import com.metacoders.communityapp.adapter.viewPager2_adapter;
 public class HomePage extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     NavigationView navigationView ;
-    ImageView hamburger ;
+    ImageView hamburger , profileBtn;
     ViewPager2 viewPager ;
     FloatingActionButton emergencyFuel ;
     @Override
@@ -31,6 +33,7 @@ public class HomePage extends AppCompatActivity {
         final BottomNavigationView navigationBar = findViewById(R.id.bottom_navigation_) ;
         viewPager = findViewById(R.id.view_pager) ;
         drawerLayout = findViewById(R.id.drawer_layout);
+        profileBtn = findViewById(R.id.profileBtn) ;
 
 
         // navigationView = findViewById(R.id.navigation_view);
@@ -68,6 +71,14 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
+            }
+        });
+
+        profileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent p = new Intent(getApplicationContext() , ProfileActivity.class) ;
+                startActivity(p);
             }
         });
     }

@@ -20,7 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.SerachActivity"></activity>
+        <activity android:name=".activities.ProfileActivity"></activity>
+        <activity android:name=".activities.SerachActivity" />
         <activity android:name=".activities.SplashScreen" />
         <activity android:name=".activities.PostUploadActivity" />
         <activity android:name=".activities.ForgotPasswordActivity" />

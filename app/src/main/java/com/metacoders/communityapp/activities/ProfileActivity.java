@@ -1,40 +1,31 @@
-package com.metacoders.communityapp.Fragments;
+package com.metacoders.communityapp.activities;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.activities.ChangePasswordActivity;
-import com.metacoders.communityapp.activities.LoginActivity;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.api.UploadResult;
-import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Profile_Model;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
@@ -50,87 +41,35 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-import static android.app.Activity.RESULT_OK;
+public class ProfileActivity extends AppCompatActivity {
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ProfileFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    View view ;
     Context context ;
-    TextView  nameHeader , emailHeader , name , phone , email , address ;
+    TextView nameHeader , emailHeader , name , phone , email , address ;
     CircleImageView pp  ;
     ProgressDialog mprogressDialog;
-    CardView  changePassCard , LogOutCard  ;
+    CardView changePassCard , LogOutCard  ;
 
     private Bitmap compressedImageFile;
     Uri mFilePathUri;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
+        context = ProfileActivity.this  ;
 
-
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_profile, container, false) ;
-        context = view.getContext() ;
         mprogressDialog =new ProgressDialog(context);
         mprogressDialog.setMessage("Uploading The Image...");
         // views
-        name = view.findViewById(R.id.user_name_txt) ;
-        changePassCard = view.findViewById(R.id.change_pass_card) ;
-        nameHeader = view.findViewById(R.id.profile_name_txt) ;
-        phone = view.findViewById(R.id.user_phone_txt) ;
-        email = view.findViewById(R.id.user_email_txt) ;
-        address = view.findViewById(R.id.user_address_txt) ;
-        emailHeader = view.findViewById(R.id.profile_email_txt) ;
-        pp = view.findViewById(R.id.profile_pic) ;
-        LogOutCard = view.findViewById(R.id.logout_card);
+        name = findViewById(R.id.user_name_txt) ;
+        changePassCard = findViewById(R.id.change_pass_card) ;
+        nameHeader = findViewById(R.id.profile_name_txt) ;
+        phone = findViewById(R.id.user_phone_txt) ;
+        email = findViewById(R.id.user_email_txt) ;
+        address = findViewById(R.id.user_address_txt) ;
+        emailHeader = findViewById(R.id.profile_email_txt) ;
+        pp = findViewById(R.id.profile_pic) ;
+        LogOutCard = findViewById(R.id.logout_card);
 
         LogOutCard.setOnClickListener(v -> {
 
@@ -139,7 +78,7 @@ public class ProfileFragment extends Fragment {
             manager.logout();
             startActivity(o);
             try {
-                getActivity().finish();
+              finish();
             }
             catch (Exception e){
 
@@ -159,7 +98,7 @@ public class ProfileFragment extends Fragment {
 
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(getActivity(),
+                    ActivityCompat.requestPermissions(ProfileActivity.this,
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 
                     BringImagePicker();
@@ -183,7 +122,7 @@ public class ProfileFragment extends Fragment {
         LoadData() ;
 
 
-        return view;
+
     }
 
     private void BringImagePicker() {
@@ -193,7 +132,7 @@ public class ProfileFragment extends Fragment {
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setAspectRatio(1, 1)
                 .setCropShape(CropImageView.CropShape.OVAL) //shaping the image
-                .start(context ,this );
+                .start(ProfileActivity.this);
 
 
 
@@ -245,16 +184,16 @@ public class ProfileFragment extends Fragment {
 
     private void setData(Profile_Model singleProfile) {
         if(singleProfile != null) {
-           nameHeader.setText(singleProfile.getName());
-           name.setText(singleProfile.getName());
-           address.setText(singleProfile.getAddress());
-           email.setText(singleProfile.getEmail());
-           emailHeader.setText(singleProfile.getEmail());
+            nameHeader.setText(singleProfile.getName());
+            name.setText(singleProfile.getName());
+            address.setText(singleProfile.getAddress());
+            email.setText(singleProfile.getEmail());
+            emailHeader.setText(singleProfile.getEmail());
             // load the proifle image
             Glide.with(context).load(Constants.IMAGE_URL + singleProfile.getAvatar())
                     .placeholder(R.drawable.placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .into(pp);
+                    .into(pp);
 
 
 
@@ -343,13 +282,13 @@ public class ProfileFragment extends Fragment {
                     }
 
 
-                  //  updatedLink = constants.DWLDURL + result.getMsg().toString();
-                 //   isImageUploaded = true;
+                    //  updatedLink = constants.DWLDURL + result.getMsg().toString();
+                    //   isImageUploaded = true;
                     mprogressDialog.dismiss();
                 }
                 else {
                     mprogressDialog.dismiss();
-                 //   isImageUploaded = false;
+                    //   isImageUploaded = false;
                     Toast.makeText(context, "SomeTHing Went Wrong. Please  Try Again ! " + response.code(), Toast.LENGTH_LONG)
                             .show();
                 }
@@ -361,7 +300,7 @@ public class ProfileFragment extends Fragment {
                 Log.d("RRR", t.getMessage().toUpperCase().toString());
 
                 mprogressDialog.dismiss();
-              //  isImageUploaded = false;
+                //  isImageUploaded = false;
                 Toast.makeText(context, "SomeTHing Went Wrong Please  Try Again", Toast.LENGTH_LONG)
                         .show();
             }
