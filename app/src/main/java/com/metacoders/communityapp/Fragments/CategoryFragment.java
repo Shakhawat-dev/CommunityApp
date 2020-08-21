@@ -39,6 +39,7 @@ import com.metacoders.communityapp.api.UploadResult;
 import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Profile_Model;
 import com.metacoders.communityapp.models.allDataResponse;
+import com.metacoders.communityapp.singleList;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -128,6 +129,10 @@ public class CategoryFragment extends Fragment {
         itemClickListenter = new CategoryAdapter.ItemClickListenter() {
             @Override
             public void onItemClick(View view, int pos) {
+
+                Intent o = new Intent(getContext() , singleList.class) ;
+                o.putExtra("id" , categoryList.get(pos).getId()) ;
+                startActivity(o);
 
             }
         } ;

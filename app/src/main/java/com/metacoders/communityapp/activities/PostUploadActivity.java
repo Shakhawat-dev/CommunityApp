@@ -14,20 +14,30 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.adapter.CategoryAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
+import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
@@ -51,8 +61,13 @@ public class PostUploadActivity extends AppCompatActivity {
     Button submitBtn ;
     TextInputEditText title , desc ;
     String Title  , Desc ;
-
+    List<allDataResponse.Category> categoryList ;
+    List<String> categoryNameList  = new ArrayList<>();
+    List<allDataResponse.LanguageList>languageList= new ArrayList<>();
+    List<String>languageNameList = new ArrayList<>() ;
     Call<LoginResponse.forgetPassResponse> NetworkCall ;
+    Spinner catgoerySelector  , langugaNameSelector  ;
+    String catid  = "null"   ,  langid = "null"  ;
     private Bitmap compressedImageFile;
     Uri mFilePathUri = null;
     @Override
@@ -71,6 +86,8 @@ public class PostUploadActivity extends AppCompatActivity {
         title = findViewById(R.id.title_et) ;
         desc = findViewById(R.id.desc_et);
         submitBtn = findViewById(R.id.publish_btn);
+        catgoerySelector = findViewById(R.id.categoryList) ;
+        langugaNameSelector = findViewById(R.id.langList) ;
 
         addImage.setOnClickListener(v -> {
 
@@ -105,13 +122,52 @@ public class PostUploadActivity extends AppCompatActivity {
             Desc = desc.getText().toString() ;
             Title = title.getText().toString() ;
 
-            if(!TextUtils.isEmpty(Title) || !TextUtils.isEmpty(Desc) || mFilePathUri != null){
+            if(!TextUtils.isEmpty(Title) || !TextUtils.isEmpty(Desc) || mFilePathUri != null || !catid.equals("null" ) ||!langid.equals("null")){
 
-                createPostServer(mFilePathUri , postType , Title , Desc);
+                createPostServer(mFilePathUri , postType , Title , Desc , catid , langid);
+
 
             }
 
         });
+
+        // spinner click listener
+        catgoerySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if(categoryList.size()>0){
+
+                    catid = categoryList.get(position).getId() ;
+
+                    //Toast.makeText(getApplicationContext() ,catid , Toast.LENGTH_SHORT ).show();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                catid = "null" ;
+            }
+        });
+
+
+        langugaNameSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(languageList.size()>0){
+
+                    langid  = languageList.get(position).getId() ;
+                   // Toast.makeText(getApplicationContext() ,catid + " "+ langid, Toast.LENGTH_SHORT ).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                langid = "null" ;
+            }
+        });
+
 
 
     }
@@ -144,7 +200,7 @@ public class PostUploadActivity extends AppCompatActivity {
 
     }
 
-    private void createPostServer(Uri mFilePathUri, String postType  ,String title , String desc ) {
+    private void createPostServer(Uri mFilePathUri, String postType, String title, String desc, String catid, String langid) {
 
         if(mFilePathUri != null) {
             // upload the data
@@ -179,8 +235,8 @@ public class PostUploadActivity extends AppCompatActivity {
 
                 NetworkCall = api.uploadPost( createPartFromString(title), createPartFromString(title.toLowerCase()),
                         createPartFromString(desc),
-                        createPartFromString(postType), createPartFromString("1"),
-                        createPartFromString("1"), createPartFromString("1"),
+                        createPartFromString(postType), createPartFromString(langid),
+                        createPartFromString(catid), createPartFromString("1"),
                         body1);
 
 
@@ -289,5 +345,70 @@ public class PostUploadActivity extends AppCompatActivity {
        return  accessTokens ;
     }
 
+    private void loadMiscData() {
+        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
+        String   accessTokens = sharedPrefManager.getUserToken();
+        Log.d("TAG", "loadList: activity " + accessTokens);
 
+
+        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
+
+        Call<allDataResponse> catCall = api.getCategoryList();
+
+        catCall.enqueue(new Callback<allDataResponse>() {
+            @Override
+            public void onResponse(Call<allDataResponse> call, Response<allDataResponse> response) {
+
+                if(response.code() == 201){
+
+                    allDataResponse dataResponse = response.body() ;
+
+                    categoryList = dataResponse.getCategories() ;
+                    languageList = dataResponse.getLanguageList()  ;
+
+                    // load all the category name
+                    for(int i = 0  ; i<categoryList.size() ; i++)
+                    {
+                        categoryNameList.add(categoryList.get(i).getName().toString()) ;
+
+                    }
+                    for(int i = 0  ; i<languageList.size() ; i++)
+                    {
+                        languageNameList.add(languageList.get(i).getName().toString()) ;
+
+                    }
+
+                    // send it to adaper
+
+                    ArrayAdapter<String> langAdapter = new ArrayAdapter<>(PostUploadActivity.this,
+                            android.R.layout.simple_spinner_item , languageNameList);
+                    langAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    langugaNameSelector.setAdapter(langAdapter);
+
+
+                    ArrayAdapter<String> catgoery_adapter = new ArrayAdapter<>(PostUploadActivity.this,
+                            android.R.layout.simple_spinner_item , categoryNameList);
+                    catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    catgoerySelector.setAdapter(catgoery_adapter);
+                }
+
+                else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<allDataResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        loadMiscData();
+        super.onStart();
+    }
 }
