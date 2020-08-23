@@ -63,6 +63,9 @@ public class HomePage extends AppCompatActivity {
                     case 3:
                         navigationBar.getMenu().findItem(R.id.profile).setChecked(true);
                         break;
+                    case 4:
+                        navigationBar.getMenu().findItem(R.id.dashboard).setChecked(true);
+                        break;
                 }
 
                 super.onPageSelected(position);
@@ -104,6 +107,9 @@ public class HomePage extends AppCompatActivity {
                             break;
                         case R.id.profile :
                             viewPager.setCurrentItem(3 ,false);
+                            break;
+                        case R.id.dashboard :
+                            viewPager.setCurrentItem(4 ,false);
                             break;
 
                     }

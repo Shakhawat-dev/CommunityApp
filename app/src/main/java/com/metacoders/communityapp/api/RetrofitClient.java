@@ -31,6 +31,7 @@ public class RetrofitClient {
         return mInstance;
     }
 
+
     public NewsRmeApi getApi() {
         return retrofit.create(NewsRmeApi.class);
     }

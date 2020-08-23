@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -16,12 +16,21 @@ import android.widget.TextView;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.api.NewsRmeApi;
+import com.metacoders.communityapp.api.ServiceGenerator;
+import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.utils.CallBacks;
 import com.metacoders.communityapp.utils.PlayerManager;
+import com.metacoders.communityapp.utils.SharedPrefManager;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
-
-public class MediaPage extends AppCompatActivity  implements CallBacks.playerCallBack {
+public class PostDetailsPage extends AppCompatActivity  implements CallBacks.playerCallBack {
 
     PlayerView playerView;
     SimpleExoPlayer player;
@@ -47,9 +56,10 @@ public class MediaPage extends AppCompatActivity  implements CallBacks.playerCal
         playerView.setUseArtwork(true);
         LINK = o.getStringExtra("media_link");
 
+        loadAudioDetails();
         // play the media
-        playerView.setPlayer(PlayerManager.getSharedInstance(MediaPage.this).getPlayerView().getPlayer());
-        PlayerManager.getSharedInstance(MediaPage.this).playStream(LINK);
+        playerView.setPlayer(PlayerManager.getSharedInstance(PostDetailsPage.this).getPlayerView().getPlayer());
+        PlayerManager.getSharedInstance(PostDetailsPage.this).playStream(LINK);
         PlayerManager.getSharedInstance(this).setPlayerListener(this);
 
         fullscreenButton.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +98,7 @@ public class MediaPage extends AppCompatActivity  implements CallBacks.playerCal
 
     public  void initFullsceen() {
 
-        mFullScreenDialog = new Dialog(MediaPage.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        mFullScreenDialog = new Dialog(PostDetailsPage.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         {
             public  void onBackPressed()
             {
@@ -121,7 +131,7 @@ public class MediaPage extends AppCompatActivity  implements CallBacks.playerCal
 
 
         // change the full screen image
-        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(MediaPage.this , R.drawable.full));
+        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostDetailsPage.this , R.drawable.full));
 
 
 
@@ -137,7 +147,7 @@ public class MediaPage extends AppCompatActivity  implements CallBacks.playerCal
 
         mFullScreenDialog.addContentView(playerView , new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT ,ViewGroup.LayoutParams.MATCH_PARENT ));
         // change the full screen image
-        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(MediaPage.this , R.drawable.full));
+        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostDetailsPage.this , R.drawable.full));
 
         mExoPlayerFullscreen = true ;
 
@@ -149,10 +159,10 @@ public class MediaPage extends AppCompatActivity  implements CallBacks.playerCal
     public void onBackPressed() {
         super.onBackPressed();
 
-        if (PlayerManager.getSharedInstance(MediaPage.this).isPlayerPlaying())
+        if (PlayerManager.getSharedInstance(PostDetailsPage.this).isPlayerPlaying())
         {
-            PlayerManager.getSharedInstance(MediaPage.this).stopPlayer();
-            PlayerManager.getSharedInstance(MediaPage.this).releasePlayer();
+            PlayerManager.getSharedInstance(PostDetailsPage.this).stopPlayer();
+            PlayerManager.getSharedInstance(PostDetailsPage.this).releasePlayer();
 
 
 
@@ -170,8 +180,8 @@ public class MediaPage extends AppCompatActivity  implements CallBacks.playerCal
         super.onDestroy();
 
 
-        PlayerManager.getSharedInstance(MediaPage.this).stopPlayer();
-        PlayerManager.getSharedInstance(MediaPage.this).releasePlayer();
+        PlayerManager.getSharedInstance(PostDetailsPage.this).stopPlayer();
+        PlayerManager.getSharedInstance(PostDetailsPage.this).releasePlayer();
 
 
     }
@@ -179,7 +189,7 @@ public class MediaPage extends AppCompatActivity  implements CallBacks.playerCal
     protected void onPause() {
         super.onPause();
 
-        PlayerManager.getSharedInstance(MediaPage.this).pausePlayer();
+        PlayerManager.getSharedInstance(PostDetailsPage.this).pausePlayer();
     }
 
     @Override
@@ -189,5 +199,53 @@ public class MediaPage extends AppCompatActivity  implements CallBacks.playerCal
         initFullsceen();
     }
 
+    private   void loadAudioDetails(){
+
+        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
+        String   accessTokens = sharedPrefManager.getUserToken();
+        Log.d("TAG", "loadList: activity " + accessTokens);
+
+
+//        Call<News_List_Model> NetworkCall = RetrofitClient
+//                .getInstance()
+//                .getApi()
+//                .getNewsList();
+
+        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
+
+        Call<SinglePostDetails> NetworkCall = api.getPostDetails(
+               31+""
+        ) ;
+
+
+        NetworkCall.enqueue(new Callback<SinglePostDetails>() {
+            @Override
+            public void onResponse(Call<SinglePostDetails> call, Response<SinglePostDetails> response) {
+
+                if(response.code() == 201 ){
+
+                    SinglePostDetails postDetails = response.body() ;
+
+                    List< SinglePostDetails.GetNewsAudioDetail > data = postDetails.getGetNewsAudioDetails() ;
+
+                    Log.d("TAG", "onResponse: Name : " + data.get(0).getAudioName()
+                    + "\n Link :" + data.get(0).getAudioPath());
+
+
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<SinglePostDetails> call, Throwable t) {
+
+            }
+        });
+
+
+    }
 
 }

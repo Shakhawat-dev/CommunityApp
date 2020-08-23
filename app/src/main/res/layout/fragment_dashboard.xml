@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".DashboardFragment">
+    tools:context=".Fragments.DashboardFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -49,10 +49,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="John Doe"
+                        android:id="@+id/name"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/mail_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="email@email.com" />
@@ -93,7 +95,45 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:padding="4dp"
                             android:text="0"
+                            android:id="@+id/tvideos"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="32sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Total Audios"
+
+                            android:textAlignment="center"
+                            android:textColor="@color/colorWhite"
+                            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            android:padding="4dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:id="@+id/taudios"
                             android:textStyle="bold"
                             android:textAlignment="center"
                             android:textColor="@color/colorWhite"
@@ -119,7 +159,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Total Videos"
+                            android:text="Total Post"
                             android:textAlignment="center"
                             android:textColor="@color/colorWhite"
                             style="@style/TextAppearance.MaterialComponents.Subtitle1"
@@ -129,41 +169,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="0"
-                            android:textStyle="bold"
-                            android:textAlignment="center"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="32sp"
-                            android:padding="4dp" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/colorPrimary"
-                    android:layout_weight="1"
-                    android:layout_margin="4dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Total Videos"
-                            android:textAlignment="center"
-                            android:textColor="@color/colorWhite"
-                            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                            android:padding="4dp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="0"
+                            android:id="@+id/tpost"
                             android:textStyle="bold"
                             android:textAlignment="center"
                             android:textColor="@color/colorWhite"
@@ -184,6 +190,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:id="@+id/rlist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_detail_linearlayout" />

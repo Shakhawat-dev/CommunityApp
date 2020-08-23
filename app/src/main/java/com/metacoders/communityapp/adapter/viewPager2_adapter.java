@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.metacoders.communityapp.Fragments.AudioFragment;
+import com.metacoders.communityapp.Fragments.DashboardFragment;
 import com.metacoders.communityapp.Fragments.NewsFragment;
 import com.metacoders.communityapp.Fragments.CategoryFragment;
 import com.metacoders.communityapp.Fragments.VideoFragment;
@@ -31,6 +32,8 @@ public class viewPager2_adapter extends FragmentStateAdapter {
                 return new AudioFragment();
             case 3:
                 return new CategoryFragment();
+            case 4:
+                return new DashboardFragment();
 
         }
 
@@ -40,6 +43,6 @@ public class viewPager2_adapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 5;
     }
 }

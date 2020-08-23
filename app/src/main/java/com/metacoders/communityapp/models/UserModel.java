@@ -43,7 +43,7 @@ public class UserModel {
     private Object vkId;
     @SerializedName("avatar")
     @Expose
-    private Object avatar;
+    private String avatar;
     @SerializedName("status")
     @Expose
     private String status;
@@ -132,7 +132,7 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(String id, String username, String slug, String email, String emailStatus, String token, String password, String role, String userType, Object googleId, Object facebookId, Object vkId, Object avatar, String status, Object aboutMe, Object facebookUrl, Object twitterUrl, Object instagramUrl, Object pinterestUrl, Object linkedinUrl, Object vkUrl, Object telegramUrl, Object youtubeUrl, Object lastSeen, String showEmailOnProfile, String showRssFeeds, String createdAt, String name, String tokenExpire, String address, String city, String country, String state, String details, String latitude, String longitude, String mobile, String repStatus, String document, String profession, String lastDegree) {
+    public UserModel(String id, String username, String slug, String email, String emailStatus, String token, String password, String role, String userType, Object googleId, Object facebookId, Object vkId, String avatar, String status, Object aboutMe, Object facebookUrl, Object twitterUrl, Object instagramUrl, Object pinterestUrl, Object linkedinUrl, Object vkUrl, Object telegramUrl, Object youtubeUrl, Object lastSeen, String showEmailOnProfile, String showRssFeeds, String createdAt, String name, String tokenExpire, String address, String city, String country, String state, String details, String latitude, String longitude, String mobile, String repStatus, String document, String profession, String lastDegree) {
         this.id = id;
         this.username = username;
         this.slug = slug;
@@ -176,13 +176,14 @@ public class UserModel {
         this.lastDegree = lastDegree;
     }
 
-    public UserModel(String id, String username, String email, String token, String role, String userType) {
+    public UserModel(String id, String username, String email, String token, String role, String userType  ,String avatar ) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.token = token;
         this.role = role;
         this.userType = userType;
+        this.avatar = avatar ;
     }
 
     public String getId() {
@@ -281,11 +282,11 @@ public class UserModel {
         this.vkId = vkId;
     }
 
-    public Object getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Object avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 

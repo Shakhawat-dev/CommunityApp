@@ -54,7 +54,9 @@ public class SerachActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                setSearch(query.toLowerCase());
+
+                loadList(query.trim() , "" , "" , "");
+
                 return false;
             }
 
@@ -67,7 +69,7 @@ public class SerachActivity extends AppCompatActivity {
     }
 
 
-    private void loadList() {
+    private void loadList( String searchTerm , String cat_id , String sub_cat , String lang_id  ) {
 
 
         SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
@@ -82,16 +84,18 @@ public class SerachActivity extends AppCompatActivity {
 
         NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
 
-        Call<News_List_Model> NetworkCall = api.getNewsList() ;
+        Call<List<Post_Model>> NetworkCall = api.getSearchResult(
+                searchTerm , cat_id , sub_cat , lang_id
+        ) ;
 
-        NetworkCall.enqueue(new Callback<News_List_Model>() {
+        NetworkCall.enqueue(new Callback<List<Post_Model>>() {
             @Override
-            public void onResponse(Call<News_List_Model> call, Response<News_List_Model> response) {
+            public void onResponse(Call<List<Post_Model>> call, Response<List<Post_Model>> response) {
                 // u have the response
                 if (response.code() == 201) {
-                    News_List_Model model = response.body();
 
-                    postsList = model.getGetNewsList();
+
+                    postsList =  response.body();
 
 
                     if (postsList != null && !postsList.isEmpty()) {
@@ -121,7 +125,7 @@ public class SerachActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<News_List_Model> call, Throwable t) {
+            public void onFailure(Call<List<Post_Model>> call, Throwable t) {
                 Log.d("TAG", "Error On Failed Response: " + t.getMessage());
             }
         });
@@ -162,7 +166,7 @@ public class SerachActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        loadList();
+
         super.onStart();
     }
 }

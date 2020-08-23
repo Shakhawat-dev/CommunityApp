@@ -31,7 +31,7 @@ public class SharedPrefManager {
         return mInstance;
     }
 
-    public boolean userLogin(String id, String name, String email, String token, String role, String userType) {
+    public boolean userLogin(String id, String name, String email, String token, String role, String userType , String pp) {
 
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -42,7 +42,7 @@ public class SharedPrefManager {
         editor.putString(KEY_USER_TOKEN, token);
         editor.putString(KEY_USER_ROLE, role);
         editor.putString(KEY_USER_TYPE, userType);
-
+        editor.putString("pp", pp);
         editor.apply();
 
         return true;
@@ -64,7 +64,9 @@ public class SharedPrefManager {
                 sharedPreferences.getString(KEY_USER_EMAIL, null),
                 sharedPreferences.getString(KEY_USER_TOKEN, null),
                 sharedPreferences.getString(KEY_USER_ROLE, null),
-                sharedPreferences.getString(KEY_USER_TYPE, null)
+                sharedPreferences.getString(KEY_USER_TYPE, null),
+                sharedPreferences.getString("pp", null)
+
         );
     }
 

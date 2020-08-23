@@ -4,12 +4,18 @@ import com.google.gson.JsonObject;
 import com.metacoders.communityapp.models.Audio_List_Model;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.News_List_Model;
+import com.metacoders.communityapp.models.OwnListModel;
+import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.models.Profile_Model;
 import com.metacoders.communityapp.models.RegistrationResponse;
+import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.models.Video_List_Model;
 import com.metacoders.communityapp.models.allDataResponse;
+import com.metacoders.communityapp.models.post_summary;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -21,6 +27,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 public interface NewsRmeApi {
 
@@ -56,6 +63,21 @@ public interface NewsRmeApi {
             @Field("new_password") String new_password
     );
 
+    @FormUrlEncoded
+    @POST("common/post-search-result")
+    Call<List<Post_Model>> getSearchResult(
+            @Field("search") String search,
+            @Field("category_id") String category_id ,
+            @Field("subcategory_id") String subcategory_id,
+            @Field("lang_id") String lang_id
+    );
+
+
+    @GET("dashboard/get-own-news-summary")
+    Call<post_summary> get_post_summary();
+
+    @GET("dashboard/get-own-news-list")
+    Call<OwnListModel>get_post_list();
 
     @GET("common/get-news-lists")
     Call<News_List_Model> getNewsList();
@@ -71,6 +93,11 @@ public interface NewsRmeApi {
 
     @GET("profile/get-profile-info")
     Call<Profile_Model.Profile_Response> getProfileInfo();
+
+
+    @GET("common/get-news-details/{id}")
+    Call<SinglePostDetails> getPostDetails(@Path("id") String id );
+
 
     @Multipart
     @POST("profile/store-photo")

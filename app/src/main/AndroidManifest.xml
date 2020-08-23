@@ -28,7 +28,7 @@
         <activity android:name=".activities.ForgotPasswordActivity" />
         <activity android:name=".activities.ChangePasswordActivity" />
         <activity
-            android:name=".activities.MediaPage"
+            android:name=".activities.PostDetailsPage"
             android:configChanges="orientation|screenSize|layoutDirection" />
         <activity android:name=".activities.HomePage" />
         <activity

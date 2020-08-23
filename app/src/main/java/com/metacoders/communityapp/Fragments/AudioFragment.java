@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.activities.MediaPage;
+import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.models.Audio_List_Model;
@@ -99,7 +99,7 @@ public class AudioFragment extends Fragment {
         itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
             @Override
             public void onItemClick(View view, int pos) {
-                Intent p = new Intent(context, MediaPage.class);
+                Intent p = new Intent(context, PostDetailsPage.class);
 
                 p.putExtra("media_link", Constants.IMAGE_URL + postsList.get(pos).getVideoPath());
                 context.startActivity(p);

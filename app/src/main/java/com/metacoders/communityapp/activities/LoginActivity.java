@@ -122,8 +122,9 @@ public class LoginActivity extends AppCompatActivity {
                         UserModel userModel = new UserModel();
                         userModel = response.body().getUser();
 
-                        SharedPrefManager.getInstance(getApplicationContext())
-                                .userLogin(userModel.getId(), userModel.getUsername(), userModel.getEmail(), userModel.getToken(), userModel.getRole(), userModel.getUserType());
+                        SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
+                                userModel.getUsername(),
+                                userModel.getEmail(), userModel.getToken(),userModel.getRole(), userModel.getUserType() , userModel.getAvatar());
 
 
                         StringGen.token = userModel.getToken() ;

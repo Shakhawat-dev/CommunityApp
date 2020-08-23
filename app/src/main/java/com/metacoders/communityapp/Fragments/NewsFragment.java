@@ -15,16 +15,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.activities.MediaPage;
+import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.activities.PostUploadActivity;
 import com.metacoders.communityapp.activities.SerachActivity;
-import com.metacoders.communityapp.activities.Video_Record_Activity;
 import com.metacoders.communityapp.activities.Voice_Recoder_Activity;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
-import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
-import com.metacoders.communityapp.api.TokenInterceptor;
 import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.models.UserModel;
@@ -32,8 +29,6 @@ import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -143,7 +138,7 @@ public class NewsFragment extends Fragment {
         itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
             @Override
             public void onItemClick(View view, int pos) {
-                Intent p = new Intent(context , MediaPage.class);
+                Intent p = new Intent(context , PostDetailsPage.class);
                 p.putExtra("media_link" , Constants.IMAGE_URL +postsList.get(pos).getVideoPath()) ;
                 context.startActivity(p);
                 try {
