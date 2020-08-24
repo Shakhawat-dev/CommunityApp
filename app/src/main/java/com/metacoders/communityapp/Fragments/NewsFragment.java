@@ -18,6 +18,7 @@ import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.activities.PostUploadActivity;
 import com.metacoders.communityapp.activities.SerachActivity;
+import com.metacoders.communityapp.activities.Video_Record_Activity;
 import com.metacoders.communityapp.activities.Voice_Recoder_Activity;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
@@ -127,7 +128,7 @@ public class NewsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Intent o = new Intent(getContext() , SerachActivity.class);
+                Intent o = new Intent(getContext() , Video_Record_Activity.class);
                 startActivity(o);
             }
         });

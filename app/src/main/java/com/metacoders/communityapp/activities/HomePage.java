@@ -20,7 +20,7 @@ import com.metacoders.communityapp.adapter.viewPager2_adapter;
 public class HomePage extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     NavigationView navigationView ;
-    ImageView hamburger , profileBtn;
+    ImageView hamburger , searchBtn , profileBtn;
     ViewPager2 viewPager ;
     FloatingActionButton emergencyFuel ;
     @Override
@@ -34,6 +34,7 @@ public class HomePage extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager) ;
         drawerLayout = findViewById(R.id.drawer_layout);
         profileBtn = findViewById(R.id.profileBtn) ;
+        searchBtn = findViewById(R.id.searchBtn);
 
 
         // navigationView = findViewById(R.id.navigation_view);
@@ -66,6 +67,7 @@ public class HomePage extends AppCompatActivity {
                     case 4:
                         navigationBar.getMenu().findItem(R.id.dashboard).setChecked(true);
                         break;
+
                 }
 
                 super.onPageSelected(position);
@@ -77,12 +79,14 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        profileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent p = new Intent(getApplicationContext() , ProfileActivity.class) ;
-                startActivity(p);
-            }
+        profileBtn.setOnClickListener(v -> {
+            Intent p = new Intent(getApplicationContext() , ProfileActivity.class) ;
+            startActivity(p);
+        });
+
+        searchBtn.setOnClickListener(v->{
+            Intent p = new Intent(getApplicationContext() , SerachActivity.class) ;
+            startActivity(p);
         });
     }
 
