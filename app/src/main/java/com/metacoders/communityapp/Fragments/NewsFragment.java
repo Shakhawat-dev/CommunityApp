@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.activities.PostUploadActivity;
@@ -91,7 +93,7 @@ public class NewsFragment extends Fragment {
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     Button audioBtn , imageBtn ;
-
+    private ShimmerFrameLayout mShimmerViewContainer;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,6 +107,7 @@ public class NewsFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         audioBtn = view.findViewById(R.id.audioBtn) ;
         imageBtn = view.findViewById(R.id.photoBtn);
+        mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
 
         audioBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +190,8 @@ public class NewsFragment extends Fragment {
 
                     postsList = model.getGetNewsList();
 
+                    postsList.addAll(postsList) ;
+
 
                     if (postsList != null && !postsList.isEmpty()) {
                         // i know its werid but thats r8 cheaking list is popluted
@@ -198,6 +203,29 @@ public class NewsFragment extends Fragment {
                         // setting the adapter ;
 
                         recyclerView.setAdapter(adapter);
+
+                        mShimmerViewContainer.stopShimmer();
+                        mShimmerViewContainer.setVisibility(View.GONE);
+                        recyclerView.getViewTreeObserver().addOnPreDrawListener(
+
+                                new ViewTreeObserver.OnPreDrawListener() {
+                                    @Override
+                                    public boolean onPreDraw() {
+
+                                        recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                                        for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                                            View v = recyclerView.getChildAt(i);
+                                            v.setAlpha(0.0f);
+                                            v.animate()
+                                                    .alpha(1.0f)
+                                                    .setDuration(300)
+                                                    .setStartDelay(i * 50)
+                                                    .start();
+                                        }
+                                        return true;
+                                    }
+                                }
+                        );
 
 
                     } else {
@@ -218,6 +246,22 @@ public class NewsFragment extends Fragment {
             }
         });
     }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mShimmerViewContainer.startShimmer();
+    }
+
+    @Override
+    public void onPause() {
+        mShimmerViewContainer.stopShimmer();
+        super.onPause();
+    }
+
+
 
 
 }

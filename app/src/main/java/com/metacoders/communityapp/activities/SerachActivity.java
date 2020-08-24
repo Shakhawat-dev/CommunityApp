@@ -7,10 +7,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
@@ -41,6 +45,8 @@ public class SerachActivity extends AppCompatActivity {
     LinearLayoutManager linearLayoutManager;
     Button audioBtn , imageBtn ;
     SearchView searchView ;
+    ShimmerFrameLayout shimmerFrameLayout ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +54,15 @@ public class SerachActivity extends AppCompatActivity {
         setContentView(R.layout.activity_serach);
         searchView = findViewById(R.id.search_bar);
         recyclerView = findViewById(R.id.newsfeed);
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container) ;
+        shimmerFrameLayout.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         context = getApplicationContext() ;
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                shimmerFrameLayout.setVisibility(View.VISIBLE);
                 loadList(query.trim() , "" , "" , "");
 
                 return false;
@@ -105,11 +113,35 @@ public class SerachActivity extends AppCompatActivity {
 
                         // Call the adapter to show the data
 
-                        adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
+                                adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
 
-                        // setting the adapter ;
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        recyclerView.setAdapter(adapter);
+                                // setting the adapter ;
+                                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                                recyclerView.setAdapter(adapter);
+                                shimmerFrameLayout.stopShimmer();
+                                shimmerFrameLayout.setVisibility(View.GONE);
+                                recyclerView.getViewTreeObserver().addOnPreDrawListener(
+
+                                        new ViewTreeObserver.OnPreDrawListener() {
+                                            @Override
+                                            public boolean onPreDraw() {
+
+                                                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                                                for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                                                    View v = recyclerView.getChildAt(i);
+                                                    v.setAlpha(0.0f);
+                                                    v.animate()
+                                                            .alpha(1.0f)
+                                                            .setDuration(300)
+                                                            .setStartDelay(i * 50)
+                                                            .start();
+                                                }
+                                                return true;
+                                            }
+                                        }
+                                );
+
+
 
 
                     } else {
@@ -169,4 +201,17 @@ public class SerachActivity extends AppCompatActivity {
 
         super.onStart();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        shimmerFrameLayout.stopShimmer();
+    }
+
+    @Override
+    public void onPause() {
+        shimmerFrameLayout.stopShimmer();
+        super.onPause();
+    }
+
 }

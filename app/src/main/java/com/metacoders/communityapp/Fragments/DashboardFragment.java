@@ -11,9 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
@@ -84,6 +86,7 @@ public class DashboardFragment extends Fragment {
     NewsFeedAdapter.ItemClickListenter itemClickListenter ;
     RecyclerView recyclerView   ;
     CircleImageView circleImageView ;
+    ShimmerFrameLayout shimmer_view_container_dash ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,6 +100,7 @@ public class DashboardFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rlist) ;
         name =view.findViewById(R.id.name) ;
         mail = view.findViewById(R.id.mail_id) ;
+        shimmer_view_container_dash = view.findViewById(R.id.shimmer_view_container_dash) ;
         circleImageView = view.findViewById(R.id.dashboard_profile_pic);
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context) ;
        // String   accessTokens = ;
@@ -178,6 +182,33 @@ public class DashboardFragment extends Fragment {
 
                    recyclerView.setAdapter(adapter);
 
+                   recyclerView.getViewTreeObserver().addOnPreDrawListener(
+
+                           new ViewTreeObserver.OnPreDrawListener() {
+                               @Override
+                               public boolean onPreDraw() {
+
+                                   recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                                   for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                                       View v = recyclerView.getChildAt(i);
+                                       v.setAlpha(0.0f);
+                                       v.animate()
+                                               .alpha(1.0f)
+                                               .setDuration(300)
+                                               .setStartDelay(i * 50)
+                                               .start();
+                                   }
+                                   return true;
+                               }
+                           }
+                   );
+
+
+                   shimmer_view_container_dash.stopShimmer();
+                   shimmer_view_container_dash.setVisibility(View.GONE);
+
+
+
                }
 
             }
@@ -187,5 +218,16 @@ public class DashboardFragment extends Fragment {
 
             }
         });
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        shimmer_view_container_dash.startShimmer();
+    }
+
+    @Override
+    public void onPause() {
+        shimmer_view_container_dash.stopShimmer();
+        super.onPause();
     }
 }

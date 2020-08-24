@@ -14,4 +14,5 @@
     <color name="colorPurpleT">#64a130ff</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorDarkBlue">#3D4054</color>
+    <color name="background">#dddddd</color>
 </resources>

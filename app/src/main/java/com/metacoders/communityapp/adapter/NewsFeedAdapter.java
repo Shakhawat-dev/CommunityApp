@@ -4,10 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,18 +24,24 @@ import com.metacoders.communityapp.utils.Constants;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHolder> {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHolder> implements  Filterable {
     private Context ctx;
-    private List<Post_Model> newsfeedList;
+    // private List<Post_Model> newsfeedList;
+    private List<Post_Model> mData;
+    private List<Post_Model> mDataFiltered;
     private ItemClickListenter itemClickListenter;
 
-    public NewsFeedAdapter(Context ctx, List<Post_Model> newsfeedList, ItemClickListenter itemClickListenter) {
+    public NewsFeedAdapter(Context ctx, List<Post_Model> mData, ItemClickListenter itemClickListenter ) {
         this.ctx = ctx;
-        this.newsfeedList = newsfeedList;
+        this.mData = mData;
         this.itemClickListenter = itemClickListenter;
+        this.mDataFiltered = mData;
     }
 
     @NonNull
@@ -46,7 +56,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull NewsFeedAdapter.ViewHolder holder, final int position) {
 
-        Post_Model newsFeed = newsfeedList.get(position);
+
+       // holder.itemView.setAnimation(AnimationUtils.loadAnimation(ctx, R.anim.item_animation_fall_down));
+
+        Post_Model newsFeed = mData.get(position);
+        //viewHolder.itemView.animation = AnimationUtils.loadAnimation(context,R.anim.item_animation_fall_down)
+
 
         holder.title.setText(newsFeed.getTitle());
 //        holder.price.setText("$" + newsFeed.getProduct_price().toString());
@@ -78,7 +93,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         }
 
 
-
         if (newsFeed.getPostType().contains("video")) {
             // holder.price.setVisibility(View.VISIBLE);
         }
@@ -86,14 +100,68 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
     }
 
+
+
+
+
     @Override
     public int getItemCount() {
-        return newsfeedList.size();
+        return mDataFiltered.size();
     }
+
+
+
+    @Override
+    public Filter getFilter() {
+
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                String Key = constraint.toString();
+                if (Key.isEmpty()) {
+
+                    mDataFiltered = mData;
+
+                } else {
+                    List<Post_Model> lstFiltered = new ArrayList<>();
+                    for (Post_Model row : mData) {
+
+                        if (row.getTitle().toLowerCase().contains(Key.toLowerCase())) {
+                            lstFiltered.add(row);
+                        }
+
+                    }
+
+                    mDataFiltered = lstFiltered;
+
+                }
+
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mDataFiltered;
+                return filterResults;
+
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+
+
+                mDataFiltered = (List<Post_Model>) results.values;
+                notifyDataSetChanged();
+
+            }
+        };
+
+
+    }
+
 
     public interface ItemClickListenter {
         void onItemClick(View view, int pos);
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -101,6 +169,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         public ImageView image, playBtn;
         public TextView author, viewCount, date;
         public TextView commentCount;
+        public CardView container;
+
 
         ItemClickListenter itemClickListenter;
 
@@ -108,6 +178,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             super(itemView);
 
             itemView.setOnClickListener(this);
+            ///  viewHolder.itemView.animation = AnimationUtils.loadAnimation(context,R.anim.item_animation_fall_down)
 
             title = itemView.findViewById(R.id.title_view);
             image = itemView.findViewById(R.id.video_thumb);
@@ -115,6 +186,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             author = itemView.findViewById(R.id.video_author);
             viewCount = itemView.findViewById(R.id.video_view);
             date = itemView.findViewById(R.id.video_date);
+            container = itemView.findViewById(R.id.container);
             commentCount = itemView.findViewById(R.id.video_comment);
             this.itemClickListenter = itemClickListenter;
         }

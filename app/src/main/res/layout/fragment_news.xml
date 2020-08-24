@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.NewsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,13 +27,13 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/TextAppearance.MaterialComponents.Headline6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:textColor="@color/colorAccent"
-                        style="@style/TextAppearance.MaterialComponents.Headline6"
-                        android:text="Start Sharing..." />
+                        android:text="Start Sharing..."
+                        android:textColor="@color/colorAccent" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -44,39 +45,39 @@
 
                         <Button
                             android:id="@+id/videoBtn"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_weight="1"
+                            android:gravity="start|center_vertical"
                             android:text="Video"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:gravity="start|center_vertical"
-                            app:icon="@drawable/ic_baseline_video_call_24"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"/>
+                            app:icon="@drawable/ic_baseline_video_call_24" />
 
                         <Button
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Audio"
                             android:id="@+id/audioBtn"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:gravity="start|center_vertical"
-                            app:icon="@drawable/ic_mic_black_24dp"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"/>
-
-                        <Button
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Photo"
-                            android:id="@+id/photoBtn"
                             android:layout_marginStart="8dp"
                             android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
                             android:gravity="start|center_vertical"
-                            app:icon="@drawable/ic_baseline_image_24"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"/>
+                            android:text="Audio"
+                            app:icon="@drawable/ic_mic_black_24dp" />
+
+                        <Button
+                            android:id="@+id/photoBtn"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:gravity="start|center_vertical"
+                            android:text="Photo"
+                            app:icon="@drawable/ic_baseline_image_24" />
 
 
                     </LinearLayout>
@@ -84,18 +85,69 @@
                 </LinearLayout>
 
 
-
             </com.google.android.material.card.MaterialCardView>
 
 
-            <androidx.recyclerview.widget.RecyclerView
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/newsfeed" />
+
+                android:fitsSystemWindows="true">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/newsfeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer_view_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:orientation="vertical">
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+
+                        <include layout="@layout/data_placeholder_layout" />
+                    </LinearLayout>
+
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+            </FrameLayout>
+
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 
 
 </FrameLayout>

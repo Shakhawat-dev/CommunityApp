@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
@@ -82,12 +84,14 @@ public class AudioFragment extends Fragment {
     Context context;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
+    private ShimmerFrameLayout mShimmerViewContainer1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_audio, container, false);
+        mShimmerViewContainer1 = view.findViewById(R.id.shimmer_view_container_audio) ;
         recyclerView = view.findViewById(R.id.audioList);
         context = view.getContext();
         linearLayoutManager = new LinearLayoutManager(context);
@@ -136,11 +140,37 @@ public class AudioFragment extends Fragment {
                         // its not empty
                         // Call the adapter to show the data
 
+
                         adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
 
                         // setting the adapter ;
 
                         recyclerView.setAdapter(adapter);
+
+                        recyclerView.getViewTreeObserver().addOnPreDrawListener(
+
+                                new ViewTreeObserver.OnPreDrawListener() {
+                                    @Override
+                                    public boolean onPreDraw() {
+
+                                        recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                                        for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                                            View v = recyclerView.getChildAt(i);
+                                            v.setAlpha(0.0f);
+                                            v.animate()
+                                                    .alpha(1.0f)
+                                                    .setDuration(300)
+                                                    .setStartDelay(i * 50)
+                                                    .start();
+                                        }
+                                        return true;
+                                    }
+                                }
+                        );
+
+
+                        mShimmerViewContainer1.stopShimmer();
+                        mShimmerViewContainer1.setVisibility(View.GONE);
 
 
                     } else {
@@ -161,4 +191,16 @@ public class AudioFragment extends Fragment {
             }
         });
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mShimmerViewContainer1.startShimmer();
+    }
+
+    @Override
+    public void onPause() {
+        mShimmerViewContainer1.stopShimmer();
+        super.onPause();
+    }
+
 }
