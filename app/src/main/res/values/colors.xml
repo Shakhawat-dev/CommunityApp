@@ -14,5 +14,6 @@
     <color name="colorPurpleT">#64a130ff</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorDarkBlue">#3D4054</color>
-    <color name="background">#dddddd</color>
+    <color name="background">#CDCACA</color>
+    <color name="recylerviewBackground">#F4F5F8</color>
 </resources>

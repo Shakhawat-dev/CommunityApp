@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/recylerviewBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.VideoFragment">
 
@@ -12,6 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/list"
+            android:background="@color/recylerviewBackground"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"

@@ -60,7 +60,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:backgroundTint="#EDEDED"
+            android:background="#EDEDED"
             android:layout_marginBottom="56dp"
             android:layout_alignBottom="@+id/bottom_navigation_"
             android:layout_alignParentTop="false"
@@ -80,7 +80,6 @@
             android:background="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:labelVisibilityMode="labeled"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/nav_menu" />

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 
+import com.facebook.shimmer.Shimmer;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.LoginActivity;
@@ -99,6 +100,8 @@ public class NewsFragment extends Fragment {
     AlertDialog alertDialog;
     private ShimmerFrameLayout mShimmerViewContainer;
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -113,6 +116,10 @@ public class NewsFragment extends Fragment {
         audioBtn = view.findViewById(R.id.audioBtn);
         imageBtn = view.findViewById(R.id.photoBtn);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
+
+
+
+
 
         audioBtn.setOnClickListener(new View.OnClickListener() {
             @Override
