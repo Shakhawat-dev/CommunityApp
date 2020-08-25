@@ -18,9 +18,12 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
+import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
+import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.Audio_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
+import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.utils.Constants;
 
 import java.util.ArrayList;
@@ -103,14 +106,16 @@ public class AudioFragment extends Fragment {
         itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
             @Override
             public void onItemClick(View view, int pos) {
-                Intent p = new Intent(context, PostDetailsPage.class);
 
-                p.putExtra("media_link", Constants.IMAGE_URL + postsList.get(pos).getVideoPath());
+                Post_Model model = new Post_Model() ;
+                model = postsList.get(pos) ;
+                Intent p = new Intent(context, PostDetailsPage.class);
+                p.putExtra("POST", model);
                 context.startActivity(p);
                 try {
                     getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } catch (Exception e) {
-                    Log.e("TAG", "Audio onItemClick: " + e.getMessage());
+                    Log.e("TAG", "onItemClick: " + e.getMessage());
                 }
 
             }
@@ -120,11 +125,9 @@ public class AudioFragment extends Fragment {
     }
 
     private void loadList() {
-        Call<Audio_List_Model> NetworkCall = RetrofitClient
-                .getInstance()
-                .getApi()
-                .getAudioList();
+        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
 
+        Call<Audio_List_Model> NetworkCall = api.getAudioList();
 
         NetworkCall.enqueue(new Callback<Audio_List_Model>() {
             @Override

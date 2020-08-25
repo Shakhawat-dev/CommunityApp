@@ -41,7 +41,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -49,7 +49,6 @@
                 android:layout_weight="1"
                 android:hint="Category"
                 app:boxStrokeColor="@color/colorPrimary"
-                app:hintAnimationEnabled="true"
                 app:hintTextColor="@color/black">
 
                 <Spinner
@@ -61,8 +60,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-                android:layout_width="wrap_content"
+                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
@@ -126,7 +124,7 @@
                 android:id="@+id/title_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

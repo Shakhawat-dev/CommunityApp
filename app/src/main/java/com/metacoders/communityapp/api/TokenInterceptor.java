@@ -35,7 +35,7 @@ public class TokenInterceptor implements Interceptor {
         else token = StringGen.token  ;
 
 
-        Log.d("TAG", "intercept: " + token);
+       // Log.d("TAG", "intercept: " + token);
         Request newRequest = chain.request().newBuilder()
                 .header("Authorization", "Bearer " + token)
                 .build();

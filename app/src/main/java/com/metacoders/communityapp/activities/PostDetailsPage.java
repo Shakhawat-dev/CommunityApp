@@ -7,19 +7,21 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
+import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.utils.CallBacks;
+import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.PlayerManager;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
@@ -41,6 +43,7 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
     boolean fullscreen = false;
     ImageView fullscreenButton ;
     Dialog mFullScreenDialog ;
+    Post_Model post ;
     private boolean mExoPlayerFullscreen = false;
 
     @Override
@@ -54,36 +57,59 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         playerView = findViewById(R.id.player_view);
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
         playerView.setUseArtwork(true);
-        LINK = o.getStringExtra("media_link");
+        post = (Post_Model) o.getSerializableExtra("POST");
 
-        loadAudioDetails();
-        // play the media
         playerView.setPlayer(PlayerManager.getSharedInstance(PostDetailsPage.this).getPlayerView().getPlayer());
-        PlayerManager.getSharedInstance(PostDetailsPage.this).playStream(LINK);
+
         PlayerManager.getSharedInstance(this).setPlayerListener(this);
 
-        fullscreenButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if (!mExoPlayerFullscreen)
-                {
-                    // not in fullscreen
+        if(post.getPostType().equals("audio")) {
 
-                    openFullScreenDialog()  ;
+            Toast.makeText(getApplicationContext() , post.getPostType() + "" , Toast.LENGTH_LONG).show();
+            loadAudioDetails(post.getId());
+        }
+        else {
+            // all other model
+            //TODO Check if its post or video
 
+            if(post.getPostType().equals("video"))
+            {
+                playMedia(post.getVideoPath());
+            }
 
-                }
-                else {
+        }
+        // play the media
 
-                    closeFullScreenDialog() ;
+        fullscreenButton.setOnClickListener(v -> {
 
-                }
+            if (!mExoPlayerFullscreen)
+            {
+                // not in fullscreen
+
+                openFullScreenDialog()  ;
 
 
             }
+            else {
+
+                closeFullScreenDialog() ;
+
+            }
+
+
         });
 
+    }
+
+    private void playMedia(String Path) {
+
+        if( PlayerManager.getSharedInstance(PostDetailsPage.this).isPlayerPlaying())
+        {
+            PlayerManager.getSharedInstance(PostDetailsPage.this).stopPlayer();
+        }
+
+        PlayerManager.getSharedInstance(PostDetailsPage.this).playStream(Constants.IMAGE_URL + Path);
     }
 
     @Override
@@ -159,12 +185,9 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
     public void onBackPressed() {
         super.onBackPressed();
 
-        if (PlayerManager.getSharedInstance(PostDetailsPage.this).isPlayerPlaying())
-        {
+        if (PlayerManager.getSharedInstance(PostDetailsPage.this).isPlayerPlaying()) {
             PlayerManager.getSharedInstance(PostDetailsPage.this).stopPlayer();
             PlayerManager.getSharedInstance(PostDetailsPage.this).releasePlayer();
-
-
 
         }
         finish();
@@ -172,9 +195,6 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
 
     }
-
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -191,7 +211,6 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
         PlayerManager.getSharedInstance(PostDetailsPage.this).pausePlayer();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -199,11 +218,11 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         initFullsceen();
     }
 
-    private   void loadAudioDetails(){
+    private   void loadAudioDetails(String id){
 
-        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
-        String   accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
+//        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
+//        String   accessTokens = sharedPrefManager.getUserToken();
+      //  Log.d("TAG", "loadList: activity " + accessTokens);
 
 
 //        Call<News_List_Model> NetworkCall = RetrofitClient
@@ -211,10 +230,10 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 //                .getApi()
 //                .getNewsList();
 
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
+        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
 
         Call<SinglePostDetails> NetworkCall = api.getPostDetails(
-               31+""
+               id
         ) ;
 
 
@@ -228,15 +247,14 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
                     List< SinglePostDetails.GetNewsAudioDetail > data = postDetails.getGetNewsAudioDetails() ;
 
-                    Log.d("TAG", "onResponse: Name : " + data.get(0).getAudioName()
-                    + "\n Link :" + data.get(0).getAudioPath());
+                  if(data.size() > 0 ){
+                      playMedia(data.get(0).getAudioPath());
 
+                  }
 
 
 
                 }
-
-
             }
 
             @Override

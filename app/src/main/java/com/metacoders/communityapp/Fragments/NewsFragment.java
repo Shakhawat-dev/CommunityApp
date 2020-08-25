@@ -1,6 +1,8 @@
 package com.metacoders.communityapp.Fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -17,6 +19,7 @@ import android.widget.Button;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.activities.LoginActivity;
 import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.activities.PostUploadActivity;
 import com.metacoders.communityapp.activities.SerachActivity;
@@ -50,7 +53,7 @@ public class NewsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-   public SharedPrefManager sharedPrefManager;
+    public SharedPrefManager sharedPrefManager;
     private String mParam1;
     private String mParam2;
 
@@ -92,8 +95,10 @@ public class NewsFragment extends Fragment {
     Context context;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
-    Button audioBtn , imageBtn ;
+    Button audioBtn, imageBtn;
+    AlertDialog alertDialog;
     private ShimmerFrameLayout mShimmerViewContainer;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,71 +110,78 @@ public class NewsFragment extends Fragment {
         context = view.getContext();
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
-        audioBtn = view.findViewById(R.id.audioBtn) ;
+        audioBtn = view.findViewById(R.id.audioBtn);
         imageBtn = view.findViewById(R.id.photoBtn);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
 
         audioBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent o = new Intent(getContext() , Voice_Recoder_Activity.class);
-
-                startActivity(o);
+                if (SharedPrefManager.getInstance(context).isUserLoggedIn()) {
+                    Intent o = new Intent(getContext(), Voice_Recoder_Activity.class);
+                    startActivity(o);
+                } else {
+                    createTheAlertDialogue();
+                }
             }
         });
 
-        imageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent o = new Intent(getContext() , PostUploadActivity.class);
-                o.putExtra("media", "post") ;
+        imageBtn.setOnClickListener(v -> {
+
+            if (SharedPrefManager.getInstance(context).isUserLoggedIn()) {
+                Intent o = new Intent(getContext(), PostUploadActivity.class);
+                o.putExtra("media", "post");
                 startActivity(o);
+            } else {
+                createTheAlertDialogue();
             }
+
         });
 
         view.findViewById(R.id.videoBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent o = new Intent(getContext() , Video_Record_Activity.class);
-                startActivity(o);
+                if (SharedPrefManager.getInstance(context).isUserLoggedIn()) {
+                    Intent o = new Intent(getContext(), Video_Record_Activity.class);
+                    startActivity(o);
+                } else {
+                    createTheAlertDialogue();
+                }
             }
         });
 
         loadList();
 
         // calling the interface for click
-        itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
-            @Override
-            public void onItemClick(View view, int pos) {
-                Intent p = new Intent(context , PostDetailsPage.class);
-                p.putExtra("media_link" , Constants.IMAGE_URL +postsList.get(pos).getVideoPath()) ;
-                context.startActivity(p);
-                try {
-                    getActivity().overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
-                }
-                catch (Exception e )
-                {
-                    Log.e("TAG", "onItemClick: " + e.getMessage());
-                }
+        itemClickListenter = (view, pos) -> {
 
+            Post_Model model = new Post_Model() ;
+            model = postsList.get(pos) ;
+            Intent p = new Intent(context, PostDetailsPage.class);
+            p.putExtra("POST", model);
+            context.startActivity(p);
+            try {
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } catch (Exception e) {
+                Log.e("TAG", "onItemClick: " + e.getMessage());
             }
+
         };
 
-        SharedPrefManager manager = new SharedPrefManager(context) ;
-        UserModel model = manager.getUser() ;
-        Log.d("TAG" , model.getEmail() + " "  + model.getName()+ " " + model.getId()+ " " + model.getRole()) ;
+        SharedPrefManager manager = new SharedPrefManager(context);
+        UserModel model = manager.getUser();
+        Log.d("TAG", model.getEmail() + " " + model.getName() + " " + model.getId() + " " + model.getRole());
         return view;
     }
-
 
 
     private void loadList() {
 
 
-        sharedPrefManager = new SharedPrefManager(context) ;
-        String   accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
+//        sharedPrefManager = new SharedPrefManager(context) ;
+//        String   accessTokens = sharedPrefManager.getUserToken();
+//        Log.d("TAG", "loadList: activity " + accessTokens);
 
 
 //        Call<News_List_Model> NetworkCall = RetrofitClient
@@ -177,9 +189,9 @@ public class NewsFragment extends Fragment {
 //                .getApi()
 //                .getNewsList();
 
-      NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-        Call<News_List_Model> NetworkCall = api.getNewsList() ;
+        Call<News_List_Model> NetworkCall = api.getNewsList();
 
         NetworkCall.enqueue(new Callback<News_List_Model>() {
             @Override
@@ -190,7 +202,7 @@ public class NewsFragment extends Fragment {
 
                     postsList = model.getGetNewsList();
 
-                    postsList.addAll(postsList) ;
+                    postsList.addAll(postsList);
 
 
                     if (postsList != null && !postsList.isEmpty()) {
@@ -247,7 +259,37 @@ public class NewsFragment extends Fragment {
         });
     }
 
+    private void createTheAlertDialogue() {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setTitle("Please Login !!");
+        builder.setMessage("You Have To Logged In To View This Please");
+        builder.setCancelable(true);
+        builder.setPositiveButton("Sign In", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Intent p = new Intent(context, LoginActivity.class);
+                startActivity(p);
+
+
+            }
+        });
+        builder.setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+                alertDialog.dismiss();
+
+            }
+        });
+        alertDialog = builder.create();
+        alertDialog.show();
+
+
+    }
 
     @Override
     public void onResume() {
@@ -260,8 +302,6 @@ public class NewsFragment extends Fragment {
         mShimmerViewContainer.stopShimmer();
         super.onPause();
     }
-
-
 
 
 }

@@ -114,7 +114,7 @@ public interface NewsRmeApi {
                                                           @Part("lang_id")  RequestBody lang_id,
                                                           @Part("category_id")   RequestBody category_id,
                                                           @Part("sub_category_id")   RequestBody sub_category_id,
-                                                          @Part MultipartBody.Part image);
+                                                          @Part MultipartBody.Part image );
 
     @Multipart
     @POST("dashboard/news-post") //("video\"; filename=\"myfile.mp4\" ")  ("image\"; filename=\"myfifle.image\" ")

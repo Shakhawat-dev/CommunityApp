@@ -464,7 +464,7 @@ public class Video_Record_Activity extends AppCompatActivity {
                 {
                     if (exten.contains("jpg") || exten.contains("png") || exten.contains("jpeg") || exten.contains("gif")
                             || exten.contains("tiff")) {
-                        getToCreatePostPage("image", selectedMediaUri);
+                      //  getToCreatePostPage("image", selectedMediaUri);
                         //handle image
                     }
                     else
@@ -497,18 +497,18 @@ public class Video_Record_Activity extends AppCompatActivity {
         post.putExtra("media", "video") ;
         startActivity(post);
 
-        Toast.makeText(getApplicationContext() , "Video Taken  LINK : " + uri.toString() , Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(getApplicationContext() , "Video Taken  LINK : " + uri.toString() , Toast.LENGTH_SHORT).show();
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-//        Intent i = new Intent(Share_Activity.this, MainActivity.class);
-//        Bundle bndlAnimation = ActivityOptions.makeCustomAnimation(getApplicationContext(), R.anim.enter_from_left, R.anim.exit_to_right).toBundle();
-//        startActivity(i,bndlAnimation);
-//        finish();
-    }
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+////        Intent i = new Intent(Share_Activity.this, MainActivity.class);
+////        Bundle bndlAnimation = ActivityOptions.makeCustomAnimation(getApplicationContext(), R.anim.enter_from_left, R.anim.exit_to_right).toBundle();
+////        startActivity(i,bndlAnimation);
+////        finish();
+//    }
 
     public static String getPath(Context ctx, Uri uri) {
         String[] projection = { MediaStore.Images.Media.DATA };

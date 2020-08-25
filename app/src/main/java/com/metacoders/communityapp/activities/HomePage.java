@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -16,13 +18,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
+import com.metacoders.communityapp.utils.SharedPrefManager;
 
 public class HomePage extends AppCompatActivity {
     private DrawerLayout drawerLayout;
-    NavigationView navigationView ;
-    ImageView hamburger , searchBtn , profileBtn;
-    ViewPager2 viewPager ;
-    FloatingActionButton emergencyFuel ;
+    NavigationView navigationView;
+    ImageView hamburger, searchBtn, profileBtn;
+    ViewPager2 viewPager;
+    FloatingActionButton emergencyFuel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,17 +34,18 @@ public class HomePage extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        final BottomNavigationView navigationBar = findViewById(R.id.bottom_navigation_) ;
-        viewPager = findViewById(R.id.view_pager) ;
+        final BottomNavigationView navigationBar = findViewById(R.id.bottom_navigation_);
+        viewPager = findViewById(R.id.view_pager);
         drawerLayout = findViewById(R.id.drawer_layout);
-        profileBtn = findViewById(R.id.profileBtn) ;
+        profileBtn = findViewById(R.id.profileBtn);
         searchBtn = findViewById(R.id.searchBtn);
 
 
         // navigationView = findViewById(R.id.navigation_view);
-        navigationBar.setOnNavigationItemSelectedListener(navigationItemSelectedListener) ;
+        navigationBar.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         // getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, new dashboardFragment()).commit();
         viewPager.setAdapter(new viewPager2_adapter(HomePage.this));
+        viewPager.setUserInputEnabled(false);
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -50,8 +55,7 @@ public class HomePage extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position)
-                {
+                switch (position) {
                     case 0:
                         navigationBar.getMenu().findItem(R.id.newsfeed).setChecked(true);
                         break;
@@ -80,17 +84,25 @@ public class HomePage extends AppCompatActivity {
         });
 
         profileBtn.setOnClickListener(v -> {
-            Intent p = new Intent(getApplicationContext() , ProfileActivity.class) ;
-            startActivity(p);
+
+            if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
+                Intent p = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(p);
+            }
+            else {
+                createTheAlertDialogue();
+            }
+
+
         });
 
-        searchBtn.setOnClickListener(v->{
-            Intent p = new Intent(getApplicationContext() , SerachActivity.class) ;
+        searchBtn.setOnClickListener(v -> {
+            Intent p = new Intent(getApplicationContext(), SerachActivity.class);
             startActivity(p);
         });
     }
 
-    private     BottomNavigationView.OnNavigationItemSelectedListener  navigationItemSelectedListener =
+    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
 
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -98,29 +110,73 @@ public class HomePage extends AppCompatActivity {
 
                     //   Fragment selectedFragmnet = null ;
 
-                    switch ( menuItem.getItemId())
-                    {
-                        case R.id.newsfeed :
-                            viewPager.setCurrentItem(0 ,false);
+                    switch (menuItem.getItemId()) {
+                        case R.id.newsfeed:
+                            viewPager.setCurrentItem(0, false);
                             break;
-                        case R.id.audio :
-                            viewPager.setCurrentItem(2 ,false);
+                        case R.id.audio:
+                            viewPager.setCurrentItem(2, false);
                             break;
-                        case R.id.video :
-                            viewPager.setCurrentItem(1 ,false);
+                        case R.id.video:
+                            viewPager.setCurrentItem(1, false);
                             break;
-                        case R.id.profile :
-                            viewPager.setCurrentItem(3 ,false);
+                        case R.id.profile:
+                            viewPager.setCurrentItem(3, false);
                             break;
-                        case R.id.dashboard :
-                            viewPager.setCurrentItem(4 ,false);
+                        case R.id.dashboard:
+                            if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
+
+                                viewPager.setCurrentItem(4, false);
+                            } else {
+
+                                createTheAlertDialogue();
+                            }
+
                             break;
 
                     }
                     //      getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, selectedFragmnet).commit();
 
-                    return  true ;
+                    return true;
 
                 }
-            } ;
+            };
+
+    private void createTheAlertDialogue() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
+
+        builder.setTitle("Please Login !!");
+        builder.setMessage("You Have To Logged In To View This Please");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Sign In", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Intent p = new Intent(HomePage.this, LoginActivity.class);
+                startActivity(p);
+
+
+            }
+        });
+        builder.setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+                try {
+
+
+                } catch (Exception e) {
+
+                }
+
+
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+
+    }
 }

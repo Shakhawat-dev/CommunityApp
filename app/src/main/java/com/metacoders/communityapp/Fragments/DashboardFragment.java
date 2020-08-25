@@ -1,6 +1,10 @@
 package com.metacoders.communityapp.Fragments;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +21,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.activities.HomePage;
+import com.metacoders.communityapp.activities.LoginActivity;
+import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -26,6 +33,7 @@ import com.metacoders.communityapp.models.post_summary;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -87,6 +95,7 @@ public class DashboardFragment extends Fragment {
     RecyclerView recyclerView   ;
     CircleImageView circleImageView ;
     ShimmerFrameLayout shimmer_view_container_dash ;
+    List<Post_Model> post_modelList = new ArrayList<>() ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,25 +111,41 @@ public class DashboardFragment extends Fragment {
         mail = view.findViewById(R.id.mail_id) ;
         shimmer_view_container_dash = view.findViewById(R.id.shimmer_view_container_dash) ;
         circleImageView = view.findViewById(R.id.dashboard_profile_pic);
-        SharedPrefManager sharedPrefManager = new SharedPrefManager(context) ;
-       // String   accessTokens = ;
 
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        if(SharedPrefManager.getInstance(context).isUserLoggedIn()){
+            setDetails();
+            loadSummary();
+            loadUrLost();
+
+        }
+
+        itemClickListenter = (view, pos) -> {
+
+            Post_Model model = new Post_Model() ;
+            model = post_modelList.get(pos) ;
+            Intent p = new Intent(context, PostDetailsPage.class);
+            p.putExtra("POST", model);
+            context.startActivity(p);
+            try {
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } catch (Exception e) {
+                Log.e("TAG", "onItemClick: " + e.getMessage());
+            }
+        };
+        return view;
+    }
+
+
+    private void setDetails() {
+        SharedPrefManager sharedPrefManager = new SharedPrefManager(context) ;
+        // String   accessTokens = ;
         name.setText(sharedPrefManager.getUser().getUsername()+ " ");
         mail.setText(sharedPrefManager.getUser().getEmail()+ " ");
         Glide.with(context)
                 .load(Constants.IMAGE_URL + sharedPrefManager.getUser().getAvatar())
                 .into(circleImageView) ;
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        loadSummary();
-        loadUrLost();
-        itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
-            @Override
-            public void onItemClick(View view, int pos) {
-
-            }
-        } ;
-        return view;
     }
 
     public  void loadSummary(){
@@ -174,7 +199,7 @@ public class DashboardFragment extends Fragment {
             public void onResponse(Call<OwnListModel> call, Response<OwnListModel> response) {
                OwnListModel ownListModelList = response.body() ;
                if(response.code() == 201 ){
-                   List<Post_Model> post_modelList = ownListModelList.getGetNewsList() ;
+                    post_modelList = ownListModelList.getGetNewsList() ;
 
                   NewsFeedAdapter  adapter = new NewsFeedAdapter(context, post_modelList, itemClickListenter);
 

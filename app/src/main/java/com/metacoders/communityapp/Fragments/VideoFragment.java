@@ -18,7 +18,10 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
+import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
+import com.metacoders.communityapp.api.ServiceGenerator;
+import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.models.Video_List_Model;
 import com.metacoders.communityapp.utils.Constants;
@@ -95,7 +98,7 @@ public class VideoFragment extends Fragment {
         context = view.getContext();
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
-        mShimmerViewContainer2 = view.findViewById(R.id.shimmer_view_container_Video) ;
+        mShimmerViewContainer2 = view.findViewById(R.id.shimmer_view_container_Video);
 
         loadList();
 
@@ -103,14 +106,15 @@ public class VideoFragment extends Fragment {
         itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
             @Override
             public void onItemClick(View view, int pos) {
-                Intent p = new Intent(context , PostDetailsPage.class);
-                p.putExtra("media_link" , Constants.IMAGE_URL +postsList.get(pos).getVideoPath()) ;
+
+                Post_Model model = new Post_Model() ;
+                model = postsList.get(pos) ;
+                Intent p = new Intent(context, PostDetailsPage.class);
+                p.putExtra("POST", model);
                 context.startActivity(p);
                 try {
-                    getActivity().overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
-                }
-                catch (Exception e )
-                {
+                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                } catch (Exception e) {
                     Log.e("TAG", "onItemClick: " + e.getMessage());
                 }
 
@@ -121,11 +125,10 @@ public class VideoFragment extends Fragment {
     }
 
     private void loadList() {
-        Call<Video_List_Model> NetworkCall = RetrofitClient
-                .getInstance()
-                .getApi()
-                .getVideoList();
 
+        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
+
+        Call<Video_List_Model> NetworkCall = api.getVideoList() ;
 
         NetworkCall.enqueue(new Callback<Video_List_Model>() {
             @Override
@@ -191,6 +194,7 @@ public class VideoFragment extends Fragment {
             }
         });
     }
+
     @Override
     public void onResume() {
         super.onResume();

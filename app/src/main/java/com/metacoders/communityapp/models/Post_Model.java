@@ -3,7 +3,9 @@ package com.metacoders.communityapp.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public  class Post_Model {
+import java.io.Serializable;
+
+public  class Post_Model implements Serializable {
 
     @SerializedName("ttl_view")
     @Expose

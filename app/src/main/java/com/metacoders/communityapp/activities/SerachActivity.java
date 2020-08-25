@@ -80,9 +80,9 @@ public class SerachActivity extends AppCompatActivity {
     private void loadList( String searchTerm , String cat_id , String sub_cat , String lang_id  ) {
 
 
-        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
-        String   accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
+//        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
+//        String   accessTokens = sharedPrefManager.getUserToken();
+//        Log.d("TAG", "loadList: activity " + accessTokens);
 
 
 //        Call<News_List_Model> NetworkCall = RetrofitClient
@@ -90,7 +90,7 @@ public class SerachActivity extends AppCompatActivity {
 //                .getApi()
 //                .getNewsList();
 
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
+        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
 
         Call<List<Post_Model>> NetworkCall = api.getSearchResult(
                 searchTerm , cat_id , sub_cat , lang_id

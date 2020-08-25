@@ -150,7 +150,7 @@ public class CategoryFragment extends Fragment {
         Log.d("TAG", "loadList: activity " + accessTokens);
 
 
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
+        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
 
         Call<allDataResponse> catCall = api.getCategoryList();
 
