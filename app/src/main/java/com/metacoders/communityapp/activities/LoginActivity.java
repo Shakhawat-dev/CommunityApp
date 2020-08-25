@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,11 +39,16 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText mUsername, mPassword;
     private Button mLoginBtn;
     SharedPrefManager manager ;
+    ProgressBar pbar ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        pbar = findViewById(R.id.progress_bar) ;
+        pbar.setVisibility(View.GONE);
         manager = new SharedPrefManager( getApplicationContext() ) ;
         initializations();
 
@@ -83,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(mUsername.getText().toString().trim()) && !TextUtils.isEmpty(mPassword.getText().toString().trim())) {
 
+            pbar.setVisibility(View.VISIBLE);
             userName = mUsername.getText().toString().trim();
             password = mPassword.getText().toString().trim();
 
@@ -115,10 +122,12 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(res.getError()){
                         // user pass or name wrong
+                        pbar.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext() , "Login Failed " , Toast.LENGTH_SHORT)
                                 .show();
                     }
                     else {
+
                         UserModel userModel = new UserModel();
                         userModel = response.body().getUser();
 
@@ -129,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         StringGen.token = userModel.getToken() ;
                         manager.saveUser(userModel.getEmail());
+                     //   pbar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, HomePage.class);
                         startActivity(intent);
                         finish();

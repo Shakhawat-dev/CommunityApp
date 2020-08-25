@@ -17,16 +17,15 @@
         android:title="Audio"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_baseline_audiotrack_64"/>
-    <item
-        android:id="@+id/dashboard"
-        android:title="Dashboard"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_baseline_dashboard_24"/>
-
 
     <item
         android:id="@+id/profile"
         android:title="Category"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_baseline_category_24"/>
+    <item
+        android:id="@+id/dashboard"
+        android:title="Dashboard"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_dashboard_24"/>
 </menu>
