@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
@@ -25,6 +26,7 @@ import com.metacoders.communityapp.models.Audio_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.utils.Constants;
+import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +90,9 @@ public class AudioFragment extends Fragment {
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     private ShimmerFrameLayout mShimmerViewContainer1;
+    List<Post_Model> filteredList = new ArrayList<>( ) ;
 
+    String id = "1" ;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -99,7 +103,7 @@ public class AudioFragment extends Fragment {
         context = view.getContext();
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
-
+        loadMiscData();
         loadList();
 
         // calling the interface for click
@@ -143,8 +147,15 @@ public class AudioFragment extends Fragment {
                         // its not empty
                         // Call the adapter to show the data
 
+                        filteredList.clear();
 
-                        adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
+                        for(Post_Model post : postsList){
+                            if(post.getLangId().equals(id)){
+                                filteredList.add(post) ;
+                            }
+                        }
+
+                        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
 
                         // setting the adapter ;
 
@@ -204,6 +215,18 @@ public class AudioFragment extends Fragment {
     public void onPause() {
         mShimmerViewContainer1.stopShimmer();
         super.onPause();
+    }
+
+
+    private void loadMiscData() {
+        String[] arr = SharedPrefManager.getInstance(context).getLangPref();
+        // load the array  arr[0] = id arr[1] = name
+
+
+        id = arr[0] ;
+       // Toast.makeText(context, id, Toast.LENGTH_LONG).show();
+
+
     }
 
 }

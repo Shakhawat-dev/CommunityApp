@@ -31,7 +31,19 @@
             app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
             >
 
-
+            <TextView
+                android:id="@+id/langId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="2dp"
+                android:layout_gravity ="end"
+                android:textSize="20sp"
+                android:text="EN"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                />
 
             <ImageView
                 android:id="@+id/profileBtn"

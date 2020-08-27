@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.facebook.shimmer.Shimmer;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -94,13 +95,14 @@ public class NewsFragment extends Fragment {
     NewsFeedAdapter.ItemClickListenter itemClickListenter;
     NewsFeedAdapter adapter;
     Context context;
+    List<Post_Model> filteredList = new ArrayList<>( ) ;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     Button audioBtn, imageBtn;
     AlertDialog alertDialog;
     private ShimmerFrameLayout mShimmerViewContainer;
 
-
+    String id  = "1" ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -116,9 +118,7 @@ public class NewsFragment extends Fragment {
         audioBtn = view.findViewById(R.id.audioBtn);
         imageBtn = view.findViewById(R.id.photoBtn);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
-
-
-
+        loadMiscData();
 
 
         audioBtn.setOnClickListener(new View.OnClickListener() {
@@ -217,7 +217,16 @@ public class NewsFragment extends Fragment {
                         // its not empty
                         // Call the adapter to show the data
 
-                        adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
+                        // filter the list
+                        filteredList.clear();
+
+                        for(Post_Model post : postsList){
+                            if(post.getLangId().equals(id)){
+                                filteredList.add(post) ;
+                            }
+                        }
+
+                        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
 
                         // setting the adapter ;
 
@@ -308,6 +317,17 @@ public class NewsFragment extends Fragment {
     public void onPause() {
         mShimmerViewContainer.stopShimmer();
         super.onPause();
+    }
+
+    private void loadMiscData() {
+        String[] arr = SharedPrefManager.getInstance(context).getLangPref();
+        // load the array  arr[0] = id arr[1] = name
+
+
+        id = arr[0] ;
+       // Toast.makeText(context, id, Toast.LENGTH_LONG).show();
+
+
     }
 
 

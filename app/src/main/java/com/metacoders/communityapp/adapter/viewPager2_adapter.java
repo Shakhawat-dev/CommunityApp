@@ -11,6 +11,8 @@ import com.metacoders.communityapp.Fragments.NewsFragment;
 import com.metacoders.communityapp.Fragments.CategoryFragment;
 import com.metacoders.communityapp.Fragments.VideoFragment;
 
+import static androidx.viewpager.widget.PagerAdapter.POSITION_NONE;
+
 public class viewPager2_adapter extends FragmentStateAdapter {
 
   //  private String[] titles = new String[]{"Home", "Products", "Cart", "Profile"};
@@ -41,8 +43,12 @@ public class viewPager2_adapter extends FragmentStateAdapter {
     }
 
 
+
+
+
     @Override
     public int getItemCount() {
         return 5;
     }
+
 }

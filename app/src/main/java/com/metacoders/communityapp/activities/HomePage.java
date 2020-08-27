@@ -6,19 +6,33 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
+import com.metacoders.communityapp.models.Post_Model;
+import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.utils.SharedPrefManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomePage extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -26,11 +40,18 @@ public class HomePage extends AppCompatActivity {
     ImageView hamburger, searchBtn, profileBtn;
     ViewPager2 viewPager;
     FloatingActionButton emergencyFuel;
+    allDataResponse dataResponse;
+    TextView lang;
+    Dialog dialog;
+    List<String> idlist = new ArrayList<>();
+
+    List<allDataResponse.LanguageList> langList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+        viewPager2_adapter adaper;
 
         getSupportActionBar().hide();
 
@@ -39,12 +60,15 @@ public class HomePage extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         profileBtn = findViewById(R.id.profileBtn);
         searchBtn = findViewById(R.id.searchBtn);
-
-
+        lang = findViewById(R.id.langId);
+        dataResponse = (allDataResponse) getIntent().getSerializableExtra("MISC");
+        adaper = new viewPager2_adapter(HomePage.this);
         // navigationView = findViewById(R.id.navigation_view);
+
+
         navigationBar.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         // getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, new dashboardFragment()).commit();
-        viewPager.setAdapter(new viewPager2_adapter(HomePage.this));
+        viewPager.setAdapter(adaper);
         viewPager.setUserInputEnabled(false);
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -88,8 +112,7 @@ public class HomePage extends AppCompatActivity {
             if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
                 Intent p = new Intent(getApplicationContext(), ProfileActivity.class);
                 startActivity(p);
-            }
-            else {
+            } else {
                 createTheAlertDialogue();
             }
 
@@ -100,7 +123,69 @@ public class HomePage extends AppCompatActivity {
             Intent p = new Intent(getApplicationContext(), SerachActivity.class);
             startActivity(p);
         });
+        lang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // trigger a dialogue
+
+
+//                Toast.makeText(getApplicationContext(), "saved:", Toast.LENGTH_LONG).show();
+//                String[] arr = SharedPrefManager.getInstance(getApplicationContext()).getLangPref();
+//                Log.d("TAG", "onClick: " + arr[0] + arr[1]);
+
+
+                // create a dialouge
+
+                dialog = new Dialog(HomePage.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.language_dialouge);
+
+                ListView list = dialog.findViewById(R.id.langlist);
+
+
+                ArrayAdapter adapter = new ArrayAdapter<String>(HomePage.this,
+                        android.R.layout.simple_list_item_1, generateLangArray());
+
+                list.setAdapter(adapter);
+
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, final View view,
+                                            int position, long id) {
+                        final String item = (String) parent.getItemAtPosition(position);
+                        // have to save this setting
+                        SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
+                                langList.get(position).getId(),
+                                langList.get(position).getShortForm());
+
+
+                        lang.setText(langList.get(position).getShortForm().toUpperCase() + "");
+                        // now save the past
+                        int oldid = viewPager.getCurrentItem();
+
+                        dialog.dismiss();
+                        // reload the view pager
+                        viewPager.setAdapter(adaper);
+                        // get back to the past
+                        viewPager.setCurrentItem(oldid);
+
+                    }
+
+                });
+
+                dialog.setCancelable(true);
+                dialog.show();
+
+
+            }
+        });
+
+        loadMiscData();
+
     }
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
 
@@ -178,5 +263,27 @@ public class HomePage extends AppCompatActivity {
         alertDialog.show();
 
 
+    }
+
+    private void loadMiscData() {
+        String[] arr = SharedPrefManager.getInstance(getApplicationContext()).getLangPref();
+        // load the array  arr[0] = id arr[1] = name
+        lang.setText(arr[1] + "");
+
+    }
+
+    private String[] generateLangArray() {
+
+        langList = dataResponse.getLanguageList();
+        // List<String> langlist = new ArrayList<>();
+        String[] langArray = new String[langList.size()];
+
+        for (int i = 0; i < langList.size(); i++) {
+
+            langArray[i] = langList.get(i).getName();
+
+
+        }
+        return langArray;
     }
 }

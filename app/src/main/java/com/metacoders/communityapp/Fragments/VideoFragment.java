@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
@@ -25,6 +26,7 @@ import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.models.Video_List_Model;
 import com.metacoders.communityapp.utils.Constants;
+import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +89,8 @@ public class VideoFragment extends Fragment {
     Context context;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
+    String id = "1"  ;
+    List<Post_Model> filteredList = new ArrayList<>( ) ;
     private ShimmerFrameLayout mShimmerViewContainer2;
 
     @Override
@@ -99,7 +103,7 @@ public class VideoFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
         mShimmerViewContainer2 = view.findViewById(R.id.shimmer_view_container_Video);
-
+        loadMiscData();
         loadList();
 
         // calling the interface for click
@@ -144,9 +148,19 @@ public class VideoFragment extends Fragment {
                         // its not empty
                         // Call the adapter to show the data
 
-                        adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
+                        filteredList.clear();
+
+                        for(Post_Model post : postsList){
+                            if(post.getLangId().equals(id)){
+                                filteredList.add(post) ;
+                            }
+                        }
+
+                        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
 
                         // setting the adapter ;
+
+
 
 
                         recyclerView.setAdapter(adapter);
@@ -205,6 +219,17 @@ public class VideoFragment extends Fragment {
     public void onPause() {
         mShimmerViewContainer2.stopShimmer();
         super.onPause();
+    }
+
+    private void loadMiscData() {
+        String[] arr = SharedPrefManager.getInstance(context).getLangPref();
+        // load the array  arr[0] = id arr[1] = name
+
+
+        id = arr[0] ;
+
+
+
     }
 
 }

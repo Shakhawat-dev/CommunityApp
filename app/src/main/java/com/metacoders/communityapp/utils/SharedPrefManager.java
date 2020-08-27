@@ -18,6 +18,9 @@ public class SharedPrefManager {
     private static final String KEY_USER_ROLE = "userrole";
     private static final String KEY_USER_TOKEN = "usertoken";
     private static final String KEY_USER_TYPE = "usertype";
+    private static final String KEY_USER_LANG_ID = "lang_id";
+    private static final String KEY_USER_LANG_NAME = "lang_name";
+    private  static  final String SHARED_PREF_NAME_SETTING = "settings";
 
     public SharedPrefManager(Context context) {
         mCtx = context;
@@ -31,7 +34,7 @@ public class SharedPrefManager {
         return mInstance;
     }
 
-    public boolean userLogin(String id, String name, String email, String token, String role, String userType , String pp) {
+    public boolean userLogin(String id, String name, String email, String token, String role, String userType, String pp) {
 
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -48,11 +51,11 @@ public class SharedPrefManager {
         return true;
     }
 
-    public String  getUserToken() {
+    public String getUserToken() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString(KEY_USER_TOKEN, null) ;
+        String token = sharedPreferences.getString(KEY_USER_TOKEN, null);
 
-        return   token  ;
+        return token;
     }
 
     public UserModel getUser() {
@@ -93,10 +96,9 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        String value =  sharedPreferences.getString(IS_USER_LOGGED_IN, "no") ;
+        String value = sharedPreferences.getString(IS_USER_LOGGED_IN, "no");
 
         return value.equals("yes");
-
 
 
     }
@@ -115,8 +117,27 @@ public class SharedPrefManager {
 
     }
 
+    public void saveLangPref(String id , String name ){
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_SETTING, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        editor.putString(KEY_USER_LANG_ID, id);
+        editor.putString(KEY_USER_LANG_NAME, name);
+        editor.apply();
+    }
 
+    public   String[] getLangPref(){
 
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_SETTING, Context.MODE_PRIVATE);
+
+        String id = sharedPreferences.getString(KEY_USER_LANG_ID, "1");
+        String name = sharedPreferences.getString(KEY_USER_LANG_NAME, "en");
+
+        /*
+         array 0 is id
+         array 1 is name
+         */
+        return new String[]{id , name };
+    }
 
 }

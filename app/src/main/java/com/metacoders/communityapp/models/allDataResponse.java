@@ -3,9 +3,10 @@ package com.metacoders.communityapp.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public  class allDataResponse {
+public  class allDataResponse implements Serializable {
     @SerializedName("languageList")
     @Expose
     private List<LanguageList> languageList = null;
@@ -40,7 +41,7 @@ public  class allDataResponse {
         this.categories = categories;
     }
 
-    public class Category {
+    public class Category implements Serializable{
 
         @SerializedName("id")
         @Expose
@@ -188,7 +189,7 @@ public  class allDataResponse {
 
     }
 
-   public  class  AddList{
+   public  class  AddList implements Serializable{
        @SerializedName("id")
        @Expose
        private String id;
@@ -278,7 +279,7 @@ public  class allDataResponse {
            this.languageOrder = languageOrder;
        }}
 
-    public class LanguageList {
+    public class LanguageList implements Serializable {
 
         @SerializedName("id")
         @Expose
