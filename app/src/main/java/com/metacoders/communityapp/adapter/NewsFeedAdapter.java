@@ -77,12 +77,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             e.printStackTrace();
             holder.date.setText(newsFeed.getCreatedAt());
         }
-        String link;
+                 String link;
 
-        if (newsFeed.getImageMid() == null) {
-//            link = newsFeed.getImageUrl();
-        } else {
-            link = Constants.IMAGE_URL + newsFeed.getImageMid();
+            link = Constants.IMAGE_URL + newsFeed.getImageMid()+"";
             Glide.with(ctx)
                     .load(link)
                     .centerCrop()
@@ -90,13 +87,18 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     .thumbnail(/*sizeMultiplier=*/ 0.25f)
                     .placeholder(R.drawable.placeholder)
                     .into(holder.image);
-        }
 
 
-        if (newsFeed.getPostType().contains("video")) {
-            // holder.price.setVisibility(View.VISIBLE);
+
+
+
+        if (newsFeed.getPostType().contains("video") )  {
+            holder.playBtn.setVisibility(View.VISIBLE);
         }
-//        else  holder.price.setVisibility(View.VISIBLE);
+        else if(newsFeed.getPostType().contains("audio")){
+            holder.playBtn.setVisibility(View.VISIBLE);
+        }
+        else  holder.playBtn.setVisibility(View.GONE);
 
     }
 

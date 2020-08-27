@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -74,6 +75,26 @@ public class SerachActivity extends AppCompatActivity {
                 return false;
             }
         });
+        itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
+            @Override
+            public void onItemClick(View view, int pos) {
+
+                Post_Model model = new Post_Model() ;
+                model = postsList.get(pos) ;
+                Intent p = new Intent(getApplicationContext(), PostDetailsPage.class);
+                p.putExtra("POST", model);
+                startActivity(p);
+                try {
+                   overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                } catch (Exception e) {
+                    Log.e("TAG", "onItemClick: " + e.getMessage());
+                }
+
+
+
+            }
+        } ;
+
     }
 
 
@@ -162,39 +183,39 @@ public class SerachActivity extends AppCompatActivity {
             }
         });
     }
-    private  void setSearch(String searchTerm){
-
-
-        for(int i  = 0 ; i< postsList.size() ; i++){
-
-            if(postsList.get(i).getTitle().toLowerCase().contains(searchTerm)){
-                filteredList.add(postsList.get(i)) ;  // adding the filtered list to the new array list
-            }
-
-        }
-        // if country search  enabled then
-        if(categorySearchEnabled){
-            tempList  = new ArrayList<>(filteredList) ;
-            filteredList.clear();
-
-            for(int y  = 0 ; y< tempList.size() ; y++){
-
-                if(tempList.get(y).getCategoryId().equals(categoryCode)){
-                    filteredList.add(tempList.get(y)) ;  // adding the filtered list to the new array list
-                }
-
-            }
-        }
-
-
-        // Call the adapter to show the data
-
-        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
-
-        // setting the adapter ;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-    }
+//    private  void setSearch(String searchTerm){
+//
+//
+//        for(int i  = 0 ; i< postsList.size() ; i++){
+//
+//            if(postsList.get(i).getTitle().toLowerCase().contains(searchTerm)){
+//                filteredList.add(postsList.get(i)) ;  // adding the filtered list to the new array list
+//            }
+//
+//        }
+//        // if country search  enabled then
+//        if(categorySearchEnabled){
+//            tempList  = new ArrayList<>(filteredList) ;
+//            filteredList.clear();
+//
+//            for(int y  = 0 ; y< tempList.size() ; y++){
+//
+//                if(tempList.get(y).getCategoryId().equals(categoryCode)){
+//                    filteredList.add(tempList.get(y)) ;  // adding the filtered list to the new array list
+//                }
+//
+//            }
+//        }
+//
+//
+//        // Call the adapter to show the data
+//
+//        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
+//
+//        // setting the adapter ;
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setAdapter(adapter);
+//    }
 
     @Override
     protected void onStart() {
