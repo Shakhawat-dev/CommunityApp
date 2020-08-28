@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
@@ -83,12 +84,14 @@ public class SplashScreen extends AppCompatActivity {
                     // send it to adaper
 
                 } else {
-
+                    loadMiscData();
                 }
             }
 
             @Override
             public void onFailure(Call<allDataResponse> call, Throwable t) {
+
+                Toast.makeText(getApplicationContext() , ""+ t.getMessage() , Toast.LENGTH_LONG).show();
 
             }
         });

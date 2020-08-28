@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/news_imageview"
+            android:id="@+id/video_thumb"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:src="@drawable/placeholder"
@@ -24,12 +24,13 @@
         <ImageView
             android:layout_width="64dp"
             android:layout_height="64dp"
+            android:id="@+id/play_btn"
             app:tint="@color/white"
             android:src="@drawable/ic_baseline_play_circle_outline_64"
-            app:layout_constraintTop_toTopOf="@id/news_imageview"
-            app:layout_constraintStart_toStartOf="@id/news_imageview"
-            app:layout_constraintEnd_toEndOf="@id/news_imageview"
-            app:layout_constraintBottom_toBottomOf="@id/news_imageview"/>
+            app:layout_constraintTop_toTopOf="@id/video_thumb"
+            app:layout_constraintStart_toStartOf="@id/video_thumb"
+            app:layout_constraintEnd_toEndOf="@id/video_thumb"
+            app:layout_constraintBottom_toBottomOf="@id/video_thumb"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,7 +38,7 @@
             android:orientation="vertical"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintStart_toEndOf="@+id/news_imageview"
+            app:layout_constraintStart_toEndOf="@+id/video_thumb"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -60,7 +61,7 @@
                 android:maxLines="2"
                 android:minLines="2"
                 android:paddingTop="4dp"
-                android:text="It is a long established fact that a reader will be distracted by the readable content of a page"/>
+                android:text="It is a long established fact that a reader will be distracted by the readable content of a page" />
 
             <LinearLayout
                 android:layout_width="match_parent"

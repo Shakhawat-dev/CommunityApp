@@ -25,6 +25,7 @@ import com.metacoders.communityapp.utils.Constants;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     private List<Post_Model> mData;
     private List<Post_Model> mDataFiltered;
     private ItemClickListenter itemClickListenter;
+    private  static  final  int BIG_ROW = 1 ;
+    private  static  final  int SMALL_ROW = 0 ;
 
     public NewsFeedAdapter(Context ctx, List<Post_Model> mData, ItemClickListenter itemClickListenter ) {
         this.ctx = ctx;
@@ -47,8 +50,20 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     @NonNull
     @Override
     public NewsFeedAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_video_home, parent, false);
+        View view = null ;
+
+        if(viewType == BIG_ROW)
+        {
+            view  = LayoutInflater
+                    .from(parent.getContext())
+                    .inflate(R.layout.row_video_home ,  parent, false);
+        }
+        else if ( viewType == SMALL_ROW)
+        {
+            view  = LayoutInflater
+                    .from(parent.getContext())
+                    .inflate(R.layout.row_video_mini ,  parent, false);
+        }
 
         return new ViewHolder(view, itemClickListenter);
     }
@@ -90,6 +105,14 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
 
 
+        // setting details
+
+        try{
+            holder.desc.setText(newsFeed.getContent()+"");
+        }
+        catch (Exception e ){
+
+        }
 
 
         if (newsFeed.getPostType().contains("video") )  {
@@ -104,6 +127,26 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
 
 
+    @Override
+    public int getItemViewType(int position) {
+
+
+
+        if( position == 0 )
+        {
+
+            return BIG_ROW;
+
+        }
+
+
+        else
+        {
+            return  SMALL_ROW ;
+        }
+
+
+    }
 
 
     @Override
@@ -167,7 +210,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView title;
+        public TextView title ,desc;
         public ImageView image, playBtn;
         public TextView author, viewCount, date;
         public TextView commentCount;
@@ -181,7 +224,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
             itemView.setOnClickListener(this);
             ///  viewHolder.itemView.animation = AnimationUtils.loadAnimation(context,R.anim.item_animation_fall_down)
-
+            desc = itemView.findViewById(R.id.title_short_details) ;
             title = itemView.findViewById(R.id.title_view);
             image = itemView.findViewById(R.id.video_thumb);
             playBtn = itemView.findViewById(R.id.play_btn);
@@ -191,6 +234,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             container = itemView.findViewById(R.id.container);
             commentCount = itemView.findViewById(R.id.video_comment);
             this.itemClickListenter = itemClickListenter;
+
         }
 
         @Override

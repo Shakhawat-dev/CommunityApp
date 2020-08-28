@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Adapter;
 import android.widget.Button;
 
 
@@ -64,6 +65,9 @@ public class SerachActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 shimmerFrameLayout.setVisibility(View.VISIBLE);
+                postsList.clear();
+                adapter = new NewsFeedAdapter(context  , postsList ,itemClickListenter )  ;
+                recyclerView.setAdapter(adapter);
                 loadList(query.trim() , "" , "" , "");
 
                 return false;
@@ -75,25 +79,22 @@ public class SerachActivity extends AppCompatActivity {
                 return false;
             }
         });
-        itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
-            @Override
-            public void onItemClick(View view, int pos) {
+        itemClickListenter = (view, pos) -> {
 
-                Post_Model model = new Post_Model() ;
-                model = postsList.get(pos) ;
-                Intent p = new Intent(getApplicationContext(), PostDetailsPage.class);
-                p.putExtra("POST", model);
-                startActivity(p);
-                try {
-                   overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                } catch (Exception e) {
-                    Log.e("TAG", "onItemClick: " + e.getMessage());
-                }
-
-
-
+            Post_Model model = new Post_Model() ;
+            model = postsList.get(pos) ;
+            Intent p = new Intent(getApplicationContext(), PostDetailsPage.class);
+            p.putExtra("POST", model);
+            startActivity(p);
+            try {
+               overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } catch (Exception e) {
+                Log.e("TAG", "onItemClick: " + e.getMessage());
             }
-        } ;
+
+
+
+        };
 
     }
 
