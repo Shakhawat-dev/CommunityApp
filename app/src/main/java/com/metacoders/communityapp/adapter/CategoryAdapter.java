@@ -6,8 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.card.MaterialCardView;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.models.allDataResponse;
 
@@ -38,14 +42,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryAdapter.CategoryViewHolder holder, final int position) {
 
 
-            // single cateogry ;
-            allDataResponse.Category singleCategory = categoryList.get(position);
+        // single cateogry ;
+        allDataResponse.Category singleCategory = categoryList.get(position);
 
-            //set name
-            holder.title.setText(singleCategory.getName());
-            holder.itemView.setBackgroundColor(Color.parseColor(singleCategory.getColor()));
-
-
+        //set name
+        holder.title.setText(singleCategory.getName());
+//            holder.itemView.setBackgroundColor(Color.parseColor(singleCategory.getColor()));
+        holder.cardView.setCardBackgroundColor(Color.parseColor(singleCategory.getColor()));
 
 
     }
@@ -62,6 +65,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView title;
+        public MaterialCardView cardView;
 
 
         ItemClickListenter itemClickListenter;
@@ -72,6 +76,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             itemView.setOnClickListener(this);
 
             title = itemView.findViewById(R.id.category_name_text);
+            cardView = itemView.findViewById(R.id.category_card);
 
             this.itemClickListenter = itemClickListenter;
         }

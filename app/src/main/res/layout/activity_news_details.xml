@@ -81,9 +81,8 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
                 android:layout_margin="8dp"
-                android:text="helloo"
+                android:text="See all comments"
                 style="?attr/materialButtonOutlinedStyle" />
 
         </LinearLayout>

@@ -75,6 +75,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    app:cardCornerRadius="8dp"
                     app:cardBackgroundColor="@color/colorPrimary"
                     android:layout_margin="4dp">
 
@@ -112,6 +113,7 @@
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/colorPrimary"
                     android:layout_weight="1"
+                    app:cardCornerRadius="8dp"
                     android:layout_margin="4dp">
 
                     <LinearLayout
@@ -149,6 +151,7 @@
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/colorPrimary"
                     android:layout_weight="1"
+                    app:cardCornerRadius="8dp"
                     android:layout_margin="4dp">
 
                     <LinearLayout
@@ -188,9 +191,9 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
