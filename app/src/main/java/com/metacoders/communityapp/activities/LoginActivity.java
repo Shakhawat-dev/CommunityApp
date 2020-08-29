@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         pbar.setVisibility(View.GONE);
         manager = new SharedPrefManager( getApplicationContext() ) ;
         initializations();
-
+        getSupportActionBar().hide();
 
         forget_pass_tv.setOnClickListener(new View.OnClickListener() {
             @Override

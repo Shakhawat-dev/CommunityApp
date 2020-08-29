@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 
+import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -49,7 +50,16 @@ public class singleList extends AppCompatActivity {
         itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
             @Override
             public void onItemClick(View view, int pos) {
-
+                Post_Model model = new Post_Model() ;
+                model = postsList.get(pos) ;
+                Intent p = new Intent(getApplicationContext(), PostDetailsPage.class);
+                p.putExtra("POST", model);
+                startActivity(p);
+                try {
+                   overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                } catch (Exception e) {
+                    Log.e("TAG", "onItemClick: " + e.getMessage());
+                }
             }
         } ;
 
@@ -60,17 +70,12 @@ public class singleList extends AppCompatActivity {
     private void loadList() {
 
 
-        sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
-        String   accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
-
-
 //        Call<News_List_Model> NetworkCall = RetrofitClient
 //                .getInstance()
 //                .getApi()
 //                .getNewsList();
 
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
+        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
 
         Call<News_List_Model> NetworkCall = api.getNewsList() ;
 

@@ -10,6 +10,7 @@ import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,18 +37,30 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private TextInputEditText mName, mUserName, mEmail, mPassword;
     private Button mSignUpBtn;
+    CheckBox isCehcked ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        isCehcked = findViewById(R.id.termsCheck) ;
 
+        getSupportActionBar().hide();
         initializations();
 
         mSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                register();
+
+                if(isCehcked.isChecked())
+                {
+                    register();
+                }
+                else {
+                    Toast.makeText(getApplicationContext() , "Please Agree To ur Terms & Conditions" , Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }

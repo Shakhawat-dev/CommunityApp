@@ -30,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             android:fontFamily="@font/regular_bala_paji"
             android:text="Lorem ipsum dolor sit amet, consetetur
 sadipscing elitr, sed diam nonumy eirmod tempo"
@@ -117,10 +118,39 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                     android:hint="Password"
                     android:inputType="textPassword" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+             </com.google.android.material.textfield.TextInputLayout>
 
 
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/termsContainer"
+        android:orientation="horizontal"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/signUPBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/termsCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="I have read and agree to the "
+            android:layout_width="wrap_content"
+            android:layout_marginStart="-10dp"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="Terms &amp; Conditions"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
     <Button

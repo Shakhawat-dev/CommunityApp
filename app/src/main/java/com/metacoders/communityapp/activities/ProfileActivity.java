@@ -73,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         LogOutCard.setOnClickListener(v -> {
 
-            Intent o = new Intent(context , LoginActivity.class);
+            Intent o = new Intent(context , HomePage.class);
             SharedPrefManager manager = new SharedPrefManager(context) ;
             manager.logout();
             startActivity(o);

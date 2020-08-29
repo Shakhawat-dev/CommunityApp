@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -101,6 +102,7 @@ public class NewsFragment extends Fragment {
     Button audioBtn, imageBtn;
     AlertDialog alertDialog;
     private ShimmerFrameLayout mShimmerViewContainer;
+    CardView insertContainer  ;
 
     String id  = "1" ;
 
@@ -117,9 +119,16 @@ public class NewsFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         audioBtn = view.findViewById(R.id.audioBtn);
         imageBtn = view.findViewById(R.id.photoBtn);
+        insertContainer = view.findViewById(R.id.insertContainer) ;
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
         loadMiscData();
 
+
+        if(SharedPrefManager.getInstance(context).isUserLoggedIn())
+        {
+            insertContainer.setVisibility(View.VISIBLE);
+        }
+        else insertContainer.setVisibility(View.GONE);
 
         audioBtn.setOnClickListener(new View.OnClickListener() {
             @Override
