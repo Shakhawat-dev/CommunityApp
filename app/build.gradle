@@ -72,6 +72,8 @@ dependencies {
 
     // Custom social login
     implementation 'com.shobhitpuri.custombuttons:google-signin:1.1.0'
+    //swipeRefesh Layout
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
 
 

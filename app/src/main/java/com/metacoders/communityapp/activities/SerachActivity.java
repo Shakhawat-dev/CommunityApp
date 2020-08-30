@@ -2,6 +2,7 @@ package com.metacoders.communityapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,19 +37,19 @@ public class SerachActivity extends AppCompatActivity {
     List<Post_Model> postsList = new ArrayList<>();
     List<Post_Model> filteredList = new ArrayList<>();
     List<Post_Model> tempList = new ArrayList<>();
-    String searchTerm  = " " ;
+    String searchTerm = " ";
     boolean categorySearchEnabled = false;
-    String categoryCode = "0" ;
+    String categoryCode = "0";
 
     NewsFeedAdapter.ItemClickListenter itemClickListenter;
     NewsFeedAdapter adapter;
     Context context;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
-    Button audioBtn , imageBtn ;
-    SearchView searchView ;
-    ShimmerFrameLayout shimmerFrameLayout ;
-
+    Button audioBtn, imageBtn;
+    SearchView searchView;
+    ShimmerFrameLayout shimmerFrameLayout;
+    ConstraintLayout emptyLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +57,22 @@ public class SerachActivity extends AppCompatActivity {
         setContentView(R.layout.activity_serach);
         searchView = findViewById(R.id.search_bar);
         recyclerView = findViewById(R.id.newsfeed);
-        shimmerFrameLayout = findViewById(R.id.shimmer_view_container) ;
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container);
         shimmerFrameLayout.setVisibility(View.GONE);
+        emptyLayout = findViewById(R.id.emptyLayout);
+        emptyLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        context = getApplicationContext() ;
+        context = getApplicationContext();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 shimmerFrameLayout.setVisibility(View.VISIBLE);
                 postsList.clear();
-                adapter = new NewsFeedAdapter(context  , postsList ,itemClickListenter )  ;
+                adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
                 recyclerView.setAdapter(adapter);
-                loadList(query.trim() , "" , "" , "");
+                loadList(query.trim(), "", "", "");
 
                 return false;
             }
@@ -81,17 +85,16 @@ public class SerachActivity extends AppCompatActivity {
         });
         itemClickListenter = (view, pos) -> {
 
-            Post_Model model = new Post_Model() ;
-            model = postsList.get(pos) ;
+            Post_Model model = new Post_Model();
+            model = postsList.get(pos);
             Intent p = new Intent(getApplicationContext(), PostDetailsPage.class);
             p.putExtra("POST", model);
             startActivity(p);
             try {
-               overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } catch (Exception e) {
                 Log.e("TAG", "onItemClick: " + e.getMessage());
             }
-
 
 
         };
@@ -99,8 +102,10 @@ public class SerachActivity extends AppCompatActivity {
     }
 
 
-    private void loadList( String searchTerm , String cat_id , String sub_cat , String lang_id  ) {
-
+    private void loadList(String searchTerm, String cat_id, String sub_cat, String lang_id) {
+        //setting up layout
+        emptyLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
 
 //        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
 //        String   accessTokens = sharedPrefManager.getUserToken();
@@ -112,11 +117,11 @@ public class SerachActivity extends AppCompatActivity {
 //                .getApi()
 //                .getNewsList();
 
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
         Call<List<Post_Model>> NetworkCall = api.getSearchResult(
-                searchTerm , cat_id , sub_cat , lang_id
-        ) ;
+                searchTerm, cat_id, sub_cat, lang_id
+        );
 
         NetworkCall.enqueue(new Callback<List<Post_Model>>() {
             @Override
@@ -125,7 +130,7 @@ public class SerachActivity extends AppCompatActivity {
                 if (response.code() == 201) {
 
 
-                    postsList =  response.body();
+                    postsList = response.body();
 
 
                     if (postsList != null && !postsList.isEmpty()) {
@@ -135,40 +140,53 @@ public class SerachActivity extends AppCompatActivity {
 
                         // Call the adapter to show the data
 
-                                adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
+                        adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
+                        // setting the adapter ;
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        // checking if the list is empty or not
+                        if (postsList.size() == 0) {
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        } else {
+                            emptyLayout.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
 
-                                // setting the adapter ;
-                                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                                recyclerView.setAdapter(adapter);
-                                shimmerFrameLayout.stopShimmer();
-                                shimmerFrameLayout.setVisibility(View.GONE);
-                                recyclerView.getViewTreeObserver().addOnPreDrawListener(
+                        }
 
-                                        new ViewTreeObserver.OnPreDrawListener() {
-                                            @Override
-                                            public boolean onPreDraw() {
+                        recyclerView.setAdapter(adapter);
+                        shimmerFrameLayout.stopShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        recyclerView.getViewTreeObserver().addOnPreDrawListener(
 
-                                                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                                                for (int i = 0; i < recyclerView.getChildCount(); i++) {
-                                                    View v = recyclerView.getChildAt(i);
-                                                    v.setAlpha(0.0f);
-                                                    v.animate()
-                                                            .alpha(1.0f)
-                                                            .setDuration(300)
-                                                            .setStartDelay(i * 50)
-                                                            .start();
-                                                }
-                                                return true;
-                                            }
+                                new ViewTreeObserver.OnPreDrawListener() {
+                                    @Override
+                                    public boolean onPreDraw() {
+
+                                        recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                                        for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                                            View v = recyclerView.getChildAt(i);
+                                            v.setAlpha(0.0f);
+                                            v.animate()
+                                                    .alpha(1.0f)
+                                                    .setDuration(300)
+                                                    .setStartDelay(i * 50)
+                                                    .start();
                                         }
-                                );
-
-
+                                        return true;
+                                    }
+                                }
+                        );
 
 
                     } else {
                         // the list is empty
                         Log.d("TAG", "Error: List Is Empty  " + response.errorBody());
+                        // checking if the list is empty or not
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+
+                        shimmerFrameLayout.stopShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
                     }
 
                 } else {

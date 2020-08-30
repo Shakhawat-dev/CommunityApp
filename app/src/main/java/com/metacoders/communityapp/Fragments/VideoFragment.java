@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -89,8 +90,9 @@ public class VideoFragment extends Fragment {
     Context context;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
-    String id = "1"  ;
-    List<Post_Model> filteredList = new ArrayList<>( ) ;
+    String id = "1";
+    List<Post_Model> filteredList = new ArrayList<>();
+    ConstraintLayout emptyLayout;
     private ShimmerFrameLayout mShimmerViewContainer2;
 
     @Override
@@ -103,6 +105,9 @@ public class VideoFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
         mShimmerViewContainer2 = view.findViewById(R.id.shimmer_view_container_Video);
+        emptyLayout = view.findViewById(R.id.emptyLayout);
+        emptyLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
         loadMiscData();
         loadList();
 
@@ -111,8 +116,8 @@ public class VideoFragment extends Fragment {
             @Override
             public void onItemClick(View view, int pos) {
 
-                Post_Model model = new Post_Model() ;
-                model = postsList.get(pos) ;
+                Post_Model model = new Post_Model();
+                model = postsList.get(pos);
                 Intent p = new Intent(context, PostDetailsPage.class);
                 p.putExtra("POST", model);
                 context.startActivity(p);
@@ -129,10 +134,12 @@ public class VideoFragment extends Fragment {
     }
 
     private void loadList() {
+        //setting up layout
+        emptyLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
-
-        Call<Video_List_Model> NetworkCall = api.getVideoList() ;
+        Call<Video_List_Model> NetworkCall = api.getVideoList();
 
         NetworkCall.enqueue(new Callback<Video_List_Model>() {
             @Override
@@ -150,20 +157,24 @@ public class VideoFragment extends Fragment {
 
                         filteredList.clear();
 
-                        for(Post_Model post : postsList){
-                            if(post.getLangId().equals(id)){
-                                filteredList.add(post) ;
+                        for (Post_Model post : postsList) {
+                            if (post.getLangId().equals(id)) {
+                                filteredList.add(post);
                             }
                         }
 
                         adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
 
                         // setting the adapter ;
-
-
-
-
                         recyclerView.setAdapter(adapter);
+                        // checking if the list is empty or not
+                        if (filteredList.size() == 0) {
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        } else {
+                            emptyLayout.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
                         recyclerView.getViewTreeObserver().addOnPreDrawListener(
 
                                 new ViewTreeObserver.OnPreDrawListener() {
@@ -226,8 +237,7 @@ public class VideoFragment extends Fragment {
         // load the array  arr[0] = id arr[1] = name
 
 
-        id = arr[0] ;
-
+        id = arr[0];
 
 
     }

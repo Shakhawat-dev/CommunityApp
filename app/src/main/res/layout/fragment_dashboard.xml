@@ -199,7 +199,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_detail_linearlayout">
-
+            <include layout="@layout/layout_empty_response"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rlist"
                 android:background="@color/recylerviewBackground"

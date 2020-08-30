@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.VideoFragment">
 
-
+    <include layout="@layout/layout_empty_response"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"

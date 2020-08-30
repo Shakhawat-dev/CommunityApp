@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -91,7 +92,7 @@ public class AudioFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     private ShimmerFrameLayout mShimmerViewContainer1;
     List<Post_Model> filteredList = new ArrayList<>( ) ;
-
+    ConstraintLayout emptyLayout  ;
     String id = "1" ;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,6 +101,9 @@ public class AudioFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_audio, container, false);
         mShimmerViewContainer1 = view.findViewById(R.id.shimmer_view_container_audio) ;
         recyclerView = view.findViewById(R.id.audioList);
+        emptyLayout = view.findViewById(R.id.emptyLayout) ;
+        emptyLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
         context = view.getContext();
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -129,6 +133,9 @@ public class AudioFragment extends Fragment {
     }
 
     private void loadList() {
+        //setting up layout
+        emptyLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
         NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
 
         Call<Audio_List_Model> NetworkCall = api.getAudioList();
@@ -158,8 +165,17 @@ public class AudioFragment extends Fragment {
                         adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
 
                         // setting the adapter ;
-
                         recyclerView.setAdapter(adapter);
+                        // checking if the list is empty or not
+                        if(filteredList.size() == 0 ){
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        }
+                        else {
+                            emptyLayout.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+
+                        }
 
                         recyclerView.getViewTreeObserver().addOnPreDrawListener(
 

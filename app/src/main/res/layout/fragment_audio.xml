@@ -7,7 +7,7 @@
     android:background="@color/recylerviewBackground"
     tools:context=".Fragments.AudioFragment">
 
-
+    <include layout="@layout/layout_empty_response"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"

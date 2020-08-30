@@ -107,6 +107,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<RegistrationResponse> call, Throwable t) {
                     Log.d(Constants.TAG, "onResponse: register" + t.toString());
+                    Toast.makeText(RegistrationActivity.this,"" + t.toString() , Toast.LENGTH_LONG).show();
                 }
             });
         }

@@ -260,5 +260,23 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
 
         }
+
+
     }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        mDataFiltered.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Post_Model> list) {
+        mData.clear();
+        mDataFiltered.clear();
+        mData.addAll(list);
+        mDataFiltered = mData ;
+        notifyDataSetChanged();
+    }
+
 }

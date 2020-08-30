@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -103,9 +105,9 @@ public class NewsFragment extends Fragment {
     AlertDialog alertDialog;
     private ShimmerFrameLayout mShimmerViewContainer;
     CardView insertContainer  ;
-
+    ConstraintLayout emptyLayout  ;
     String id  = "1" ;
-
+    SwipeRefreshLayout swipeContainer  ;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -121,6 +123,19 @@ public class NewsFragment extends Fragment {
         imageBtn = view.findViewById(R.id.photoBtn);
         insertContainer = view.findViewById(R.id.insertContainer) ;
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
+        emptyLayout = view.findViewById(R.id.emptyLayout) ;
+        emptyLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        //  code to refresh the list here.
+        swipeContainer.setOnRefreshListener(this::fetchTimelineAsync);
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
         loadMiscData();
 
 
@@ -193,8 +208,9 @@ public class NewsFragment extends Fragment {
 
 
     private void loadList() {
-
-
+        // setting up  layout
+        emptyLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
 //        sharedPrefManager = new SharedPrefManager(context) ;
 //        String   accessTokens = sharedPrefManager.getUserToken();
 //        Log.d("TAG", "loadList: activity " + accessTokens);
@@ -214,6 +230,7 @@ public class NewsFragment extends Fragment {
             public void onResponse(Call<News_List_Model> call, Response<News_List_Model> response) {
                 // u have the response
                 if (response.code() == 201) {
+
                     News_List_Model model = response.body();
 
                     postsList = model.getGetNewsList();
@@ -238,11 +255,22 @@ public class NewsFragment extends Fragment {
                         adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
 
                         // setting the adapter ;
-
                         recyclerView.setAdapter(adapter);
+
+                        // checking if the list is empty or not
+                        if(filteredList.size() == 0 ){
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        }
+                        else {
+                            emptyLayout.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+
+                        }
 
                         mShimmerViewContainer.stopShimmer();
                         mShimmerViewContainer.setVisibility(View.GONE);
+
                         recyclerView.getViewTreeObserver().addOnPreDrawListener(
 
                                 new ViewTreeObserver.OnPreDrawListener() {
@@ -282,6 +310,17 @@ public class NewsFragment extends Fragment {
                 Log.d("TAG", "Error On Failed Response: " + t.getMessage());
             }
         });
+    }
+
+    public void fetchTimelineAsync() {
+
+        adapter.clear();
+        mShimmerViewContainer.setVisibility(View.VISIBLE);
+        mShimmerViewContainer.startShimmer();
+        loadList();
+
+        swipeContainer.setRefreshing(false);
+
     }
 
     private void createTheAlertDialogue() {
