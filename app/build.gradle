@@ -70,6 +70,10 @@ dependencies {
     // shimmer view
     implementation 'com.facebook.shimmer:shimmer:0.5.0@aar'
 
+    // Custom social login
+    implementation 'com.shobhitpuri.custombuttons:google-signin:1.1.0'
+
+
 
 
 

@@ -33,7 +33,7 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="32dp"
             android:src="@drawable/ic_baseline_nature_people_24" />
 
         <TextView
@@ -71,6 +71,53 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#4267b2"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            app:icon="@mipmap/facebook_icon"
+            app:iconTint="@color/white"
+            app:iconSize="18dp"
+            app:iconPadding="4dp"
+            android:text="Connect with Facebook"
+            android:textColor="@color/white" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#DF4A32"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            app:icon="@mipmap/google_icon"
+            app:iconTint="@color/white"
+            app:iconSize="18dp"
+            app:iconPadding="4dp"
+            android:text="Connect with Google"
+            android:textColor="@color/white" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#4c75a3"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            app:icon="@mipmap/vk_icon2"
+            app:iconTint="@color/white"
+            app:iconSize="18dp"
+            app:iconPadding="4dp"
+            android:text="Connect with VK"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:fontFamily="@font/baal_pafji"
+            android:text="Or login with Email"
+            android:layout_gravity="center_horizontal"
+            android:padding="8dp"
+            android:textColor="@color/black" />
+
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -84,8 +131,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 android:id="@+id/login_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
-                android:text="shaakhawat@gmail.com" />
+                android:hint="Username" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -105,8 +151,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:text="123456" />
+                android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
