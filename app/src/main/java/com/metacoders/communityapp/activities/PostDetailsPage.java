@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,6 +46,8 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
     Dialog mFullScreenDialog ;
     Post_Model post ;
     private boolean mExoPlayerFullscreen = false;
+    private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails;
+    private Button mMediaAllComments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,12 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         Intent o = getIntent();
 
         TextView textView = findViewById(R.id.titleTV);
+        mMediaTitle = (TextView) findViewById(R.id.media_title);
+        mMediaDate = (TextView) findViewById(R.id.media_date);
+        mMediaViews = (TextView) findViewById(R.id.media_views);
+        mMediaComments = (TextView) findViewById(R.id.media_comments);
+        mMediaDetails = (TextView) findViewById(R.id.media_details);
+
         reportBtn = findViewById(R.id.reportImage);
         playerView = findViewById(R.id.player_view);
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
@@ -63,6 +72,7 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
         PlayerManager.getSharedInstance(this).setPlayerListener(this);
 
+        setDetails();
 
         if(post.getPostType().equals("audio")) {
 
@@ -100,6 +110,14 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
         });
 
+    }
+
+    private void setDetails() {
+        mMediaTitle.setText(post.getTitle() + "");
+        mMediaDate.setText(post.getCreatedAt() + "");
+        mMediaViews.setText(post.getHit() + "");
+        mMediaComments.setText(post.getShowItemNumbers() + "");
+        mMediaDetails.setText(post.getContent() + "");
     }
 
     private void playMedia(String Path) {

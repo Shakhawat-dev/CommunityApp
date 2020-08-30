@@ -4,54 +4,144 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/black">
 
-    <FrameLayout
-        android:id="@+id/parent_relative"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_250sdp">
-
-
-        <TextView
-            android:id="@+id/titleTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:layout_marginTop="@dimen/_24sdp"
-            android:ellipsize="marquee"
-            android:gravity="center_horizontal"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:singleLine="true"
-            android:text=""
-            android:textColor="#000000"
-            android:textSize="@dimen/_15sdp"
-            android:textStyle="normal">
-
-        </TextView>
-
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/player_view"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:controller_layout_id="@layout/customsettings"
-            app:default_artwork="@drawable/musicicon"
-            app:hide_on_touch="false"
-            app:played_color="@color/colorPrimary"
-            app:resize_mode="fill"
-            app:show_buffering="always"
-            app:use_artwork="true" />
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/parent_relative"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_250sdp">
 
 
-        <ImageView
-            android:id="@+id/reportImage"
-            android:layout_width="@dimen/_25sdp"
-            android:layout_height="@dimen/_25sdp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/_10sdp"
-            android:background="@drawable/ic_report_black_24dp"
-            android:visibility="gone" />
+                <TextView
+                    android:id="@+id/titleTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="@dimen/_24sdp"
+                    android:ellipsize="marquee"
+                    android:gravity="center_horizontal"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="#000000"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="normal">
+
+                </TextView>
+
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:id="@+id/player_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:controller_layout_id="@layout/customsettings"
+                    app:default_artwork="@drawable/musicicon"
+                    app:hide_on_touch="false"
+                    app:played_color="@color/colorPrimary"
+                    app:resize_mode="fill"
+                    app:show_buffering="always"
+                    app:use_artwork="true" />
 
 
-    </FrameLayout>
+                <ImageView
+                    android:id="@+id/reportImage"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@drawable/ic_report_black_24dp"
+                    android:visibility="gone" />
+
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/media_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="22sp"
+                    android:maxLines="2"
+                    android:minLines="2"
+                    android:padding="8dp"
+                    android:textColor="@color/white"
+                    android:text="It is a long established fact that a reader will be distracted by the readable content of a page"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/media_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_baseline_date_range_10"
+                        android:gravity="center"
+                        android:drawableTint="@color/colorWhite"
+                        android:textColor="@color/colorWhite"
+                        android:drawablePadding="4dp"
+                        android:text="05/21/2020"  />
+
+                    <TextView
+                        android:id="@+id/media_views"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_baseline_remove_red_eye_24"
+                        android:drawablePadding="4dp"
+                        android:drawableTint="@color/colorWhite"
+                        android:textColor="@color/colorWhite"                android:layout_marginStart="8dp"
+                        android:text="0" />
+
+                    <TextView
+                        android:id="@+id/media_comments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_baseline_comment_24"
+                        android:drawablePadding="4dp"
+                        android:drawableTint="@color/colorWhite"
+                        android:textColor="@color/colorWhite"                android:layout_marginStart="8dp"
+                        android:text="0" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/media_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="4dp"
+                    android:padding="8dp"
+                    android:drawableTint="@color/colorWhite"
+                    android:textColor="@color/colorWhite"            android:text="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)." />
+
+                <Button
+                    android:id="@+id/media_see_all_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="See all comments"
+                    style="?attr/materialButtonOutlinedStyle" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
 
 </LinearLayout>
