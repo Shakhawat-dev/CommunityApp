@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -94,6 +95,7 @@ public class VideoFragment extends Fragment {
     List<Post_Model> filteredList = new ArrayList<>();
     ConstraintLayout emptyLayout;
     private ShimmerFrameLayout mShimmerViewContainer2;
+    SwipeRefreshLayout swipeContainer  ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,6 +110,16 @@ public class VideoFragment extends Fragment {
         emptyLayout = view.findViewById(R.id.emptyLayout);
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        //  code to refresh the list here.
+        swipeContainer.setOnRefreshListener(this::fetchTimelineAsync);
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
         loadMiscData();
         loadList();
 
@@ -219,7 +231,16 @@ public class VideoFragment extends Fragment {
             }
         });
     }
+    public void fetchTimelineAsync() {
 
+        adapter.clear();
+        mShimmerViewContainer2.setVisibility(View.VISIBLE);
+        mShimmerViewContainer2.startShimmer();
+        loadList();
+
+        swipeContainer.setRefreshing(false);
+
+    }
     @Override
     public void onResume() {
         super.onResume();

@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -94,6 +95,7 @@ public class AudioFragment extends Fragment {
     List<Post_Model> filteredList = new ArrayList<>( ) ;
     ConstraintLayout emptyLayout  ;
     String id = "1" ;
+    SwipeRefreshLayout swipeContainer  ;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -104,6 +106,16 @@ public class AudioFragment extends Fragment {
         emptyLayout = view.findViewById(R.id.emptyLayout) ;
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        //  code to refresh the list here.
+        swipeContainer.setOnRefreshListener(this::fetchTimelineAsync);
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
         context = view.getContext();
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -220,6 +232,16 @@ public class AudioFragment extends Fragment {
                 Log.d("TAG", "Error On Failed Response: " + t.getMessage());
             }
         });
+    }
+    public void fetchTimelineAsync() {
+
+        adapter.clear();
+        mShimmerViewContainer1.setVisibility(View.VISIBLE);
+        mShimmerViewContainer1.startShimmer();
+        loadList();
+
+        swipeContainer.setRefreshing(false);
+
     }
     @Override
     public void onResume() {
