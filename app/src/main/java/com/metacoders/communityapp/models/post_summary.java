@@ -6,14 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public  class post_summary {
-    // bou loge jogra -> nafi , shovo
-    //no idea ttl -> zuba   1.20 am
-    // part 2 :
-    //dotted condom  liya baire  giya thek  -> nafi
-    //no idea ttl -> zuba
-    //part 3 :
-    // bou vagce -> assume nafi vote dise shovo
-    //no idea ttl -> zuba
+
 
     @SerializedName("video")
     @Expose
