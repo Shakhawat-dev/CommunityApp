@@ -74,6 +74,10 @@ dependencies {
     implementation 'com.shobhitpuri.custombuttons:google-signin:1.1.0'
     //swipeRefesh Layout
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    // google sign in
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    //facebook sign in
+    implementation 'com.facebook.android:facebook-login:[5,6)'
 
 
 

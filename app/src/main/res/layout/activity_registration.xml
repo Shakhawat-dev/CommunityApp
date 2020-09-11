@@ -56,16 +56,17 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 android:textColor="@color/white" />
 
             <Button
+                android:id="@+id/gButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#DF4A32"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                app:icon="@mipmap/google_icon"
-                app:iconTint="@color/white"
-                app:iconSize="18dp"
-                app:iconPadding="4dp"
                 android:text="Connect with Google"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                app:icon="@mipmap/google_icon"
+                app:iconPadding="4dp"
+                app:iconSize="18dp"
+                app:iconTint="@color/white" />
 
             <Button
                 android:layout_width="match_parent"
