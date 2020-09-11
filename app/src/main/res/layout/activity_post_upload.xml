@@ -18,13 +18,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progress_bar">
 
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_150sdp"
+            app:default_artwork="@drawable/musicicon"
+            app:hide_on_touch="false"
+            app:played_color="@color/colorPrimary"
+            app:resize_mode="fill"
+            app:show_buffering="always"
+            app:use_artwork="true" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:chipIcon="@drawable/playbtn"
-            android:text="Video Uri" />
+            android:text="Video Uri"
+            app:chipIcon="@drawable/playbtn" />
 
         <ImageView
             android:layout_width="match_parent"

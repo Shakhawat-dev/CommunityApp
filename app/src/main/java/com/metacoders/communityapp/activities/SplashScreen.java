@@ -3,17 +3,26 @@ package com.metacoders.communityapp.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.utils.SharedPrefManager;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,27 +30,27 @@ import retrofit2.Response;
 
 public class SplashScreen extends AppCompatActivity {
 
-    SharedPrefManager  manager ;
+    SharedPrefManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        manager = new SharedPrefManager( getApplicationContext()) ;
+        manager = new SharedPrefManager(getApplicationContext());
 
-        getSupportActionBar().hide(); 
+        getSupportActionBar().hide();
 
-       Handler handler = new Handler();
-       handler.postDelayed(new Runnable() {
-           @Override
-           public void run() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
-               // to the activity
-               loadMiscData();
-           }
-       }, 200);
+                // to the activity
+                loadMiscData();
+            }
+        }, 200);
 
-
+      //  printKeyHash();
 
     }
 
@@ -63,8 +72,8 @@ public class SplashScreen extends AppCompatActivity {
 
                     allDataResponse dataResponse = response.body();
 
-                    Intent p = new Intent(getApplicationContext() , HomePage.class);
-                    p.putExtra("MISC" , dataResponse) ;
+                    Intent p = new Intent(getApplicationContext(), HomePage.class);
+                    p.putExtra("MISC", dataResponse);
 
                     startActivity(p);
 
@@ -91,9 +100,31 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onFailure(Call<allDataResponse> call, Throwable t) {
 
-                Toast.makeText(getApplicationContext() , ""+ t.getMessage() , Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "" + t.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         });
+    }
+
+    private void printKeyHash() {
+
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo("com.metacoders.communityapp",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+
+
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("Keyhash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

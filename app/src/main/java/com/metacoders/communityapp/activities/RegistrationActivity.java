@@ -14,6 +14,15 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -31,9 +40,10 @@ import com.metacoders.communityapp.models.RegistrationResponse;
 import com.metacoders.communityapp.models.UserModel;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -46,10 +56,10 @@ public class RegistrationActivity extends AppCompatActivity {
     private TextInputEditText mName, mUserName, mEmail, mPassword;
     private Button mSignUpBtn;
     CheckBox isCehcked;
-    Button googleBtn ;
+    Button googleBtn  , fbBtn,vk;
     GoogleSignInOptions gso ;
     GoogleSignInClient mGoogleSignInClient;
-
+    CallbackManager callbackManager  ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +67,7 @@ public class RegistrationActivity extends AppCompatActivity {
         isCehcked = findViewById(R.id.termsCheck);
 // google sign in builder
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-               .requestServerAuthCode("377758534352-4onskrq3rvnr7d8m3uekddh1hb5n178q.apps.googleusercontent.com")
+               .requestServerAuthCode("377780946002-5p5rvr3l34iroj52k02o2i1956ljgb76.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -91,6 +101,76 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
 
+        fbBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginManager.getInstance().logInWithReadPermissions(RegistrationActivity.this , Arrays.asList("email" , "public_profile"));
+                callbackManager = CallbackManager.Factory.create();
+
+                LoginManager.getInstance().registerCallback(callbackManager,
+                        new FacebookCallback<LoginResult>() {
+                            @Override
+                            public void onSuccess(LoginResult loginResult) {
+                                // App code
+                                Log.d("TAG", "onSuccess: "+ loginResult.getAccessToken());
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                // App code
+                                Log.d("TAG", "onCancel: Fb Cancel " );
+                            }
+
+                            @Override
+                            public void onError(FacebookException exception) {
+                                // App code
+                                Log.d("TAG", "Error:  "+ exception.getMessage()  );
+                            }
+
+                        });
+            }
+        });
+
+
+
+// token traker
+        AccessTokenTracker tokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+
+                if(currentAccessToken == null){
+                    Log.d("TAG", "onCurrentAccessTokenChanged:  nuLl"  );
+                }
+                else loadUserInfo(currentAccessToken);
+
+            }
+        } ;
+
+    }
+
+    private  void loadUserInfo(AccessToken accessToken ){
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+
+                try {
+                    String first_name = object.getString("first_name") ;
+                    String last_name = object.getString("last_name") ;
+                    String mail = object.getString("email") ;
+
+
+                    Log.d("TAG", "onCompleted: "+ first_name + " " + last_name + " " + mail)  ;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }) ;
+
+        Bundle parameters = new Bundle() ;
+        parameters.putString("fields" , "first_name,last_name,email,id" );
+        request.setParameters(parameters);
+        request.executeAsync() ;
     }
 
     private void googleSignIn() {
@@ -148,6 +228,9 @@ public class RegistrationActivity extends AppCompatActivity {
         mPassword = (TextInputEditText) findViewById(R.id.regi_pass);
         mSignUpBtn = (Button) findViewById(R.id.signUPBtn);
         googleBtn = findViewById(R.id.gButton) ;
+        vk = findViewById(R.id.vkIcon2) ;
+        fbBtn = findViewById(R.id.fbBtn) ;
+
 
     }
 
@@ -162,6 +245,10 @@ public class RegistrationActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
+
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -178,4 +265,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
         }
     }
+
+
 }

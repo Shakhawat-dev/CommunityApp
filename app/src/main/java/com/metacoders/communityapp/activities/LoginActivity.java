@@ -138,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         StringGen.token = userModel.getToken() ;
                         manager.saveUser(userModel.getEmail());
+                        Log.d("TAG", "onResponse: " + userModel.getToken());
                      //   pbar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, HomePage.class);
                         startActivity(intent);

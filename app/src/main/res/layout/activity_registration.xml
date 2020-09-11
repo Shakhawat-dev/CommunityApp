@@ -44,6 +44,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
             android:orientation="vertical">
 
             <Button
+                android:id="@+id/fbBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#4267b2"
@@ -69,6 +70,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 app:iconTint="@color/white" />
 
             <Button
+                android:id="@+id/vkIcon2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#4c75a3"
@@ -76,6 +78,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                 app:icon="@mipmap/vk_icon2"
                 app:iconTint="@color/white"
                 app:iconSize="18dp"
+                android:visibility="gone"
                 app:iconPadding="4dp"
                 android:text="Connect with VK"
                 android:textColor="@color/white" />

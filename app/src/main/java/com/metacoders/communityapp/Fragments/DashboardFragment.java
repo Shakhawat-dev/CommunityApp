@@ -156,7 +156,7 @@ public class DashboardFragment extends Fragment {
     public void loadSummary() {
 
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
-        String accessTokens = sharedPrefManager.getUserToken();
+        String accessTokens = sharedPrefManager.getUser().getToken();
         Log.d("TAG", "loadList: activity " + accessTokens);
 
 
@@ -207,39 +207,47 @@ public class DashboardFragment extends Fragment {
                 if (response.code() == 201) {
                     post_modelList = ownListModelList.getGetNewsList();
 
-                    NewsFeedAdapter adapter = new NewsFeedAdapter(context, post_modelList, itemClickListenter);
+                    try{
+                        if (post_modelList.size() == 0) {
 
-                    // setting the adapter ;
-                    recyclerView.setAdapter(adapter);
-                    // checking if the list is empty or not
-                    if (post_modelList.size() == 0) {
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        } else {
+                            NewsFeedAdapter adapter = new NewsFeedAdapter(context, post_modelList, itemClickListenter);
+                            // setting the adapter ;
+                            recyclerView.setAdapter(adapter);
+                            // checking if the list is empty or not
+                            emptyLayout.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
+
+                        recyclerView.getViewTreeObserver().addOnPreDrawListener(
+
+                                new ViewTreeObserver.OnPreDrawListener() {
+                                    @Override
+                                    public boolean onPreDraw() {
+
+                                        recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                                        for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                                            View v = recyclerView.getChildAt(i);
+                                            v.setAlpha(0.0f);
+                                            v.animate()
+                                                    .alpha(1.0f)
+                                                    .setDuration(300)
+                                                    .setStartDelay(i * 50)
+                                                    .start();
+                                        }
+                                        return true;
+                                    }
+                                }
+                        );
+                    }
+                    catch ( Exception e ){
+
                         emptyLayout.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
-                    } else {
-                        emptyLayout.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
                     }
 
-                    recyclerView.getViewTreeObserver().addOnPreDrawListener(
-
-                            new ViewTreeObserver.OnPreDrawListener() {
-                                @Override
-                                public boolean onPreDraw() {
-
-                                    recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                                    for (int i = 0; i < recyclerView.getChildCount(); i++) {
-                                        View v = recyclerView.getChildAt(i);
-                                        v.setAlpha(0.0f);
-                                        v.animate()
-                                                .alpha(1.0f)
-                                                .setDuration(300)
-                                                .setStartDelay(i * 50)
-                                                .start();
-                                    }
-                                    return true;
-                                }
-                            }
-                    );
 
 
                     shimmer_view_container_dash.stopShimmer();

@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
 import com.metacoders.communityapp.R;
@@ -38,6 +39,9 @@ import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.allDataResponse;
+import com.metacoders.communityapp.utils.CallBacks;
+import com.metacoders.communityapp.utils.Constants;
+import com.metacoders.communityapp.utils.PlayerManager;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -57,7 +61,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostUploadActivity extends AppCompatActivity {
+public class PostUploadActivity extends AppCompatActivity implements CallBacks.playerCallBack {
 
     Uri mediaUri = null;
     String uriPath = null;
@@ -81,12 +85,18 @@ public class PostUploadActivity extends AppCompatActivity {
     String catid = "null", langid = "null";
     private Bitmap compressedImageFile;
     Uri mFilePathUri = null;
+    PlayerView playerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_upload);
         chip = findViewById(R.id.chip);
+        playerView = findViewById(R.id.player_view);
+        playerView.setUseArtwork(true);
+        playerView.setPlayer(PlayerManager.getSharedInstance(PostUploadActivity.this).getPlayerView().getPlayer());
+        PlayerManager.getSharedInstance(this).setPlayerListener(this);
         progressDialog = new ProgressDialog(PostUploadActivity.this);
         progressDialog.setMessage("Uploading...");
 
@@ -107,25 +117,37 @@ public class PostUploadActivity extends AppCompatActivity {
                 Cursor c = getContentResolver().query(test, null, null, null, null);
                 c.moveToFirst();
                 String name = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                // Log.d("TAGERROR" ,  + "") ;
+
                 chip.setText(name);
 
                 c.close();
 
 
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.d("TAGERROR", e.getMessage() + "");
-                String rand  = getSaltString() ;
-               if( postType.contains("audio")){
-                    chip.setText(rand+".mp3");
-               }
-               else {
-                   chip.setText(rand+".mp4");
-               }
+                String rand = getSaltString();
+
+                if (postType.contains("audio")) {
+                    chip.setText(rand + ".mp3");
+                } else {
+                    chip.setText(rand + ".mp4");
+                }
 
 
             }
+
+            chip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        playMedia(getIntent().getStringExtra("path"));
+                    } catch (Exception e) {
+
+                    }
+
+
+                }
+            });
         }
         // define Views ...
         addImage = findViewById(R.id.add_image);
@@ -466,6 +488,29 @@ public class PostUploadActivity extends AppCompatActivity {
         });
     }
 
+    private void playMedia(String Path) {
+
+        String path;
+
+        try {
+            path = getPath(PostUploadActivity.this, Uri.parse(Path));
+
+        } catch (Exception e) {
+            path = Path;
+
+        }
+        if (TextUtils.isEmpty(path)) {
+            path = Path;
+
+        }
+
+        if (PlayerManager.getSharedInstance(PostUploadActivity.this).isPlayerPlaying()) {
+            PlayerManager.getSharedInstance(PostUploadActivity.this).stopPlayer();
+        }
+
+        PlayerManager.getSharedInstance(PostUploadActivity.this).playStream(path);
+    }
+
     @Override
     protected void onStart() {
         loadMiscData();
@@ -486,4 +531,47 @@ public class PostUploadActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onItemClickOnItem(Integer albumId) {
+
+    }
+
+    @Override
+    public void onPlayingEnd() {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+        PlayerManager.getSharedInstance(PostUploadActivity.this).stopPlayer();
+        PlayerManager.getSharedInstance(PostUploadActivity.this).releasePlayer();
+
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        PlayerManager.getSharedInstance(PostUploadActivity.this).pausePlayer();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if (PlayerManager.getSharedInstance(PostUploadActivity.this).isPlayerPlaying()) {
+            PlayerManager.getSharedInstance(PostUploadActivity.this).stopPlayer();
+            PlayerManager.getSharedInstance(PostUploadActivity.this).releasePlayer();
+
+        }
+        finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+
+    }
 }
