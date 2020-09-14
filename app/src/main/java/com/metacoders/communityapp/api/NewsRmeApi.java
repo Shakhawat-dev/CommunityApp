@@ -99,6 +99,7 @@ public interface NewsRmeApi {
     Call<SinglePostDetails> getPostDetails(@Path("id") String id );
 
 
+
     @Multipart
     @POST("profile/store-photo")
     Call<UploadResult> uploadImage(@Part("image\"; filename=\"myfile.jpg\" ") RequestBody file);
@@ -127,6 +128,16 @@ public interface NewsRmeApi {
                                                           @Part("sub_category_id")   RequestBody sub_category_id,
                                                           @Part MultipartBody.Part image);
     
+    // socila login
 
+    @FormUrlEncoded
+    @POST("auth/social-login")
+    Call<LoginResponse> socialReg(
+            @Field("user_name") String userName,
+            @Field("email") String email,
+            @Field("name") String name,
+            @Field("google_id") String google_id,  //facebook_id
+            @Field("facebook_id") String facebook_id
+    );
 
 }

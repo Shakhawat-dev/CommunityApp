@@ -76,6 +76,7 @@ public class SplashScreen extends AppCompatActivity {
                     p.putExtra("MISC", dataResponse);
 
                     startActivity(p);
+                    finish();
 
 //                    categoryList = dataResponse.getCategories();
 //                    languageList = dataResponse.getLanguageList();

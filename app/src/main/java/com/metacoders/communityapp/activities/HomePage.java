@@ -65,6 +65,9 @@ public class HomePage extends AppCompatActivity {
         adaper = new viewPager2_adapter(HomePage.this);
         // navigationView = findViewById(R.id.navigation_view);
 
+        SharedPrefManager.getInstance(getApplicationContext()).getUser().getName() ;
+        Log.d("detais", "onCreate: " +SharedPrefManager.getInstance(getApplicationContext()).getUser().getName());
+        Log.d("detais", "onCreate: " +SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn());
 
         navigationBar.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         // getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, new dashboardFragment()).commit();

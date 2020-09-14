@@ -23,6 +23,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.exoplayer2.C;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -40,6 +41,8 @@ import com.metacoders.communityapp.models.RegistrationResponse;
 import com.metacoders.communityapp.models.UserModel;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
+import com.metacoders.communityapp.utils.StringGen;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,14 +55,16 @@ import retrofit2.Response;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private static final int RC_SIGN_IN = 1000;
+
     private TextInputEditText mName, mUserName, mEmail, mPassword;
     private Button mSignUpBtn;
     CheckBox isCehcked;
-    Button googleBtn  , fbBtn,vk;
-    GoogleSignInOptions gso ;
+    Button googleBtn, fbBtn, vk;
+    GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
-    CallbackManager callbackManager  ;
+    CallbackManager callbackManager;
+    private static final int RC_SIGN_IN = 1000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,15 +72,15 @@ public class RegistrationActivity extends AppCompatActivity {
         isCehcked = findViewById(R.id.termsCheck);
 // google sign in builder
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-               .requestServerAuthCode("377780946002-5p5rvr3l34iroj52k02o2i1956ljgb76.apps.googleusercontent.com")
+                .requestServerAuthCode("377780946002-5p5rvr3l34iroj52k02o2i1956ljgb76.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
         /*
-        *if account is null then not yet signed in ;
-        *
-        */
-       //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+         *if account is null then not yet signed in ;
+         *
+         */
+        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         getSupportActionBar().hide();
@@ -104,7 +109,7 @@ public class RegistrationActivity extends AppCompatActivity {
         fbBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(RegistrationActivity.this , Arrays.asList("email" , "public_profile"));
+                LoginManager.getInstance().logInWithReadPermissions(RegistrationActivity.this, Arrays.asList("email", "public_profile"));
                 callbackManager = CallbackManager.Factory.create();
 
                 LoginManager.getInstance().registerCallback(callbackManager,
@@ -112,19 +117,19 @@ public class RegistrationActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(LoginResult loginResult) {
                                 // App code
-                                Log.d("TAG", "onSuccess: "+ loginResult.getAccessToken());
+                                Log.d("TAG", "onSuccess: " + loginResult.getAccessToken());
                             }
 
                             @Override
                             public void onCancel() {
                                 // App code
-                                Log.d("TAG", "onCancel: Fb Cancel " );
+                                Log.d("TAG", "onCancel: Fb Cancel ");
                             }
 
                             @Override
                             public void onError(FacebookException exception) {
                                 // App code
-                                Log.d("TAG", "Error:  "+ exception.getMessage()  );
+                                Log.d("TAG", "Error:  " + exception.getMessage());
                             }
 
                         });
@@ -132,45 +137,46 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
 
-
 // token traker
         AccessTokenTracker tokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
 
-                if(currentAccessToken == null){
-                    Log.d("TAG", "onCurrentAccessTokenChanged:  nuLl"  );
-                }
-                else loadUserInfo(currentAccessToken);
+                if (currentAccessToken == null) {
+                    Log.d("TAG", "onCurrentAccessTokenChanged:  nuLl");
+                } else loadUserInfo(currentAccessToken);
 
             }
-        } ;
+        };
 
     }
 
-    private  void loadUserInfo(AccessToken accessToken ){
+    private void loadUserInfo(AccessToken accessToken) {
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
 
                 try {
-                    String first_name = object.getString("first_name") ;
-                    String last_name = object.getString("last_name") ;
-                    String mail = object.getString("email") ;
+                    String first_name = object.getString("first_name");
+                    String last_name = object.getString("last_name");
+                    String mail = object.getString("email");
+                    String id = object.getString("id") ;
 
+//            String name, String userName, String fb_Id, String email, String google_id
+                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name , id, mail,"null" ) ;
 
-                    Log.d("TAG", "onCompleted: "+ first_name + " " + last_name + " " + mail)  ;
+                    Log.d("TAG", "onCompleted: " + first_name + " " + last_name + " " + mail);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }
-        }) ;
+        });
 
-        Bundle parameters = new Bundle() ;
-        parameters.putString("fields" , "first_name,last_name,email,id" );
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "first_name,last_name,email,id");
         request.setParameters(parameters);
-        request.executeAsync() ;
+        request.executeAsync();
     }
 
     private void googleSignIn() {
@@ -227,9 +233,10 @@ public class RegistrationActivity extends AppCompatActivity {
         mEmail = (TextInputEditText) findViewById(R.id.regi_email);
         mPassword = (TextInputEditText) findViewById(R.id.regi_pass);
         mSignUpBtn = (Button) findViewById(R.id.signUPBtn);
-        googleBtn = findViewById(R.id.gButton) ;
-        vk = findViewById(R.id.vkIcon2) ;
-        fbBtn = findViewById(R.id.fbBtn) ;
+
+        vk = findViewById(R.id.vkIcon2);
+        googleBtn = findViewById(R.id.gButton);
+        fbBtn = findViewById(R.id.fbBtn);
 
 
     }
@@ -245,8 +252,11 @@ public class RegistrationActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
+        else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
 
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+
         super.onActivityResult(requestCode, resultCode, data);
 
     }
@@ -256,14 +266,70 @@ public class RegistrationActivity extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             // Signed in successfully, show authenticated UI.
-            Log.d("TAG", "handleSignInResult: "+ account.getDisplayName()
-            + account.getId() + " " + account.getIdToken());
+            Log.d("TAG", "handleSignInResult: " + account.getDisplayName()
+                    + account.getId() + " " + account.getIdToken());
+//            String name, String userName, String fb_Id, String email, String google_id
+            RegisterWithSocial(account.getDisplayName(), account.getDisplayName() , "null" , account.getEmail(),account.getId() ) ;
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Toast.makeText(getApplicationContext(), "Failed : Try Again " , Toast.LENGTH_LONG).show();
             Log.w("TAG", "signInResult:failed code=" + e.getStatusCode());
 
         }
+    }
+
+    public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id) {
+        Call<LoginResponse> call = RetrofitClient.getInstance()
+                .getApi()
+                .socialReg(
+                        userName,
+                        email,
+                        name,
+                        fb_Id,
+                        google_id
+                );
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if(response.code()==201){
+
+                            if(!response.body().getError()){
+
+                                // reg compelete
+
+                                UserModel userModel = new UserModel();
+                                userModel = response.body().getUser();
+
+                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
+                                        userModel.getUsername(),
+                                        userModel.getEmail(), userModel.getToken(),userModel.getRole(), userModel.getUserType() , userModel.getAvatar());
+
+
+                                StringGen.token = userModel.getToken() ;
+                                SharedPrefManager.getInstance(getApplicationContext()).saveUser(userModel.getEmail());
+                                Log.d("TAG", "onResponse: " + userModel.getToken());
+                                //   pbar.setVisibility(View.GONE);
+                                Intent intent = new Intent(RegistrationActivity.this, HomePage.class);
+                                startActivity(intent);
+                                finish();
+
+                            }
+                            else {
+                                // error
+                                Toast.makeText(getApplicationContext(), "Error " + response.body().getError() , Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Error " + t.getMessage() , Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+
     }
 
 
