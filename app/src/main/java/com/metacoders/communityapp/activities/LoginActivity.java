@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
         fbBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile"));
+                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile" ));
                 callbackManager = CallbackManager.Factory.create();
 
                 LoginManager.getInstance().registerCallback(callbackManager,
@@ -224,12 +224,12 @@ public class LoginActivity extends AppCompatActivity {
 
                         SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
                                 userModel.getUsername(),
-                                userModel.getEmail(), userModel.getToken(),userModel.getRole(), userModel.getUserType() , userModel.getAvatar());
+                                userModel.getEmail(), response.body().getToken(),userModel.getRole(), userModel.getUserType() , userModel.getAvatar());
 
 
-                        StringGen.token = userModel.getToken() ;
+                        StringGen.token = response.body().getToken() ;
                         manager.saveUser(userModel.getEmail());
-                        Log.d("TAG", "onResponse: " + userModel.getToken());
+                        Log.d("TAGE", "onResponse: " + response.body().getToken());
                      //   pbar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, HomePage.class);
                         startActivity(intent);

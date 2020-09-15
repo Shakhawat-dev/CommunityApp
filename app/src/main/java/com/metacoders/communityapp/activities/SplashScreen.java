@@ -50,7 +50,7 @@ public class SplashScreen extends AppCompatActivity {
             }
         }, 200);
 
-      //  printKeyHash();
+        printKeyHash();
 
     }
 

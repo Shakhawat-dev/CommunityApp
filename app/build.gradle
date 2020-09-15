@@ -8,8 +8,8 @@ android {
         applicationId "com.metacoders.communityapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 3
-        versionName "1.50-demo"
+        versionCode 4
+        versionName "1.55-demo"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
