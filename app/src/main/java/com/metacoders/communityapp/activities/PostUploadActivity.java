@@ -289,7 +289,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             progressDialog.show();
             progressDialog.setCancelable(false);
 
-            api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
+
 
             if (postType.equals("post")) {
 
@@ -348,7 +348,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
 
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
-
+                api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
 
                 NetworkCall = api.uploadFilePost(body2, createPartFromString(title), createPartFromString(title.toLowerCase()),
                         createPartFromString(desc),

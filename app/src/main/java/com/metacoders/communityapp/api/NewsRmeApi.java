@@ -140,4 +140,10 @@ public interface NewsRmeApi {
             @Field("facebook_id") String facebook_id
     );
 
+    @Multipart
+    @POST("profile/store-document")
+    Call<RegistrationResponse>sendDOc(
+            @Part("image\"; filename=\"myfile.jpg\" ") RequestBody file
+    );
+
 }

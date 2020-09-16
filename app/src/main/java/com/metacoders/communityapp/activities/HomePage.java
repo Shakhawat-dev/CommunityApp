@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -24,6 +25,11 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
@@ -54,7 +60,7 @@ public class HomePage extends AppCompatActivity {
         viewPager2_adapter adaper;
 
         getSupportActionBar().hide();
-
+        RequestPermission();
         final BottomNavigationView navigationBar = findViewById(R.id.bottom_navigation_);
         viewPager = findViewById(R.id.view_pager);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -275,6 +281,28 @@ public class HomePage extends AppCompatActivity {
 
     }
 
+    private void RequestPermission() {
+
+        Dexter.withContext(HomePage.this)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE ,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE ,
+                        Manifest.permission.CAMERA ,
+                        Manifest.permission.RECORD_AUDIO )
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+
+                        permissionToken.continuePermissionRequest();
+                    }
+                }).onSameThread().check();
+    }
     private String[] generateLangArray() {
 
         langList = dataResponse.getLanguageList();
