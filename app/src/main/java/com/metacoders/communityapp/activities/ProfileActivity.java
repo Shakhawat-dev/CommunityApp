@@ -257,7 +257,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
 
-        uploadDocumentation(mFilePathUri);
+       // uploadDocumentation(mFilePathUri);
     }
 
 
