@@ -146,4 +146,21 @@ public interface NewsRmeApi {
             @Part("image\"; filename=\"myfile.jpg\" ") RequestBody file
     );
 
+
+    @FormUrlEncoded
+    @POST("profile/update-profile-info")
+    Call<RegistrationResponse> update_profile(
+            @Field("name") String name,
+            @Field("mobile") String mobile,
+            @Field("email") String email,
+            @Field("latitude") String latitude,
+            @Field("longitude") String longitude,
+            @Field("profession") String profession,
+            @Field("last_degree") String last_degree,
+            @Field("city") String city,
+            @Field("country") String country,
+              @Field("address") String address
+
+    );
+
 }

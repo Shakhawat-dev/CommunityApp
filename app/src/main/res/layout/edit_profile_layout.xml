@@ -38,6 +38,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
+                        android:id="@+id/name"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_baseline_person_24"
                         android:drawableTint="@color/colorPrimary"
@@ -57,6 +58,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
+                        android:id="@+id/email_et"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_email"
                         android:drawableTint="@color/colorPrimary"
@@ -77,6 +79,46 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/mobilePhone"
+                        android:drawableStart="@drawable/ic_baseline_phone_android_24"
+                        android:drawableTint="@color/colorPrimary"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Country "
+                    android:layout_marginTop="8dp"
+                    app:boxStrokeColor="@color/colorPrimary"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextColor="@color/black">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/country"
+                        android:drawableStart="@drawable/ic_baseline_phone_android_24"
+                        android:drawableTint="@color/colorPrimary"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="City "
+                    android:layout_marginTop="8dp"
+                    app:boxStrokeColor="@color/colorPrimary"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextColor="@color/black">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/city"
                         android:drawableStart="@drawable/ic_baseline_phone_android_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
@@ -89,59 +131,9 @@
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputLayout
 
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:hint="Country"
-                        app:boxStrokeColor="@color/colorPrimary"
-                        app:hintTextColor="@color/black">
-
-                        <Spinner
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginTop="4dp"
-                        android:layout_weight="1"
-                        android:hint="State"
-                        app:boxStrokeColor="@color/colorPrimary"
-                        app:hintAnimationEnabled="true"
-                        app:hintTextColor="@color/black">
-
-                        <Spinner
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_weight="1"
-                    android:hint="City"
-                    app:boxStrokeColor="@color/colorPrimary"
-                    app:hintAnimationEnabled="true"
-                    app:hintTextColor="@color/black">
-
-                    <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -154,7 +146,7 @@
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/desc_et"
+                        android:id="@+id/address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
@@ -176,6 +168,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/profession"
                         android:drawableStart="@drawable/ic_baseline_business_center_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
@@ -195,6 +188,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/lastDegree"
                         android:drawableStart="@drawable/ic_baseline_school_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
@@ -213,20 +207,24 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
+                        android:id="@+id/latlong"
+
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_baseline_school_24"
+                        android:drawableStart="@drawable/ic_baseline_edit_location_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
+                    android:id="@+id/update"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Update" />
 
                 <Button
+                    android:id="@+id/cancel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"

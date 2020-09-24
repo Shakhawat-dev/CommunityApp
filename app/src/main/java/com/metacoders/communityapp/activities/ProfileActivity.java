@@ -64,6 +64,8 @@ public class ProfileActivity extends AppCompatActivity {
     public static int PICK_IMAGE = 50000;
     private Bitmap compressedImageFile;
     Uri mFilePathUri;
+    Profile_Model model  = null;
+
     File file;
 
     @Override
@@ -98,6 +100,18 @@ public class ProfileActivity extends AppCompatActivity {
             try {
                 finish();
             } catch (Exception e) {
+
+            }
+        });
+
+        findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(model != null){
+                    Intent o = new Intent(context, EditProfile.class);
+                    o.putExtra("MODEL" , model) ;
+                    startActivity(o);
+                }
 
             }
         });
@@ -141,7 +155,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         });
 
-        LoadData();
+
 
 
     }
@@ -162,7 +176,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void LoadData() {
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
         String accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
+//        Log.d("TAG", "loadList: activity " + accessTokens);
 
 
 //        Call<News_List_Model> NetworkCall = RetrofitClient
@@ -183,7 +197,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Profile_Model.Profile_Response models = response.body();
                     // now get into it
                     Profile_Model singleProfile = models.getProfileInfo();
-
+                    model = singleProfile ;
                     setData(singleProfile);
 
                 } else {
@@ -207,6 +221,7 @@ public class ProfileActivity extends AppCompatActivity {
             address.setText(singleProfile.getAddress());
             email.setText(singleProfile.getEmail());
             emailHeader.setText(singleProfile.getEmail());
+            phone.setText(singleProfile.getMobile());
             // load the proifle image
             Glide.with(context).load(Constants.IMAGE_URL + singleProfile.getAvatar())
                     .placeholder(R.drawable.placeholder)
@@ -459,5 +474,11 @@ public class ProfileActivity extends AppCompatActivity {
         String result = cursor.getString(column_index);
         cursor.close();
         return result;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LoadData();
     }
 }

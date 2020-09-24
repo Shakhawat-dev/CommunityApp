@@ -60,6 +60,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Part;
 
 public class PostUploadActivity extends AppCompatActivity implements CallBacks.playerCallBack {
 
@@ -350,10 +351,20 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
                 api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
 
+//                @Part MultipartBody.Part file,
+//                @Part("title")  RequestBody  title,
+//                @Part("title_slug") RequestBody title_slug,
+//                @Part("content")  RequestBody content,
+//                @Part("post_type")  RequestBody post_type,
+//                @Part("lang_id")  RequestBody lang_id,
+//                @Part("category_id")   RequestBody category_id,
+//                @Part("sub_category_id")   RequestBody sub_category_id,
+//                @Part MultipartBody.Part image
+
                 NetworkCall = api.uploadFilePost(body2, createPartFromString(title), createPartFromString(title.toLowerCase()),
                         createPartFromString(desc),
-                        createPartFromString(postType), createPartFromString("1"),
-                        createPartFromString("1"), createPartFromString("1"),
+                        createPartFromString(postType), createPartFromString(langid),
+                        createPartFromString(catid), createPartFromString("1"),
                         body1);
 
 
