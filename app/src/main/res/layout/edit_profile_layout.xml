@@ -100,7 +100,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/country"
-                        android:drawableStart="@drawable/ic_baseline_phone_android_24"
+                        android:drawableStart="@drawable/ic_baseline_language_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
 
@@ -119,7 +119,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/city"
-                        android:drawableStart="@drawable/ic_baseline_phone_android_24"
+                        android:drawableStart="@drawable/ic_baseline_location_city_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
 
