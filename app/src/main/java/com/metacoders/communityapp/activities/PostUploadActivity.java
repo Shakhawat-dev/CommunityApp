@@ -106,7 +106,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         postType = o.getStringExtra("media");
         if (!postType.contains("post")) {
 
-            Toast.makeText(getApplicationContext(), getIntent().getStringExtra("path"), Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getApplicationContext(), getIntent().getStringExtra("path"), Toast.LENGTH_SHORT).show();
             chip.setText("Media File Added ");
             try {
 
@@ -134,6 +134,12 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                     chip.setText(rand + ".mp4");
                 }
 
+
+            }
+            try{
+                playMedia(getIntent().getStringExtra("path"));
+            }
+            catch (Exception e ){
 
             }
 
