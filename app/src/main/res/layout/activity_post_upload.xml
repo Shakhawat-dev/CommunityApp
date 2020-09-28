@@ -48,6 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Video Uri"
+                    android:visibility="gone"
                     app:chipIcon="@drawable/playbtn" />
 
                 <ImageView

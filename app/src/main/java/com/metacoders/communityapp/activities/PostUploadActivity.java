@@ -109,7 +109,6 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
           //  Toast.makeText(getApplicationContext(), getIntent().getStringExtra("path"), Toast.LENGTH_SHORT).show();
             chip.setText("Media File Added ");
             try {
-
 //                  URI uri = new URI(getIntent().getStringExtra("path"));
 //                  URL videoUrl = uri.toURL();
 //                  File tempFile = new File(videoUrl.getFile());
@@ -156,6 +155,10 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 }
             });
         }
+        else {
+            playerView.setVisibility(View.GONE);
+        }
+
         // define Views ...
         addImage = findViewById(R.id.add_image);
         title = findViewById(R.id.title_et);
