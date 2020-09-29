@@ -286,8 +286,8 @@ public class RegistrationActivity extends AppCompatActivity {
                         userName,
                         email,
                         name,
-                        fb_Id,
-                        google_id
+                        google_id,
+                        fb_Id
                 );
         call.enqueue(new Callback<LoginResponse>() {
             @Override

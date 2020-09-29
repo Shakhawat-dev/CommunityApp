@@ -1,10 +1,12 @@
 package com.metacoders.communityapp.api;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.metacoders.communityapp.utils.Constants;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -22,11 +24,12 @@ public class ServiceGenerator {
 
     public static <S> S createService(
             Class<S> serviceClass, final String authToken) {
-        if (!TextUtils.isEmpty(authToken)) {
+        if (!authToken.equals("00")) {
             tokenInterceptor2 interceptor =
                     new tokenInterceptor2(authToken);
 
             if (!httpClient.interceptors().contains(interceptor)) {
+
                 httpClient.addInterceptor(interceptor);
                 retrofit =
                         new Retrofit.Builder()
@@ -35,13 +38,25 @@ public class ServiceGenerator {
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
 
-
+//                Log.d("TAG", "createService: ME OffasdfN  "  );
             }
         } else if ( authToken.equals("00")){
+
+            Log.d("TAG", "createService: ME ON  "  );
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+
+
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(logging)
+                    .build();
             retrofit =
                     new Retrofit.Builder()
                             .baseUrl(API_BASE_URL)
+
                             .addConverterFactory(GsonConverterFactory.create())
+                            .client(client)
                             .build();
         }
 

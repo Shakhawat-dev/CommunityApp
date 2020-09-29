@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.login.LoginManager;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -93,6 +94,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         LogOutCard.setOnClickListener(v -> {
 
+            try {
+                LoginManager.getInstance().logOut();
+            } catch (Exception e) {
+
+            }
             Intent o = new Intent(context, HomePage.class);
             SharedPrefManager manager = new SharedPrefManager(context);
             manager.logout();

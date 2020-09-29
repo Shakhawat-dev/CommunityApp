@@ -53,14 +53,15 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Field;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private TextView registerTV , forget_pass_tv ;
+    private TextView registerTV, forget_pass_tv;
     private TextInputEditText mUsername, mPassword;
     private Button mLoginBtn;
-    SharedPrefManager manager ;
-    ProgressBar pbar ;
+    SharedPrefManager manager;
+    ProgressBar pbar;
     Button googleBtn, fbBtn, vk;
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -73,11 +74,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         googleBtn = findViewById(R.id.gButton);
         fbBtn = findViewById(R.id.fbBtn);
-        pbar = findViewById(R.id.progress_bar) ;
+        pbar = findViewById(R.id.progress_bar);
         pbar.setVisibility(View.GONE);
-        manager = new SharedPrefManager( getApplicationContext() ) ;
+        manager = new SharedPrefManager(getApplicationContext());
         initializations();
         getSupportActionBar().hide();
+
 
         // google sign in builder
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -95,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         initializations();
 
+
         googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         fbBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile" ));
+                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile"));
                 callbackManager = CallbackManager.Factory.create();
 
                 LoginManager.getInstance().registerCallback(callbackManager,
@@ -127,6 +130,11 @@ public class LoginActivity extends AppCompatActivity {
                             public void onError(FacebookException exception) {
                                 // App code
                                 Log.d("TAG", "Error:  " + exception.getMessage());
+                                try {
+                                    LoginManager.getInstance().logOut();
+                                } catch (Exception e) {
+
+                                }
                             }
 
                         });
@@ -139,12 +147,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
 
-                if (currentAccessToken == null) {
-                    Log.d("TAG", "onCurrentAccessTokenChanged:  nuLl");
-                } else loadUserInfo(currentAccessToken);
+                loadUserInfo(currentAccessToken);
 
             }
         };
+
+
         forget_pass_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,8 +165,9 @@ public class LoginActivity extends AppCompatActivity {
         });
         registerTV.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
-               startActivity(intent);
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -200,37 +209,36 @@ public class LoginActivity extends AppCompatActivity {
 //                .getApi()
 //                .getNewsList();
 
-            NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
+            NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-            Call<LoginResponse> NetworkCall = api.login(userName, password) ;
+            Call<LoginResponse> NetworkCall = api.login(userName, password);
 
             NetworkCall.enqueue(new Callback<LoginResponse>() {
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                     Log.d(Constants.TAG, "onResponse: " + response.body().toString());
 
-                    LoginResponse res = response.body() ;
+                    LoginResponse res = response.body();
 
-                    if(res.getError()){
+                    if (res.getError()) {
                         // user pass or name wrong
                         pbar.setVisibility(View.GONE);
-                        Toast.makeText(getApplicationContext() , "Login Failed " , Toast.LENGTH_SHORT)
+                        Toast.makeText(getApplicationContext(), "Login Failed ", Toast.LENGTH_SHORT)
                                 .show();
-                    }
-                    else {
+                    } else {
 
                         UserModel userModel = new UserModel();
                         userModel = response.body().getUser();
 
                         SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
                                 userModel.getUsername(),
-                                userModel.getEmail(), response.body().getToken(),userModel.getRole(), userModel.getUserType() , userModel.getAvatar());
+                                userModel.getEmail(), response.body().getToken(), userModel.getRole(), userModel.getUserType(), userModel.getAvatar());
 
 
-                        StringGen.token = response.body().getToken() ;
+                        StringGen.token = response.body().getToken();
                         manager.saveUser(userModel.getEmail());
                         Log.d("TAGE", "onResponse: " + response.body().getToken());
-                     //   pbar.setVisibility(View.GONE);
+                        //   pbar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, HomePage.class);
                         startActivity(intent);
                         finish();
@@ -266,14 +274,16 @@ public class LoginActivity extends AppCompatActivity {
                     String first_name = object.getString("first_name");
                     String last_name = object.getString("last_name");
                     String mail = object.getString("email");
-                    String id = object.getString("id") ;
+                    String id = object.getString("id");
 
-//            String name, String userName, String fb_Id, String email, String google_id
-                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name , id, mail,"null") ;
+//            String name, String userName, String fb_Id, String email, String google_id)
+                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name, id, mail, "null");
 
-                    Log.d("TAG", "onCompleted: " + first_name + " " + last_name + " " + mail);
-                } catch (JSONException e) {
+                    Log.d("TAG", "onCompleted: " + first_name + " " + last_name + " " + mail + "iD " + id);
+                } catch (Exception e) {
                     e.printStackTrace();
+                    Log.d("ERROR", "onCompleted: " +  e.getMessage());
+
                 }
 
             }
@@ -300,8 +310,7 @@ public class LoginActivity extends AppCompatActivity {
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        }
-        else {
+        } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
 
@@ -318,11 +327,11 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("TAG", "handleSignInResult: " + account.getDisplayName()
                     + account.getId() + " ");
 //            String name, String userName, String fb_Id, String email, String google_id
-            RegisterWithSocial(account.getDisplayName(), account.getDisplayName() , "null" , account.getEmail(),account.getId() ) ;
+            RegisterWithSocial(account.getDisplayName(), account.getDisplayName(), "null", account.getEmail(), account.getId());
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Toast.makeText(getApplicationContext(), "Failed : Try Again " , Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Failed : Try Again ", Toast.LENGTH_LONG).show();
             Log.w("TAG", "signInResult:failed code=" + e.getStatusCode());
 
         }
@@ -333,22 +342,26 @@ public class LoginActivity extends AppCompatActivity {
 
         pbar.setVisibility(View.VISIBLE);
 
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
-
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
+//        @Field("user_name") String userName,
+//        @Field("email") String email,
+//        @Field("name") String name,
+//        @Field("google_id") String google_id,  //facebook_id
+//        @Field("") String facebook_id
         Call<LoginResponse> callwd = api.socialReg(
                 userName,
                 email,
                 name,
-                fb_Id,
-                google_id
+                google_id,
+                fb_Id
         );
 
         callwd.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if(response.code()==201){
+                if (response.code() == 201) {
 
-                    if(!response.body().getError()){
+                    if (!response.body().getError()) {
 
                         // reg compelete
 
@@ -357,32 +370,32 @@ public class LoginActivity extends AppCompatActivity {
 
                         SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
                                 userModel.getUsername(),
-                                userModel.getEmail(),response.body().getToken(),userModel.getRole(), userModel.getUserType() , userModel.getAvatar());
+                                userModel.getEmail(), response.body().getToken(), userModel.getRole(), userModel.getUserType(), userModel.getAvatar());
 
 
-                        StringGen.token = userModel.getToken() ;
+//                        StringGen.token = userModel.getToken() ;
                         SharedPrefManager.getInstance(getApplicationContext()).saveUser(userModel.getEmail());
                         Log.d("TAGE", "reciveid Mail : " + userModel.getEmail());
-                        Log.d("TAGE", "sent mail : " + email);
-                           pbar.setVisibility(View.GONE);
+
+                        Log.d("TAGE", "sent mail : " + email + " id" + fb_Id + " GID " + google_id + userName + name);
+                        pbar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, HomePage.class);
-                       startActivity(intent);
+                        startActivity(intent);
                         finish();
 
-                    }
-                    else {
+                    } else {
                         // error
                         pbar.setVisibility(View.INVISIBLE);
-                        Toast.makeText(getApplicationContext(), "Error : Try Agian " + response.body().getError() , Toast.LENGTH_LONG)
+                        Toast.makeText(getApplicationContext(), "Error : Try Agian " + response.body().getError(), Toast.LENGTH_LONG)
                                 .show();
-                        Log.d("TAG", "onResponse: " + response.toString() );
+                        Log.d("TAG", "onResponse: " + response.toString());
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Error " + t.getMessage() , Toast.LENGTH_LONG)
+                Toast.makeText(getApplicationContext(), "Error " + t.getMessage(), Toast.LENGTH_LONG)
                         .show();
             }
         });

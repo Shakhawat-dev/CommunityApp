@@ -88,7 +88,19 @@ public class SharedPrefManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_USER_EMAIL, "null");
         editor.putString(IS_USER_LOGGED_IN, "no");
+
+
+
+
         editor.apply();
+
+        SharedPreferences sharedPreferences1 = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor1 = sharedPreferences1.edit();
+
+        editor1.clear() ;
+        editor1.apply();
+
+
     }
 
     public boolean isUserLoggedIn() {
@@ -97,7 +109,6 @@ public class SharedPrefManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         String value = sharedPreferences.getString(IS_USER_LOGGED_IN, "no");
-
         return value.equals("yes");
 
 
