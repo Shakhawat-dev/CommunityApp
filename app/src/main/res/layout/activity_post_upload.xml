@@ -16,8 +16,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
@@ -30,17 +31,35 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/progress_bar">
 
-
-                <com.google.android.exoplayer2.ui.PlayerView
-                    android:id="@+id/player_view"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_150sdp"
-                    app:default_artwork="@drawable/musicicon"
-                    app:hide_on_touch="false"
-                    app:played_color="@color/colorPrimary"
-                    app:resize_mode="fill"
-                    app:show_buffering="always"
-                    app:use_artwork="true" />
+                    android:layout_height="wrap_content">
+
+
+                    <com.google.android.exoplayer2.ui.PlayerView
+                        android:id="@+id/player_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_150sdp"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        app:default_artwork="@drawable/musicicon"
+                        app:hide_on_touch="false"
+                        app:played_color="@color/colorPrimary"
+                        app:resize_mode="fill"
+                        app:show_buffering="always"
+                        app:use_artwork="true" />
+
+                    <ImageView
+                        android:id="@+id/closeBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="@dimen/_3sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:background="@drawable/ic_baseline_close_24" />
+
+
+                </FrameLayout>
+
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip"
@@ -56,6 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="192dp"
                     android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_10sdp"
                     android:elevation="4dp"
                     android:src="@drawable/ic_baseline_add_photo_alternate_24" />
 

@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -50,6 +51,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_voice__recoder_);
         listBtn = findViewById(R.id.record_list_btn);
         recordBtn = findViewById(R.id.record_btn);

@@ -246,6 +246,13 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             }
         });
 
+        findViewById(R.id.closeBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                finish();
+            }
+        });
 
     }
 
