@@ -163,7 +163,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     String id = object.getString("id") ;
 
 //            String name, String userName, String fb_Id, String email, String google_id
-                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name , id, mail,"null" ) ;
+                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name , id, mail,"null" ,"facebook" ) ;
 
                     Log.d("TAG", "onCompleted: " + first_name + " " + last_name + " " + mail);
                 } catch (JSONException e) {
@@ -269,7 +269,7 @@ public class RegistrationActivity extends AppCompatActivity {
             Log.d("TAG", "handleSignInResult: " + account.getDisplayName()
                     + account.getId() + " " + account.getIdToken());
 //            String name, String userName, String fb_Id, String email, String google_id
-            RegisterWithSocial(account.getDisplayName(), account.getDisplayName() , "null" , account.getEmail(),account.getId() ) ;
+            RegisterWithSocial(account.getDisplayName(), account.getDisplayName() , "null" , account.getEmail(),account.getId() , "google" ) ;
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -279,7 +279,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-    public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id) {
+    public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id , String type) {
         Call<LoginResponse> call = RetrofitClient.getInstance()
                 .getApi()
                 .socialReg(
@@ -287,7 +287,8 @@ public class RegistrationActivity extends AppCompatActivity {
                         email,
                         name,
                         google_id,
-                        fb_Id
+                        fb_Id,
+                        type
                 );
         call.enqueue(new Callback<LoginResponse>() {
             @Override

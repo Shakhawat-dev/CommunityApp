@@ -137,7 +137,8 @@ public interface NewsRmeApi {
             @Field("email") String email,
             @Field("name") String name,
             @Field("google_id") String google_id,  //facebook_id
-            @Field("facebook_id") String facebook_id
+            @Field("facebook_id") String facebook_id,
+            @Field("type") String type
     );
 
     @Multipart

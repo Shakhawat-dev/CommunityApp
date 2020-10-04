@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -50,20 +52,22 @@ public class Video_Record_Activity extends AppCompatActivity {
     private static final String TAG = "VIDEO_RECORD";
 
     private static final int IMAGE_PICKER_SELECT = 99;
-    private static final int VIDEOMAXTIME  = 600000;
+    private static final int VIDEOMAXTIME = 600000;
     SurfaceView sampleGLView;
-    ImageView closeBtn , flashBTn ;
-    Boolean isFlashOn = false ;
-    Uri uri  ;
-    TextView timer ;
+    ImageView closeBtn, flashBTn;
+    Boolean isFlashOn = false;
+    Uri uri;
+    TextView timer;
     Context context;
     ImageButton imageButton, changeCameraBtn, VideoBTn;
     CircleImageView videoButton;
     CircleImageView circleImageView;
-    String category = "all" ;
-    Boolean isprressed = false , isRecording = false;
-    File file ;
-    CountDownTimer countDownTimer  ;
+    String category = "all";
+    Boolean isprressed = false, isRecording = false;
+    File file;
+    Boolean isGallery = false;
+
+    CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,28 @@ public class Video_Record_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_video__record_);
 
         context = Video_Record_Activity.this;
+        AlertDialog alert = new AlertDialog.Builder(this).create();
+        alert.setTitle("What You Want To Do ? ");
+        alert.setMessage("Choose Your Recording Method");
+        alert.setButton(Dialog.BUTTON_POSITIVE, "Record Video", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alert.dismiss();
 
+            }
+        });
+
+        alert.setButton(DialogInterface.BUTTON_NEGATIVE, "Choose From Gallery", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                alert.dismiss();
+                openGalleryForVideo();
+
+            }
+        });
+
+        alert.show();
 
         Dexter.withContext(context)
                 .withPermissions(
@@ -106,19 +131,19 @@ public class Video_Record_Activity extends AppCompatActivity {
 // When done, apply
 
 
-        CameraView camera =findViewById(R.id.camera);
+        CameraView camera = findViewById(R.id.camera);
         imageButton = findViewById(R.id.captureBtn);
         changeCameraBtn = findViewById(R.id.changeCameraBtn);
-        VideoBTn =findViewById(R.id.videoBTN);
+        VideoBTn = findViewById(R.id.videoBTN);
         videoButton = findViewById(R.id.component);
         circleImageView = findViewById(R.id.lastImage);
-        flashBTn = findViewById(R.id.flashBtn) ;
-        closeBtn = findViewById(R.id.closeBtn) ;
+        flashBTn = findViewById(R.id.flashBtn);
+        closeBtn = findViewById(R.id.closeBtn);
 
-         timer =findViewById(R.id.timer);
+        timer = findViewById(R.id.timer);
 
 
-     //   VideoBTn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_camera_black_24dp));
+        //   VideoBTn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_camera_black_24dp));
 
 
         overlay.setLayoutParams(params);
@@ -139,20 +164,18 @@ public class Video_Record_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(isFlashOn)
-                {
+                if (isFlashOn) {
                     // flash is on
                     camera.setFlash(Flash.OFF);
                     flashBTn.setBackground(Video_Record_Activity.this.getResources().getDrawable(R.drawable.ic_flash_off_black_24dp));
-                    isFlashOn = false ;
-                }
-                else {
+                    isFlashOn = false;
+                } else {
 
                     // flash is off
 
                     camera.setFlash(Flash.TORCH);
                     flashBTn.setBackground(Video_Record_Activity.this.getResources().getDrawable(R.drawable.ic_flash_on_black_24dp));
-                    isFlashOn = true ;
+                    isFlashOn = true;
                 }
 
             }
@@ -198,7 +221,7 @@ public class Video_Record_Activity extends AppCompatActivity {
             public void onPictureTaken(PictureResult result) {
                 // A Picture was taken!
 
-                  Toast.makeText(context, "Press And Hold", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Press And Hold", Toast.LENGTH_LONG).show();
 
 //                long time = System.currentTimeMillis() / 100000;
 //
@@ -229,7 +252,7 @@ public class Video_Record_Activity extends AppCompatActivity {
 
                 String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
                 // File file = new File(ROOT_DIR + "/DCIM/camera" + "/test" + time + ".jpeg");
-                Uri uri1 = Uri.fromFile(result.getFile()) ;
+                Uri uri1 = Uri.fromFile(result.getFile());
                 getToCreatePostPage("video", uri1);
 
 
@@ -239,27 +262,25 @@ public class Video_Record_Activity extends AppCompatActivity {
         });
 
 
-
         videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
                 camera.setMode(Mode.VIDEO);
-                camera.setVideoMaxDuration(VIDEOMAXTIME+100);
+                camera.setVideoMaxDuration(VIDEOMAXTIME + 100);
                 long time = System.currentTimeMillis() / 100000;
                 String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
                 file = new File(ROOT_DIR + "/test" + time + ".mp4");
 
-                if(!isRecording)
-                {
+                if (!isRecording) {
                     // stop the camera
                     videoButton.setImageResource(R.color.red);
-                    isRecording = true ;
+                    isRecording = true;
 
                     camera.takeVideo(file);
 
-                  countDownTimer  =   new CountDownTimer(VIDEOMAXTIME, 1000) {
+                    countDownTimer = new CountDownTimer(VIDEOMAXTIME, 1000) {
 
                         public void onTick(long millisUntilFinished) {
                             // timer.setText("seconds remaining: " + millisUntilFinished / 1000);
@@ -278,22 +299,19 @@ public class Video_Record_Activity extends AppCompatActivity {
 
                             camera.stopVideo();
                             videoButton.setImageResource(R.color.white);
-                            isRecording = false ;
+                            isRecording = false;
                         }
                     }.start();
 
 
-
-                }
-                else
-                {
+                } else {
 
 
                     camera.stopVideo();
                     timer.setText("done!");
                     countDownTimer.cancel();
                     videoButton.setImageResource(R.color.white);
-                    isRecording = false ;
+                    isRecording = false;
 
 
 //                    isRecording = true ;
@@ -309,7 +327,6 @@ public class Video_Record_Activity extends AppCompatActivity {
 
             }
         });
-
 
 
 //        videoButton.setActionListener(new CameraVideoButton.ActionListener() {
@@ -349,17 +366,13 @@ public class Video_Record_Activity extends AppCompatActivity {
 //        });
 
 
+        circleImageView.setImageResource(R.drawable.placeholder);
 
-
-        circleImageView.setImageResource(R.color.gray_light);
-
-        try{
+        try {
             setTheLastImage();
-        }
-        catch(Exception e )
-        {
+        } catch (Exception e) {
 
-            circleImageView.setImageResource(R.color.gray_light);
+            circleImageView.setImageResource(R.drawable.placeholder);
 
         }
 
@@ -368,15 +381,20 @@ public class Video_Record_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI );
-                pickIntent.setType("video/*" );
-            //    startActivityForResult(pickIntent, IMAGE_PICKER_SELECT );
-                startActivityForResult(Intent.createChooser(pickIntent, "Select Videos"), IMAGE_PICKER_SELECT );
+                openGalleryForVideo();
 
             }
         });
 
 
+    }
+
+    private void openGalleryForVideo() {
+        isGallery = true;
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("video/*");
+        //    startActivityForResult(pickIntent, IMAGE_PICKER_SELECT );
+        startActivityForResult(Intent.createChooser(pickIntent, "Select Videos"), IMAGE_PICKER_SELECT);
     }
 
     private void setTheLastImage() {
@@ -399,7 +417,10 @@ public class Video_Record_Activity extends AppCompatActivity {
             File imageFile = new File(imageLocation);
             if (imageFile.exists()) {   // TODO: is there a better way to do this?
                 Bitmap bm = BitmapFactory.decodeFile(imageLocation);
-                Glide.with(context).load(bm).into(circleImageView);
+                Glide.with(context)
+                        .load(bm)
+                        .error(R.drawable.placeholder)
+                        .into(circleImageView);
 
 
             }
@@ -413,40 +434,32 @@ public class Video_Record_Activity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == IMAGE_PICKER_SELECT && data != null) {
             Uri selectedMediaUri = data.getData();
 
-            uri = selectedMediaUri ;
+            uri = selectedMediaUri;
 
-            String TYPE = MimeTypeMap.getFileExtensionFromUrl(selectedMediaUri.getLastPathSegment()).toLowerCase() ;
+            String TYPE = MimeTypeMap.getFileExtensionFromUrl(selectedMediaUri.getLastPathSegment()).toLowerCase();
 
             Log.d("TAG", "onActivityResult: TYPE =  " + TYPE);
 
-            if(TYPE.length()>0)
-            {
+            if (TYPE.length() > 0) {
                 if (TYPE.contains("jpg") || TYPE.contains("png") || TYPE.contains("jpeg") || TYPE.contains("gif")
                         || TYPE.contains("tiff")) {
                     getToCreatePostPage("image", selectedMediaUri);
                     //handle image
-                }
-                else
-                {
+                } else {
 
 
                     getToCreatePostPage("video", selectedMediaUri);
                 }
 
-            }
-
-            else
-            {
-                String path = selectedMediaUri.getPath() ;
+            } else {
+                String path = selectedMediaUri.getPath();
                 //  File filee = new File(selectedMediaUri.toString());
                 //   String file = selectedMediaUri.getPath();
 
-                try{
-                    path = getPath(Video_Record_Activity.this , selectedMediaUri) ;
+                try {
+                    path = getPath(Video_Record_Activity.this, selectedMediaUri);
                     file = new File(path);
-                }
-                catch (Exception e )
-                {
+                } catch (Exception e) {
 
                     path = selectedMediaUri.getPath();
                     file = new File(path);
@@ -456,26 +469,21 @@ public class Video_Record_Activity extends AppCompatActivity {
 
                 int i = path.lastIndexOf('.');
                 if (i > 0) {
-                    exten = path.substring(i+1);
+                    exten = path.substring(i + 1);
                 }
 
 
-                Log.d("TAG", "onActivityResult: Extension  "+ exten  );
+                Log.d("TAG", "onActivityResult: Extension  " + exten);
 
-                if(exten != null)
-                {
+                if (exten != null) {
                     if (exten.contains("jpg") || exten.contains("png") || exten.contains("jpeg") || exten.contains("gif")
                             || exten.contains("tiff")) {
-                      //  getToCreatePostPage("image", selectedMediaUri);
+                        //  getToCreatePostPage("image", selectedMediaUri);
                         //handle image
-                    }
-                    else
-                    {
+                    } else {
                         getToCreatePostPage("video", selectedMediaUri);
                     }
-                }
-
-                else {
+                } else {
 
                     AlertDialog dialogue = new AlertDialog.Builder(Video_Record_Activity.this).create();
 
@@ -488,19 +496,54 @@ public class Video_Record_Activity extends AppCompatActivity {
             }
 
 
-
-
         }
     }
 
-    public  void getToCreatePostPage(String FileMime , Uri uri ) {
-        Intent post = new Intent(context , PostUploadActivity.class);
-        post.putExtra("path", uri.toString()) ;
-        post.putExtra("media", "video") ;
-        startActivity(post);
+    public void getToCreatePostPage(String FileMime, Uri uri) { // type == o means came form camera
 
-      //  Toast.makeText(getApplicationContext() , "Video Taken  LINK : " + uri.toString() , Toast.LENGTH_SHORT).show();
+        if (isGallery) {
 
+            isGallery = false ;
+            Intent post = new Intent(context, PostUploadActivity.class);
+            post.putExtra("path", uri.toString());
+            post.putExtra("media", "video");
+            startActivity(post);
+
+
+        } else {
+
+
+            AlertDialog alert = new AlertDialog.Builder(this).create();
+            alert.setTitle("What You Want To Do ? ");
+            alert.setMessage("Choose Your Saving Method");
+            alert.setButton(Dialog.BUTTON_POSITIVE, "Upload It", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    alert.dismiss();
+                    Intent post = new Intent(context, PostUploadActivity.class);
+                    post.putExtra("path", uri.toString());
+                    post.putExtra("media", "video");
+                    startActivity(post);
+                }
+            });
+
+            alert.setButton(DialogInterface.BUTTON_NEGATIVE, "Save", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    alert.dismiss();
+
+
+                }
+            });
+
+            alert.show();
+
+
+            //  Toast.makeText(getApplicationContext() , "Video Taken  LINK : " + uri.toString() , Toast.LENGTH_SHORT).show();
+
+        }
     }
 
 //    @Override
@@ -513,7 +556,7 @@ public class Video_Record_Activity extends AppCompatActivity {
 //    }
 
     public static String getPath(Context ctx, Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = ctx.getContentResolver().query(uri, projection, null, null, null);
         if (cursor == null) return null;
         int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -540,9 +583,16 @@ public class Video_Record_Activity extends AppCompatActivity {
         intMillis -= secondsMillis;
 
         String stringInterval = "%02d:%02d";
-        return String.format(stringInterval ,mm, ss);
+        return String.format(stringInterval, mm, ss);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+
+    }
 }
 
 

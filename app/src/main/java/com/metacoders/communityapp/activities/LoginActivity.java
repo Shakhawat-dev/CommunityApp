@@ -277,7 +277,7 @@ public class LoginActivity extends AppCompatActivity {
                     String id = object.getString("id");
 
 //            String name, String userName, String fb_Id, String email, String google_id)
-                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name, id, mail, "null");
+                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name, id, mail, "null" , "facebook");
 
                     Log.d("TAG", "onCompleted: " + first_name + " " + last_name + " " + mail + "iD " + id);
                 } catch (Exception e) {
@@ -322,12 +322,12 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
+//117132451500703402834  112222086677355635371
             // Signed in successfully, show authenticated UI.
             Log.d("TAG", "handleSignInResult: " + account.getDisplayName()
                     + account.getId() + " ");
 //            String name, String userName, String fb_Id, String email, String google_id
-            RegisterWithSocial(account.getDisplayName(), account.getDisplayName(), "null", account.getEmail(), account.getId());
+            RegisterWithSocial(account.getDisplayName(), account.getDisplayName(), "null", account.getEmail(), account.getId() , "google");
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -338,7 +338,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id) {
+    public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id ,String type ) {
 
         pbar.setVisibility(View.VISIBLE);
 
@@ -353,7 +353,8 @@ public class LoginActivity extends AppCompatActivity {
                 email,
                 name,
                 google_id,
-                fb_Id
+                fb_Id,
+                type
         );
 
         callwd.enqueue(new Callback<LoginResponse>() {

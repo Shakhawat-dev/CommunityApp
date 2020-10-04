@@ -8,9 +8,8 @@ android {
         applicationId "com.metacoders.communityapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 5
-        versionName "1"
-
+        versionCode 9
+        versionName "1.70"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -43,11 +42,8 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-dash:2.10.2'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.2'
     implementation 'com.google.android.exoplayer:extension-mediasession:2.10.2'
-
     // third party camera library
     api 'com.otaliastudios:cameraview:2.6.2'
-
-
     // permission library
     implementation 'com.karumi:dexter:6.2.1'
     //retrofit2

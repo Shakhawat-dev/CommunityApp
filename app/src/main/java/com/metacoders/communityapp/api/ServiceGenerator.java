@@ -29,8 +29,9 @@ public class ServiceGenerator {
                     new tokenInterceptor2(authToken);
 
             if (!httpClient.interceptors().contains(interceptor)) {
-
+                Log.d("okhttp", "createService: " + authToken);
                 httpClient.addInterceptor(interceptor);
+
                 retrofit =
                         new Retrofit.Builder()
                                 .baseUrl(API_BASE_URL)
@@ -40,12 +41,10 @@ public class ServiceGenerator {
 
 //                Log.d("TAG", "createService: ME OffasdfN  "  );
             }
-        } else if ( authToken.equals("00")){
-
-            Log.d("TAG", "createService: ME ON  "  );
+        } else {
+            Log.d("TAG", "createService: ME ON  ");
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
 
 
             OkHttpClient client = new OkHttpClient.Builder()

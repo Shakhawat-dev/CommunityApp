@@ -97,7 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
             try {
                 LoginManager.getInstance().logOut();
             } catch (Exception e) {
-
+                Log.d("TAG", "onCreate: " + e.getMessage());
             }
             Intent o = new Intent(context, HomePage.class);
             SharedPrefManager manager = new SharedPrefManager(context);

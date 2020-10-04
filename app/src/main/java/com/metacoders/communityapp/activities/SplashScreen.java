@@ -2,7 +2,9 @@ package com.metacoders.communityapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -40,7 +42,14 @@ public class SplashScreen extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        Handler handler = new Handler();
+
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        boolean fstart = prefs.getBoolean("firstStart", true);
+        if (fstart) {
+            show_Dialog_after_Install();
+
+        }
+            Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -50,7 +59,9 @@ public class SplashScreen extends AppCompatActivity {
             }
         }, 200);
 
-        printKeyHash();
+        //printKeyHash();
+
+
 
     }
 
@@ -128,4 +139,15 @@ public class SplashScreen extends AppCompatActivity {
 
 
     }
+
+    private void show_Dialog_after_Install() {
+
+        SharedPrefManager.getInstance(getApplicationContext()).logout();
+
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("firstStart", false);
+        editor.apply();
+    }
+
 }
