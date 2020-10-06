@@ -106,7 +106,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         postType = o.getStringExtra("media");
         if (!postType.contains("post")) {
 
-          //  Toast.makeText(getApplicationContext(), getIntent().getStringExtra("path"), Toast.LENGTH_SHORT).show();
+            //  Toast.makeText(getApplicationContext(), getIntent().getStringExtra("path"), Toast.LENGTH_SHORT).show();
             chip.setText("Media File Added ");
             try {
 //                  URI uri = new URI(getIntent().getStringExtra("path"));
@@ -135,10 +135,9 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
 
             }
-            try{
+            try {
                 playMedia(getIntent().getStringExtra("path"));
-            }
-            catch (Exception e ){
+            } catch (Exception e) {
 
             }
 
@@ -154,8 +153,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
                 }
             });
-        }
-        else {
+        } else {
             playerView.setVisibility(View.GONE);
         }
 
@@ -305,7 +303,6 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             }
             progressDialog.show();
             progressDialog.setCancelable(false);
-
 
 
             if (postType.equals("post")) {
@@ -536,6 +533,8 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         }
 
         PlayerManager.getSharedInstance(PostUploadActivity.this).playStream(path);
+        PlayerManager.getSharedInstance(PostUploadActivity.this).pausePlayer();
+
     }
 
     @Override

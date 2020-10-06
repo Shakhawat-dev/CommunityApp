@@ -76,28 +76,7 @@ public class Video_Record_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_video__record_);
 
         context = Video_Record_Activity.this;
-        AlertDialog alert = new AlertDialog.Builder(this).create();
-        alert.setTitle("What You Want To Do ? ");
-        alert.setMessage("Choose Your Recording Method");
-        alert.setButton(Dialog.BUTTON_POSITIVE, "Record Video", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                alert.dismiss();
 
-            }
-        });
-
-        alert.setButton(DialogInterface.BUTTON_NEGATIVE, "Choose From Gallery", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                alert.dismiss();
-                openGalleryForVideo();
-
-            }
-        });
-
-        alert.show();
 
         Dexter.withContext(context)
                 .withPermissions(
@@ -106,7 +85,6 @@ public class Video_Record_Activity extends AppCompatActivity {
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
-
 
                     }
 
@@ -503,7 +481,7 @@ public class Video_Record_Activity extends AppCompatActivity {
 
         if (isGallery) {
 
-            isGallery = false ;
+            isGallery = false;
             Intent post = new Intent(context, PostUploadActivity.class);
             post.putExtra("path", uri.toString());
             post.putExtra("media", "video");
@@ -589,7 +567,6 @@ public class Video_Record_Activity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
 
 
     }
