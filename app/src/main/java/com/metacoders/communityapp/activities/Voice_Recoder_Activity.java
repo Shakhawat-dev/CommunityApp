@@ -309,7 +309,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
         AlertDialog alert = new AlertDialog.Builder(this).create();
         alert.setTitle("What You Want To Do ? ");
         alert.setMessage("Choose Your Recording Method");
-        alert.setButton(Dialog.BUTTON_POSITIVE, "Record Video", new DialogInterface.OnClickListener() {
+        alert.setButton(Dialog.BUTTON_POSITIVE, "Record Audio", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 alert.dismiss();
