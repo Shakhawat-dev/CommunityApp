@@ -19,24 +19,24 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button  videoBtn , audioBtn ;
+    Button videoBtn, audioBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         videoBtn = findViewById(R.id.videoBtn);
-        audioBtn = findViewById(R.id.audioBtn) ;
+        audioBtn = findViewById(R.id.audioBtn);
 
 
-        RequestPermission() ;
+        RequestPermission();
 
         videoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
-                Intent videoActivity = new Intent(getApplicationContext() , Video_Record_Activity.class);
+                Intent videoActivity = new Intent(getApplicationContext(), Video_Record_Activity.class);
                 startActivity(videoActivity);
 
             }
@@ -47,12 +47,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent videoActivity = new Intent(getApplicationContext() , Voice_Recoder_Activity.class);
+                Intent videoActivity = new Intent(getApplicationContext(), Voice_Recoder_Activity.class);
                 startActivity(videoActivity);
 
             }
         });
-
 
 
     }
@@ -61,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
         Dexter.withContext(MainActivity.this)
                 .withPermissions(
-                        Manifest.permission.READ_EXTERNAL_STORAGE ,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE ,
-                        Manifest.permission.CAMERA ,
-                        Manifest.permission.RECORD_AUDIO )
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.RECORD_AUDIO)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {

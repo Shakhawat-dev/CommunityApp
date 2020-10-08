@@ -277,12 +277,12 @@ public class LoginActivity extends AppCompatActivity {
                     String id = object.getString("id");
 
 //            String name, String userName, String fb_Id, String email, String google_id)
-                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name, id, mail, "null" , "facebook");
+                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name, id, mail, "null", "facebook");
 
                     Log.d("TAG", "onCompleted: " + first_name + " " + last_name + " " + mail + "iD " + id);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("ERROR", "onCompleted: " +  e.getMessage());
+                    Log.d("ERROR", "onCompleted: " + e.getMessage());
 
                 }
 
@@ -327,7 +327,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("TAG", "handleSignInResult: " + account.getDisplayName()
                     + account.getId() + " ");
 //            String name, String userName, String fb_Id, String email, String google_id
-            RegisterWithSocial(account.getDisplayName(), account.getDisplayName(), "null", account.getEmail(), account.getId() , "google");
+            RegisterWithSocial(account.getDisplayName(), account.getDisplayName(), "null", account.getEmail(), account.getId(), "google");
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -338,7 +338,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id ,String type ) {
+    public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id, String type) {
 
         pbar.setVisibility(View.VISIBLE);
 

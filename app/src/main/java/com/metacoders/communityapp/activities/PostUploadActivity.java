@@ -22,6 +22,7 @@ import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -33,6 +34,11 @@ import android.widget.Toast;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.adapter.CategoryAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
@@ -73,6 +79,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     MultipartBody.Part body2;
     NewsRmeApi api;
     Intent o;
+    private static final int PICK_IMAGE = 100;
     Button submitBtn;
     Chip chip;
     TextInputEditText title, desc;
@@ -92,6 +99,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_post_upload);
         chip = findViewById(R.id.chip);
         playerView = findViewById(R.id.player_view);
@@ -264,7 +272,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-
+                RequestPermission();
                 mFilePathUri = result.getUri();
 
                 //    uploadPicToServer(mFilePathUri) ;
@@ -279,6 +287,30 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 Exception error = result.getError();
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
+        } else if (requestCode == PICK_IMAGE) {
+
+            //   mFilePathUri = data.getData();
+            // Toast.makeText(getApplicationContext() , "TEst" + mFilePathUri.toString(), Toast.LENGTH_LONG) .show();
+
+
+            try {
+
+                Uri selectedMediaUri = data.getData();
+                if (!Uri.EMPTY.equals(selectedMediaUri)) {
+                    mFilePathUri = selectedMediaUri;
+                    // sendTheFile(selectedMediaUri);
+                    RequestPermission();
+
+                    CropImage.activity(mFilePathUri)
+                            .start(this);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please Choose Image To Upload ", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "Please Choose Image ", Toast.LENGTH_SHORT).show();
+            }
+
+
         }
 
     }
@@ -439,12 +471,14 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
     private void BringImagePicker() {
 
-
-        CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(1, 1)
-                .setCropShape(CropImageView.CropShape.RECTANGLE) //shaping the image
-                .start(this);
+        RequestPermission();
+        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, PICK_IMAGE);
+//        CropImage.activity()
+//                .setGuidelines(CropImageView.Guidelines.ON)
+//                .setAspectRatio(1, 1)
+//                .setCropShape(CropImageView.CropShape.RECTANGLE) //shaping the image
+//                .start(this);
 
 
     }
@@ -599,5 +633,28 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
 
+    }
+
+    private void RequestPermission() {
+
+        Dexter.withContext(PostUploadActivity.this)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.RECORD_AUDIO)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+
+                        permissionToken.continuePermissionRequest();
+                    }
+                }).onSameThread().check();
     }
 }

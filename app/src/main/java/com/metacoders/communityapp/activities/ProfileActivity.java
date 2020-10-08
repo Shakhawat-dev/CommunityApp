@@ -62,11 +62,11 @@ public class ProfileActivity extends AppCompatActivity {
     CircleImageView pp;
     ProgressDialog mprogressDialog;
     CardView changePassCard, LogOutCard, addDoc;
-    public static int PICK_IMAGE = 50000;
     private Bitmap compressedImageFile;
     Uri mFilePathUri;
-    Profile_Model model  = null;
 
+    Profile_Model model = null;
+    private static final int PICK_IMAGE = 100, PICK_IMAGE_DOC = 580;
     File file;
 
     @Override
@@ -113,9 +113,9 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(model != null){
+                if (model != null) {
                     Intent o = new Intent(context, EditProfile.class);
-                    o.putExtra("MODEL" , model) ;
+                    o.putExtra("MODEL", model);
                     startActivity(o);
                 }
 
@@ -132,7 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
         addDoc.setOnClickListener(view -> {
 
             Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(i, PICK_IMAGE);
+            startActivityForResult(i, PICK_IMAGE_DOC);
         });
 
         pp.setOnClickListener(v -> {
@@ -162,19 +162,21 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-
-
     }
 
 
     private void BringImagePicker() {
 
+//
+//        CropImage.activity()
+//                .setGuidelines(CropImageView.Guidelines.ON)
+//                .setAspectRatio(1, 1)
+//                .setCropShape(CropImageView.CropShape.OVAL) //shaping the image
+//                .start(ProfileActivity.this);
 
-        CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(1, 1)
-                .setCropShape(CropImageView.CropShape.OVAL) //shaping the image
-                .start(ProfileActivity.this);
+        RequestPermission();
+        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, PICK_IMAGE);
 
 
     }
@@ -203,7 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Profile_Model.Profile_Response models = response.body();
                     // now get into it
                     Profile_Model singleProfile = models.getProfileInfo();
-                    model = singleProfile ;
+                    model = singleProfile;
                     setData(singleProfile);
 
                 } else {
@@ -247,25 +249,52 @@ public class ProfileActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-
+                RequestPermission();
                 mFilePathUri = result.getUri();
 
-                pp.setImageURI(mFilePathUri);
                 //    uploadPicToServer(mFilePathUri) ;
+                pp.setImageURI(mFilePathUri);
 
                 uploadProfilePicToServer(mFilePathUri);
+
+                // createPostServer(mFilePathUri , postType);
 
                 //sending data once  user select the image
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
                 Exception error = result.getError();
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
         } else if (requestCode == PICK_IMAGE) {
+
+            //   mFilePathUri = data.getData();
+            // Toast.makeText(getApplicationContext() , "TEst" + mFilePathUri.toString(), Toast.LENGTH_LONG) .show();
+            try {
+                Uri selectedMediaUri = data.getData();
+                if (!Uri.EMPTY.equals(selectedMediaUri)) {
+                    mFilePathUri = selectedMediaUri;
+                    // sendTheFile(selectedMediaUri);
+                    RequestPermission();
+
+                    CropImage.activity(mFilePathUri)
+                            .setAspectRatio(1, 1)
+                            .setCropShape(CropImageView.CropShape.OVAL) //shaping the image
+                            .start(this);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please Choose Image To Upload " + selectedMediaUri.toString(), Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "Please Choose Image " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+
+        } else if (requestCode == PICK_IMAGE_DOC) {
 
             //   mFilePathUri = data.getData();
             // Toast.makeText(getApplicationContext() , "TEst" + mFilePathUri.toString(), Toast.LENGTH_LONG) .show();
@@ -278,7 +307,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
 
-       // uploadDocumentation(mFilePathUri);
+        // uploadDocumentation(mFilePathUri);
     }
 
 
@@ -312,7 +341,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
         String accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
+        //  Log.d("TAG", "loadList: activity " + accessTokens);
 
 
 //        Call<News_List_Model> NetworkCall = RetrofitClient
@@ -487,4 +516,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onResume();
         LoadData();
     }
+
+
 }
