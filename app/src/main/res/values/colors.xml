@@ -16,4 +16,5 @@
     <color name="colorDarkBlue">#3D4054</color>
     <color name="background">#CDCACA</color>
     <color name="recylerviewBackground">#F4F5F8</color>
+    <color name="colorGreen">#00796B</color>
 </resources>
