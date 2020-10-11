@@ -8,10 +8,22 @@
     tools:context=".activities.SplashScreen">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="@dimen/_150sdp"
-        android:src="@mipmap/ic_launcher_round"
+        android:src="@drawable/circle"
         android:layout_centerInParent="true"
         android:layout_height="@dimen/_100sdp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:fontFamily="@font/nunito_semi_bold"
+        android:textSize="19sp"
+        android:textColor="@color/black"
+        android:text="News Rme"/>
 
 
     <ProgressBar

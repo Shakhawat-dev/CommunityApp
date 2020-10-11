@@ -287,7 +287,8 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 Exception error = result.getError();
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
-        } else if (requestCode == PICK_IMAGE) {
+        }
+        else if (requestCode == PICK_IMAGE) {
 
             //   mFilePathUri = data.getData();
             // Toast.makeText(getApplicationContext() , "TEst" + mFilePathUri.toString(), Toast.LENGTH_LONG) .show();
