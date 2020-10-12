@@ -110,7 +110,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
 
     private void openGalleryForAudio() {
         isGallery = true;
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
         pickIntent.setType("audio/*");
         //    startActivityForResult(pickIntent, IMAGE_PICKER_SELECT );
         startActivityForResult(Intent.createChooser(pickIntent, "Select Audio"), IMAGE_PICKER_SELECT);
