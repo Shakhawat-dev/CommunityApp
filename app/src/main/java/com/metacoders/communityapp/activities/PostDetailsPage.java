@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.metacoders.communityapp.R;
@@ -120,6 +121,7 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         mMediaViews.setText(post.getHit() + "");
         mMediaComments.setText(post.getShowItemNumbers() + "");
         mMediaDetails.setText(post.getContent() + "");
+
     }
 
     private void playMedia(String Path) {

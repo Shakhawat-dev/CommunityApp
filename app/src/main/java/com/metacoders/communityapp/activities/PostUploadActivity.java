@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
@@ -60,6 +62,8 @@ import java.util.List;
 import java.util.Random;
 
 import id.zelory.compressor.Compressor;
+import libs.mjn.prettydialog.PrettyDialog;
+import libs.mjn.prettydialog.PrettyDialogCallback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -278,6 +282,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 //    uploadPicToServer(mFilePathUri) ;
                 addImage.setImageURI(mFilePathUri);
 
+                TriggerImageConfirmDialouge();
                 // createPostServer(mFilePathUri , postType);
 
                 //sending data once  user select the image
@@ -288,14 +293,31 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
-        else if (requestCode == PICK_IMAGE) {
-
-            //   mFilePathUri = data.getData();
-            // Toast.makeText(getApplicationContext() , "TEst" + mFilePathUri.toString(), Toast.LENGTH_LONG) .show();
-
-
+//        else if (requestCode == PICK_IMAGE) {
+//
+//            //   mFilePathUri = data.getData();
+//            // Toast.makeText(getApplicationContext() , "TEst" + mFilePathUri.toString(), Toast.LENGTH_LONG) .show();
+//            try {
+//
+//                Uri selectedMediaUri = data.getData();
+//                if (!Uri.EMPTY.equals(selectedMediaUri)) {
+//                    mFilePathUri = selectedMediaUri;
+//                    // sendTheFile(selectedMediaUri);
+//                    RequestPermission();
+//
+//                    CropImage.activity(mFilePathUri)
+//                            .start(this);
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Please Choose Image To Upload ", Toast.LENGTH_SHORT).show();
+//                }
+//            } catch (Exception e) {
+//                Toast.makeText(getApplicationContext(), "Please Choose Image ", Toast.LENGTH_SHORT).show();
+//            }
+//
+//
+//        }
+        else if (resultCode == Activity.RESULT_OK){
             try {
-
                 Uri selectedMediaUri = data.getData();
                 if (!Uri.EMPTY.equals(selectedMediaUri)) {
                     mFilePathUri = selectedMediaUri;
@@ -308,10 +330,8 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                     Toast.makeText(getApplicationContext(), "Please Choose Image To Upload ", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Please Choose Image ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Please Try Again !! ", Toast.LENGTH_LONG).show();
             }
-
-
         }
 
     }
@@ -322,8 +342,17 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             // upload the data
 
 
-            File file = new File(mFilePathUri.getPath());
-            File compressed;
+            String path2 = null;
+            File file ,compressed;
+            try {
+                path2 = getPath(PostUploadActivity.this, mFilePathUri);
+                file = new File(path2);
+            } catch (Exception e) {
+
+                path2 = mFilePathUri.getPath();
+                file = new File(path2);
+            }
+
 
             try {
                 compressed = new Compressor(getApplicationContext())
@@ -346,8 +375,8 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
 
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
-
-
+                Log.d("TAG", "createPostServer: " + file.getName()  + requestFile.contentType());
+                api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
                 NetworkCall = api.uploadPost(createPartFromString(title), createPartFromString(title.toLowerCase()),
                         createPartFromString(desc),
                         createPartFromString(postType), createPartFromString(langid),
@@ -396,16 +425,6 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
                 api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
-
-//                @Part MultipartBody.Part file,
-//                @Part("title")  RequestBody  title,
-//                @Part("title_slug") RequestBody title_slug,
-//                @Part("content")  RequestBody content,
-//                @Part("post_type")  RequestBody post_type,
-//                @Part("lang_id")  RequestBody lang_id,
-//                @Part("category_id")   RequestBody category_id,
-//                @Part("sub_category_id")   RequestBody sub_category_id,
-//                @Part MultipartBody.Part image
 
                 NetworkCall = api.uploadFilePost(body2, createPartFromString(title), createPartFromString(title.toLowerCase()),
                         createPartFromString(desc),
@@ -473,8 +492,11 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     private void BringImagePicker() {
 
         RequestPermission();
-        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i, PICK_IMAGE);
+        ImagePicker.Companion.with(this)
+                //Final image resolution will be less than 1080 x 1080(Optional)
+                .start() ;
+//        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        startActivityForResult(i, PICK_IMAGE);
 //        CropImage.activity()
 //                .setGuidelines(CropImageView.Guidelines.ON)
 //                .setAspectRatio(1, 1)
@@ -572,6 +594,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
     }
 
+
     @Override
     protected void onStart() {
         loadMiscData();
@@ -657,5 +680,44 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                         permissionToken.continuePermissionRequest();
                     }
                 }).onSameThread().check();
+    }
+
+    private void TriggerImageConfirmDialouge() {
+        PrettyDialog pDialog = new PrettyDialog(PostUploadActivity.this);
+        pDialog.setCancelable(false);
+        pDialog
+                .setTitle("Confirm This Image")
+                .setMessage("")
+
+                .setAnimationEnabled(true)
+
+                .addButton(
+                        "✔️ Yes",					// button text
+                        R.color.pdlg_color_white,		// button text color
+                        R.color.pdlg_color_green, // button background color
+                        new PrettyDialogCallback() {		// button OnClick listener
+                            @Override
+                            public void onClick() {
+                                // Do what you gotta do
+                                pDialog.dismiss();
+                            }
+                        }
+                )
+                .addButton(
+                        "❌ NO",
+                        R.color.pdlg_color_white,
+                        R.color.pdlg_color_red,
+                        new PrettyDialogCallback() {
+                            @Override
+                            public void onClick() {
+                                pDialog.dismiss();
+                                BringImagePicker();
+                                //selectImage(PostUploadActivity.this );
+                            }
+                        }
+                )
+
+                .show();
+
     }
 }

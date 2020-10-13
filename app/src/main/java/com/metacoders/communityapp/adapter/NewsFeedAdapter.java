@@ -98,7 +98,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             Glide.with(ctx)
                     .load(link)
                     .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .thumbnail(/*sizeMultiplier=*/ 0.25f)
                     .placeholder(R.drawable.placeholder)
                     .into(holder.image);

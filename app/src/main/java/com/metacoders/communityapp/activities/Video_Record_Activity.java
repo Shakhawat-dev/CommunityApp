@@ -34,6 +34,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
@@ -194,6 +196,7 @@ public class Video_Record_Activity extends AppCompatActivity {
         });
 
 
+
         camera.addCameraListener(new CameraListener() {
             @Override
             public void onPictureTaken(PictureResult result) {
@@ -236,8 +239,19 @@ public class Video_Record_Activity extends AppCompatActivity {
 
             }
 
+            @Override
+            public void onOrientationChanged(int orientation) {
+                super.onOrientationChanged(orientation);
+                Log.d(TAG, "onOrientationChanged: " + orientation);
+
+
+
+            }
+
             // And much more
         });
+
+
 
 
         videoButton.setOnClickListener(new View.OnClickListener() {
@@ -247,6 +261,7 @@ public class Video_Record_Activity extends AppCompatActivity {
 
                 camera.setMode(Mode.VIDEO);
                 camera.setVideoMaxDuration(VIDEOMAXTIME + 100);
+
                 long time = System.currentTimeMillis() / 100000;
                 String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
                 file = new File(ROOT_DIR + "/test" + time + ".mp4");
@@ -257,6 +272,7 @@ public class Video_Record_Activity extends AppCompatActivity {
                     isRecording = true;
 
                     camera.takeVideo(file);
+
 
                     countDownTimer = new CountDownTimer(VIDEOMAXTIME, 1000) {
 

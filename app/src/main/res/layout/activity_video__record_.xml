@@ -9,15 +9,12 @@
     <com.otaliastudios.cameraview.CameraView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        app:cameraVideoSizeMaxHeight="800"
-        app:cameraVideoSizeMaxWidth="1920"
-        app:cameraFrameProcessingFormat="30"
         android:id="@+id/camera"
         app:cameraGestureLongTap="none"
         android:keepScreenOn="true"
@@ -25,9 +22,7 @@
         app:cameraEngine="camera2"
         app:cameraGestureTap="autoFocus"
         app:cameraPreview="glSurface"
-        app:cameraPreviewFrameRateExact="true"
         app:cameraFacing="back"
-        app:cameraHdr="on"
         app:cameraFlash="off"
         app:cameraWhiteBalance="auto"
         app:cameraMode="video"
@@ -36,14 +31,13 @@
         app:cameraGridColor="@color/white"
         app:cameraPlaySounds="true"
         app:cameraVideoCodec="deviceDefault"
-        app:cameraAutoFocusResetDelay="0"
         app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
-        app:cameraUseDeviceOrientation="true"
+        app:cameraUseDeviceOrientation="false"
         app:cameraPictureMetering="true"
         app:cameraPictureSnapshotMetering="true"
         app:cameraPictureFormat="jpeg"
         app:cameraRequestPermissions="true"
-        app:cameraExperimental="false">
+        app:cameraExperimental="true">
 
         <!-- Watermark! -->
         <ImageView

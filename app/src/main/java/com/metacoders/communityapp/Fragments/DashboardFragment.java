@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.metacoders.communityapp.NewsDetailsActivity;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.HomePage;
 import com.metacoders.communityapp.activities.LoginActivity;
@@ -130,9 +131,19 @@ public class DashboardFragment extends Fragment {
 
             Post_Model model = new Post_Model();
             model = post_modelList.get(pos);
-            Intent p = new Intent(context, PostDetailsPage.class);
-            p.putExtra("POST", model);
-            context.startActivity(p);
+            if(model.getPostType().equals("post") ){
+                Intent p = new Intent(context, NewsDetailsActivity.class);
+                p.putExtra("POST", model);
+                context.startActivity(p);
+            }
+            else {
+                Intent p = new Intent(context, PostDetailsPage.class);
+                p.putExtra("POST", model);
+                context.startActivity(p);
+            }
+
+
+
             try {
                 getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } catch (Exception e) {

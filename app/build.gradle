@@ -43,7 +43,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.2'
     implementation 'com.google.android.exoplayer:extension-mediasession:2.10.2'
     // third party camera library
-    api 'com.otaliastudios:cameraview:2.6.2'
+    api 'com.otaliastudios:cameraview:2.6.4'
     // permission library
     implementation 'com.karumi:dexter:6.2.1'
     //retrofit2
@@ -82,5 +82,8 @@ dependencies {
 
 
     implementation"com.squareup.okhttp3:logging-interceptor:4.9.0"
+
+    implementation 'com.github.mjn1369:prettydialog:1.0.4'
+    implementation 'com.github.dhaval2404:imagepicker:1.7.5'
 
 }

@@ -46,7 +46,7 @@
                     app:default_artwork="@drawable/musicicon"
                     app:hide_on_touch="false"
                     app:played_color="@color/colorPrimary"
-                    app:resize_mode="fill"
+
                     app:show_buffering="always"
                     app:use_artwork="true" />
 
