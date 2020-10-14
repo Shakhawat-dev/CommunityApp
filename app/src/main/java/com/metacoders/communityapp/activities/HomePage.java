@@ -115,6 +115,13 @@ public class HomePage extends AppCompatActivity {
                 super.onPageScrollStateChanged(state);
             }
         });
+        findViewById(R.id.shopBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent p = new Intent(getApplicationContext(), ShopPage.class);
+                startActivity(p);
+            }
+        });
 
         profileBtn.setOnClickListener(v -> {
 
