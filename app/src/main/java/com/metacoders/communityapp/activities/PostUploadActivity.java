@@ -123,7 +123,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             try {
 //                  URI uri = new URI(getIntent().getStringExtra("path"));
 //                  URL videoUrl = uri.toURL();
-//                  File tempFile = new File(videoUrl.getFile());
+            //      File tempFile = new File(videoUrl.getFile());
                 Uri test = Uri.parse(getIntent().getStringExtra("path"));
 
                 Cursor c = getContentResolver().query(test, null, null, null, null);

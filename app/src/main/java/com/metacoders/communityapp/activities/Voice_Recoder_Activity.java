@@ -8,8 +8,10 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -25,15 +27,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.kbeanie.multipicker.api.AudioPicker;
+import com.kbeanie.multipicker.api.CacheLocation;
+import com.kbeanie.multipicker.api.Picker;
+import com.kbeanie.multipicker.api.callbacks.AudioPickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenAudio;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.utils.PickerUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-public class Voice_Recoder_Activity extends AppCompatActivity {
+public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPickerCallback {
     String mFileName = null;
     private static final int IMAGE_PICKER_SELECT = 99;
     String name, ph;
@@ -50,7 +60,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
     private MediaRecorder mediaRecorder;
     private String recordFile;
     String time;
-
+    private AudioPicker audioPicker;
     private Chronometer timer;
 
     @Override
@@ -95,7 +105,14 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
 
                         // above two line added just to  reset the clock bug ......
                         //if dont work delete it for own caution
-                        startRecording();
+                        try{
+                            startRecording();
+                        }
+                        catch (Exception r){
+                            Toast.makeText(getApplicationContext() , "Error " + r.getMessage() , Toast.LENGTH_LONG)
+                                    .show();
+                        }
+
                     }
 
 
@@ -107,14 +124,22 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
         });
 
     }
-
+    private AudioPicker getAudioPicker() {
+        audioPicker = new AudioPicker(this);
+        audioPicker.setAudioPickerCallback(this);
+        audioPicker.setCacheLocation(PickerUtils.getSavedCacheLocation(this));
+        return audioPicker;
+    }
     private void openGalleryForAudio() {
         isGallery = true;
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("audio/*");
-        //    startActivityForResult(pickIntent, IMAGE_PICKER_SELECT );
-        startActivityForResult(Intent.createChooser(pickIntent, "Select Audio"), IMAGE_PICKER_SELECT);
-    }
+//        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+//        pickIntent.setType("audio/*");
+//        //    startActivityForResult(pickIntent, IMAGE_PICKER_SELECT );
+//        startActivityForResult(Intent.createChooser(pickIntent, "Select Audio"), IMAGE_PICKER_SELECT);
+        audioPicker = getAudioPicker();
+        audioPicker.pickAudio();
+
+   }
 
     private void uploadAudio() {
 
@@ -169,17 +194,29 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
 
     }
 
+    private String getFilename()
+    {
+        String filepath = Environment.getExternalStorageDirectory().getPath();
+        File file = new File(filepath,"NewsRme_Audio");
+
+        if(!file.exists()){
+            file.mkdirs();
+        }
+
+        return (file.getAbsolutePath() + "/news_rme" + System.currentTimeMillis() + ".aac");
+    }
+
     private void startRecording() {
-        String Root = Environment.getExternalStorageDirectory().getPath();
-        mFileName = Voice_Recoder_Activity.this.getExternalFilesDir("/").getAbsolutePath();
+      //  String Root = Environment.getExternalStorageDirectory().getPath();
+       // mFileName = Voice_Recoder_Activity.this.getExternalFilesDir("/").getAbsolutePath();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss", Locale.US);
         Date now = new Date();
         time = formatter.format(now);
-        mFileName = Root + "/news_rme_audio" + formatter.format(now) + ".aac";
+       // mFileName = Root + "/newsRme" + formatter.format(now) + ".aac";
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        mediaRecorder.setOutputFile(mFileName);
+        mediaRecorder.setOutputFile(getFilename());
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
 
@@ -286,20 +323,31 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && requestCode == IMAGE_PICKER_SELECT && data != null) {
+//        if (resultCode == RESULT_OK && requestCode == IMAGE_PICKER_SELECT && data != null) {
+//            Uri selectedMediaUri = data.getData();
+//
+//             galleryUri = selectedMediaUri;
+//
+//
+//
+//            //  String TYPE = MimeTypeMap.getFileExtensionFromUrl(selectedMediaUri.getLastPathSegment()).toLowerCase();
+//
+//            Log.d("TAG", "onActivityResult: TYPE =  " + galleryUri);
+//
+//            uploadAudio();
+//
+//
+//        }
+
+        if (requestCode == Picker.PICK_AUDIO && resultCode == RESULT_OK) {
+            audioPicker.submit(data);
             Uri selectedMediaUri = data.getData();
-
              galleryUri = selectedMediaUri;
-
-
-
-            //  String TYPE = MimeTypeMap.getFileExtensionFromUrl(selectedMediaUri.getLastPathSegment()).toLowerCase();
+           //  String TYPE = MimeTypeMap.getFileExtensionFromUrl(selectedMediaUri.getLastPathSegment()).toLowerCase();
 
             Log.d("TAG", "onActivityResult: TYPE =  " + galleryUri);
 
             uploadAudio();
-
-
         }
 
 
@@ -334,6 +382,17 @@ public class Voice_Recoder_Activity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         showChooseDialogue();
+    }
+
+
+    @Override
+    public void onAudiosChosen(List<ChosenAudio> list) {
+
+    }
+
+    @Override
+    public void onError(String s) {
+
     }
 }
 

@@ -8,8 +8,8 @@ android {
         applicationId "com.metacoders.communityapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 16
-        versionName "1.9"
+        versionCode 18
+        versionName "1.918"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -88,5 +88,8 @@ dependencies {
 
     // web view
     implementation 'com.github.delight-im:Android-AdvancedWebView:v3.2.1'
+
+    // audio picker
+    implementation 'com.kbeanie:multipicker:1.6@aar'
 
 }
