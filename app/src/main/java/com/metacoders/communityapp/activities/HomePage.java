@@ -2,6 +2,8 @@ package com.metacoders.communityapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -22,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -31,26 +34,27 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
-import com.metacoders.communityapp.models.Post_Model;
+import com.metacoders.communityapp.models.UserModel;
 import com.metacoders.communityapp.models.allDataResponse;
+import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePage extends AppCompatActivity {
+public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
     private DrawerLayout drawerLayout;
     NavigationView navigationView;
-    ImageView hamburger, searchBtn, profileBtn;
+    ImageView hamburger, searchBtn, profileBtn , userImage;
     ViewPager2 viewPager;
     FloatingActionButton emergencyFuel;
     allDataResponse dataResponse;
     TextView lang;
+    TextView userNameOnSide;
     Dialog dialog;
     List<String> idlist = new ArrayList<>();
-
+    CardView myActonSide, jobSide, ShopSide, profileSide, logOUtCard, notificationSide;
     List<allDataResponse.LanguageList> langList;
 
     @Override
@@ -67,6 +71,17 @@ public class HomePage extends AppCompatActivity {
         profileBtn = findViewById(R.id.profileBtn);
         searchBtn = findViewById(R.id.searchBtn);
         lang = findViewById(R.id.langId);
+
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        userImage = navigationView.findViewById(R.id.proImg);
+        userNameOnSide = navigationView.findViewById(R.id.user_name);
+        hamburger = findViewById(R.id.menu);
+        logOUtCard = navigationView.findViewById(R.id.LogOut);
+        myActonSide = navigationView.findViewById(R.id.myAcnt);
+        ShopSide = navigationView.findViewById(R.id.shop);
+
+
+
         dataResponse = (allDataResponse) getIntent().getSerializableExtra("MISC");
         adaper = new viewPager2_adapter(HomePage.this);
         // navigationView = findViewById(R.id.navigation_view);
@@ -115,7 +130,8 @@ public class HomePage extends AppCompatActivity {
                 super.onPageScrollStateChanged(state);
             }
         });
-        findViewById(R.id.shopBtn).setOnClickListener(new View.OnClickListener() {
+
+        ShopSide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent p = new Intent(getApplicationContext(), ShopPage.class);
@@ -123,7 +139,19 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        profileBtn.setOnClickListener(v -> {
+        hamburger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+
+        myActonSide.setOnClickListener(v -> {
 
             if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
                 Intent p = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -198,7 +226,36 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+        setUpSideBar();
         loadMiscData();
+
+    }
+
+    private void setUpSideBar() {
+        navigationView.setNavigationItemSelectedListener(this);
+
+       if(SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()){
+           UserModel model = SharedPrefManager.getInstance(getApplicationContext()).getUser() ;
+
+           userNameOnSide.setText(model.getUsername());
+            try{
+                Glide.with(getApplicationContext())
+                        .load(Constants.IMAGE_URL+ model.getAvatar())
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .into(userImage) ;
+            }
+            catch ( Exception er ){
+                Toast.makeText(getApplicationContext() , "user image error  " + er.getMessage(), Toast.LENGTH_LONG)
+                        .show();
+            }
+
+
+       }
+       else {
+
+       }
+
 
     }
 
@@ -324,5 +381,13 @@ public class HomePage extends AppCompatActivity {
 
         }
         return langArray;
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

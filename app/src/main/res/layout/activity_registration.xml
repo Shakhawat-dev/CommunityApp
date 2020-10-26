@@ -198,7 +198,6 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
         app:layout_constraintBottom_toTopOf="@+id/signUPBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="text_field_container"
         android:layout_height="wrap_content">
 
         <CheckBox

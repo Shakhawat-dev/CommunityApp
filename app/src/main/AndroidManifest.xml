@@ -32,11 +32,7 @@
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.SerachActivity" />
         <activity android:name=".activities.SplashScreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.PostUploadActivity"
@@ -46,7 +42,16 @@
         <activity
             android:name=".activities.PostDetailsPage"
             android:configChanges="orientation|screenSize|layoutDirection" />
-        <activity android:name=".activities.HomePage" />
+        <activity android:name=".activities.HomePage">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".activities.Voice_Recoder_Activity"
             android:configChanges="orientation|screenSize|layoutDirection"

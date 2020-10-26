@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:id="@+id/frmLayout"
+            android:layout_height="@dimen/_128sdp"
+            android:background="#f37736">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="@dimen/_75sdp"
+                android:layout_height="@dimen/_75sdp"
+                android:layout_gravity="center|top"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:id="@+id/proImg"
+                android:src="@drawable/placeholder"/>
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="@dimen/_18sdp"
+                android:fontFamily="@font/nunito_semi_bold"
+                android:gravity="bottom|center"
+                android:text=""
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </FrameLayout>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:id="@+id/myAcnt"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_below="@id/frmLayout"
+            android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:layout_height="@dimen/_40sdp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_14sdp"
+                android:textColor="#676767"
+                android:fontFamily="@font/nunito_regular"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+                android:paddingRight="@dimen/_10sdp"
+                android:paddingLeft="@dimen/_10sdp"
+                android:drawableLeft="@drawable/ic_baseline_account_box_24"
+                android:drawablePadding="@dimen/_10sdp"
+                android:text="My Profile"
+                android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"/>
+
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:id="@+id/past_orders"
+            android:visibility="gone"
+            android:clickable="true"
+
+            android:layout_below="@id/myAcnt"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:layout_height="@dimen/_40sdp"
+            android:focusable="true">
+
+            <LinearLayout
+                android:id="@+id/policy"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14sdp"
+                    android:textColor="#676767"
+                    android:fontFamily="@font/nunito_regular"
+                    android:gravity="center|left"
+                    android:layout_gravity="center|left"
+                    android:paddingRight="@dimen/_10sdp"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:text="Orders History"
+                    android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"/>
+            </LinearLayout>
+
+
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:visibility="visible"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:id="@+id/shop"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_below="@id/past_orders"
+            android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:layout_height="@dimen/_40sdp">
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="#a9a9a9"
+                    android:background="@drawable/ic_baseline_shopping_cart_24"
+                    android:layout_marginLeft="@dimen/_10sdp"
+
+                   />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14sdp"
+                    android:textColor="#676767"
+                    android:fontFamily="@font/nunito_regular"
+                    android:gravity="center|left"
+                    android:layout_gravity="center|left"
+                    android:paddingRight="@dimen/_10sdp"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:drawablePadding="@dimen/_10sdp"
+                    android:text="Shop"
+                    android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"/>
+
+
+            </LinearLayout>
+
+
+
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:id="@+id/notification"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:visibility="visible"
+            android:layout_below="@id/shop"
+            android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:layout_height="@dimen/_40sdp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_14sdp"
+                android:textColor="#676767"
+                android:fontFamily="@font/nunito_regular"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+                android:paddingRight="@dimen/_10sdp"
+                android:paddingLeft="@dimen/_10sdp"
+                android:drawableLeft="@drawable/ic_baseline_work_24"
+                android:drawablePadding="@dimen/_10sdp"
+                android:drawableTint="#a9a9a9"
+                android:text="Job"
+                android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"/>
+
+
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:id="@+id/wish_list"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_below="@id/notification"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:layout_height="@dimen/_40sdp">
+
+            <LinearLayout
+                android:id="@+id/wish"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:background="@drawable/wish"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14sdp"
+                    android:textColor="#676767"
+                    android:fontFamily="@font/nunito_regular"
+                    android:gravity="center|left"
+                    android:layout_gravity="center|left"
+                    android:paddingRight="@dimen/_10sdp"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:text="Demanded Products"
+                    android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"/>
+            </LinearLayout>
+
+
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:id="@+id/LogOut"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_below="@id/wish_list"
+            android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:layout_height="@dimen/_40sdp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_14sdp"
+                android:textColor="#676767"
+                android:fontFamily="@font/nunito_regular"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+
+                android:paddingRight="@dimen/_10sdp"
+                android:paddingLeft="@dimen/_10sdp"
+                android:drawableLeft="@drawable/logout"
+                android:drawablePadding="@dimen/_10sdp"
+                android:text="Log Out"
+                android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"/>
+
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</LinearLayout>

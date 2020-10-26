@@ -49,7 +49,7 @@ public class SplashScreen extends AppCompatActivity {
             show_Dialog_after_Install();
 
         }
-            Handler handler = new Handler();
+        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -60,7 +60,6 @@ public class SplashScreen extends AppCompatActivity {
         }, 200);
 
         //printKeyHash();
-
 
 
     }
@@ -82,7 +81,6 @@ public class SplashScreen extends AppCompatActivity {
                 if (response.code() == 201) {
 
                     allDataResponse dataResponse = response.body();
-
                     Intent p = new Intent(getApplicationContext(), HomePage.class);
                     p.putExtra("MISC", dataResponse);
 
