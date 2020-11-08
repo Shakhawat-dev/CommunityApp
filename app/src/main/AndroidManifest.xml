@@ -25,15 +25,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".activities.ShopPage"></activity>
-        <activity android:name=".activities.EditProfile"></activity>
-        <activity android:name=".NewsDetailsActivity"></activity>
+        <activity android:name=".CommentsActivity"></activity>
+        <activity android:name=".activities.ShopPage" />
+        <activity android:name=".activities.EditProfile" />
+        <activity android:name=".NewsDetailsActivity" />
         <activity android:name=".singleList" />
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.SerachActivity" />
-        <activity android:name=".activities.SplashScreen">
-
-        </activity>
+        <activity android:name=".activities.SplashScreen"></activity>
         <activity
             android:name=".activities.PostUploadActivity"
             android:configChanges="orientation|screenSize|layoutDirection" />
@@ -43,15 +42,12 @@
             android:name=".activities.PostDetailsPage"
             android:configChanges="orientation|screenSize|layoutDirection" />
         <activity android:name=".activities.HomePage">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".activities.Voice_Recoder_Activity"
             android:configChanges="orientation|screenSize|layoutDirection"

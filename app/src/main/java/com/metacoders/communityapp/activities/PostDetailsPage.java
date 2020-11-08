@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.metacoders.communityapp.CommentsActivity;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -64,12 +66,21 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         mMediaViews = (TextView) findViewById(R.id.media_views);
         mMediaComments = (TextView) findViewById(R.id.media_comments);
         mMediaDetails = (TextView) findViewById(R.id.media_details);
+        mMediaAllComments = (Button) findViewById(R.id.media_see_all_comments);
 
         reportBtn = findViewById(R.id.reportImage);
         playerView = findViewById(R.id.player_view);
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
         playerView.setUseArtwork(true);
         post = (Post_Model) o.getSerializableExtra("POST");
+
+        mMediaAllComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         playerView.setPlayer(PlayerManager.getSharedInstance(PostDetailsPage.this).getPlayerView().getPlayer());
 
