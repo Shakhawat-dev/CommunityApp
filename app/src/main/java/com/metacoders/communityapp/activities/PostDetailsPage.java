@@ -73,11 +73,13 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
         playerView.setUseArtwork(true);
         post = (Post_Model) o.getSerializableExtra("POST");
+        //Toast.makeText(getApplicationContext() , "p" + post.getId()  , Toast.LENGTH_LONG).show(); ;
 
         mMediaAllComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
+                intent.putExtra("POST_ID", post.getId()) ;
                 startActivity(intent);
             }
         });
@@ -90,7 +92,7 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
         if(post.getPostType().equals("audio")) {
 
-            Toast.makeText(getApplicationContext() , post.getPostType() + "" , Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext() , post.getPostType() + "" , Toast.LENGTH_LONG).show();
             loadAudioDetails(post.getId());
         }
         else {

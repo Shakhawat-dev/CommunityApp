@@ -1,7 +1,7 @@
 package com.metacoders.communityapp.api;
 
-import com.google.gson.JsonObject;
 import com.metacoders.communityapp.models.Audio_List_Model;
+import com.metacoders.communityapp.models.CommentModel;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.OwnListModel;
@@ -13,13 +13,10 @@ import com.metacoders.communityapp.models.Video_List_Model;
 import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.models.post_summary;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -67,7 +64,7 @@ public interface NewsRmeApi {
     @POST("common/post-search-result")
     Call<List<Post_Model>> getSearchResult(
             @Field("search") String search,
-            @Field("category_id") String category_id ,
+            @Field("category_id") String category_id,
             @Field("subcategory_id") String subcategory_id,
             @Field("lang_id") String lang_id
     );
@@ -77,7 +74,7 @@ public interface NewsRmeApi {
     Call<post_summary> get_post_summary();
 
     @GET("dashboard/get-own-news-list")
-    Call<OwnListModel>get_post_list();
+    Call<OwnListModel> get_post_list();
 
     @GET("common/get-news-lists")
     Call<News_List_Model> getNewsList();
@@ -96,38 +93,43 @@ public interface NewsRmeApi {
 
 
     @GET("common/get-news-details/{id}")
-    Call<SinglePostDetails> getPostDetails(@Path("id") String id );
+    Call<SinglePostDetails> getPostDetails(@Path("id") String id);
 
+    // get comment
 
+    @GET("dashboard/get-comments/{id}")
+    Call<CommentModel> getCommentsList(@Path("id") String id);
 
     @Multipart
     @POST("profile/store-photo")
     Call<UploadResult> uploadImage(@Part("image\"; filename=\"myfile.jpg\" ") RequestBody file);
 
-   // @FormUrlEncoded
+    // @FormUrlEncoded
     @Multipart
-    @POST("dashboard/news-post") //("video\"; filename=\"myfile.mp4\" ")  ("image\"; filename=\"myfifle.image\" ")
+    @POST("dashboard/news-post")
+    //("video\"; filename=\"myfile.mp4\" ")  ("image\"; filename=\"myfifle.image\" ")
     Call<LoginResponse.forgetPassResponse> uploadFilePost(@Part MultipartBody.Part file,
-                                                          @Part("title")  RequestBody  title,
+                                                          @Part("title") RequestBody title,
                                                           @Part("title_slug") RequestBody title_slug,
-                                                          @Part("content")  RequestBody content,
-                                                          @Part("post_type")  RequestBody post_type,
-                                                          @Part("lang_id")  RequestBody lang_id,
-                                                          @Part("category_id")   RequestBody category_id,
-                                                          @Part("sub_category_id")   RequestBody sub_category_id,
-                                                          @Part MultipartBody.Part image );
+                                                          @Part("content") RequestBody content,
+                                                          @Part("post_type") RequestBody post_type,
+                                                          @Part("lang_id") RequestBody lang_id,
+                                                          @Part("category_id") RequestBody category_id,
+                                                          @Part("sub_category_id") RequestBody sub_category_id,
+                                                          @Part MultipartBody.Part image);
 
     @Multipart
-    @POST("dashboard/news-post") //("video\"; filename=\"myfile.mp4\" ")  ("image\"; filename=\"myfifle.image\" ")
-    Call<LoginResponse.forgetPassResponse> uploadPost(    @Part("title")  RequestBody  title,
-                                                          @Part("title_slug") RequestBody title_slug,
-                                                          @Part("content")  RequestBody content,
-                                                          @Part("post_type")  RequestBody post_type,
-                                                          @Part("lang_id")  RequestBody lang_id,
-                                                          @Part("category_id")   RequestBody category_id,
-                                                          @Part("sub_category_id")   RequestBody sub_category_id,
-                                                          @Part MultipartBody.Part image);
-    
+    @POST("dashboard/news-post")
+        //("video\"; filename=\"myfile.mp4\" ")  ("image\"; filename=\"myfifle.image\" ")
+    Call<LoginResponse.forgetPassResponse> uploadPost(@Part("title") RequestBody title,
+                                                      @Part("title_slug") RequestBody title_slug,
+                                                      @Part("content") RequestBody content,
+                                                      @Part("post_type") RequestBody post_type,
+                                                      @Part("lang_id") RequestBody lang_id,
+                                                      @Part("category_id") RequestBody category_id,
+                                                      @Part("sub_category_id") RequestBody sub_category_id,
+                                                      @Part MultipartBody.Part image);
+
     // socila login
 
     @FormUrlEncoded
@@ -143,7 +145,7 @@ public interface NewsRmeApi {
 
     @Multipart
     @POST("profile/store-document")
-    Call<RegistrationResponse>sendDOc(
+    Call<RegistrationResponse> sendDOc(
             @Part("image\"; filename=\"myfile.jpg\" ") RequestBody file
     );
 
@@ -160,8 +162,22 @@ public interface NewsRmeApi {
             @Field("last_degree") String last_degree,
             @Field("city") String city,
             @Field("country") String country,
-              @Field("address") String address
+            @Field("address") String address
 
     );
 
+    // create a comment via
+    @FormUrlEncoded
+    @POST("dashboard/post-comments")
+    Call<RegistrationResponse> post_comments(
+            @Field("post_id") String post_id,
+            @Field("comment") String comment,
+            @Field("email") String email,
+            @Field("name") String name,
+            @Field("user_id") String user_id,
+            @Field("parent_id") String parent_id,
+            @Field("like_count") String like_count,
+            @Field("ip_address") String ip_address
+
+    );
 }
