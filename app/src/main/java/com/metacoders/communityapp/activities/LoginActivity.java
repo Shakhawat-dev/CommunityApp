@@ -231,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
                         userModel = response.body().getUser();
 
                         SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
-                                userModel.getUsername(),
+                                userModel.getName(),
                                 userModel.getEmail(), response.body().getToken(), userModel.getRole(), userModel.getUserType(), userModel.getAvatar());
 
 
@@ -341,7 +341,7 @@ public class LoginActivity extends AppCompatActivity {
     public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id, String type) {
 
         pbar.setVisibility(View.VISIBLE);
-
+        Log.d("TAG", "RegisterWithSocial: " + name + " " + userName );
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 //        @Field("user_name") String userName,
 //        @Field("email") String email,
@@ -370,7 +370,7 @@ public class LoginActivity extends AppCompatActivity {
                         userModel = response.body().getUser();
 
                         SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
-                                userModel.getUsername(),
+                               userName,
                                 userModel.getEmail(), response.body().getToken(), userModel.getRole(), userModel.getUserType(), userModel.getAvatar());
 
 

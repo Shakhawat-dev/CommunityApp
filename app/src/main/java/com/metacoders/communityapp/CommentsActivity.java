@@ -48,7 +48,7 @@ public class CommentsActivity extends AppCompatActivity {
 
      //   Intent p = getIntent();
         post_id = getIntent().getStringExtra("POST_ID");
-       // Toast.makeText(getApplicationContext() , "p = " + post_id  , Toast.LENGTH_LONG).show(); ;
+        //Toast.makeText(getApplicationContext() , "p = " +  , Toast.LENGTH_LONG).show(); ;
 
 
         // send msg
@@ -86,7 +86,7 @@ public class CommentsActivity extends AppCompatActivity {
 //        @Field("ip_address") String ip_address
         Call<RegistrationResponse> NetworkCall = api.post_comments(
                 post_id, commnet, user.getEmail(),
-                user.getName(), user.getId(),
+                user.getUsername(), user.getId(),
                 "0", "0", "0"
         );
 

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,6 +51,15 @@ public class NewsDetailsActivity extends AppCompatActivity {
         reportBtn = findViewById(R.id.reportImage);
         playerView = findViewById(R.id.player_view);
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
+
+        findViewById(R.id.media_see_all_comments).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(NewsDetailsActivity.this, CommentsActivity.class);
+                intent.putExtra("POST_ID", post.getId()) ;
+                startActivity(intent);
+            }
+        });
 
         post = (Post_Model) o.getSerializableExtra("POST");
 
