@@ -116,6 +116,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         o = getIntent();
         // take the media type ....
         postType = o.getStringExtra("media");
+        Toast.makeText(getApplicationContext() , postType , Toast.LENGTH_LONG).show();
         if (!postType.contains("post")) {
 
             //  Toast.makeText(getApplicationContext(), getIntent().getStringExtra("path"), Toast.LENGTH_SHORT).show();
@@ -140,6 +141,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 String rand = getSaltString();
 
                 if (postType.contains("audio")) {
+
                     chip.setText(rand + ".mp3");
                 } else {
                     chip.setText(rand + ".mp4");
@@ -413,16 +415,19 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 RequestBody requestMediaFile;
 
                 if (postType.equals("audio")) {
+                    Toast.makeText(getApplicationContext() , "asdfasf" , Toast.LENGTH_LONG ).show();
                     requestMediaFile = RequestBody.create(MediaType.parse("audio/mp3*"), mediaFile);
 
                     body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), requestMediaFile);
+
                 } else {
                     requestMediaFile = RequestBody.create(MediaType.parse("video/mp4"), mediaFile);
                     body2 = MultipartBody.Part.createFormData("video", mediaFile.getName(), requestMediaFile);
                 }
 
                 body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
-
+                Log.d("TAG", "createPostServer: " + mediaFile.getName()  + requestMediaFile.contentType());
+                Toast.makeText(getApplicationContext() , "asdfasf"+ mediaFile.getName() , Toast.LENGTH_LONG ).show();
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
                 api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
 
@@ -439,19 +444,20 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 @Override
                 public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
 
-
-                    if (response.code() == 201) {
-
+                    Toast.makeText(getApplicationContext(), "CODE" + response.code() , Toast.LENGTH_LONG).show();
+                    if (response.code() == 200 || response.code() == 201) {
                         LoginResponse.forgetPassResponse testRes = response.body();
+                       Toast.makeText(getApplicationContext() ," jj" +testRes.getMessage() ,Toast.LENGTH_LONG).show();
                         progressDialog.dismiss();
-
                         Intent p = new Intent(getApplicationContext(), HomePage.class);
                         startActivity(p);
                         //   finish();
 
-                    } else {
+                    }
+                    else {
                         Toast.makeText(getApplicationContext(), "" + response.code(), Toast.LENGTH_LONG)
                                 .show();
+                        Log.d("TAG", "onResponse: " + response.raw() );
                         progressDialog.dismiss();
                     }
                 }
@@ -509,6 +515,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     public String getToken() {
         SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
         String accessTokens = sharedPrefManager.getUserToken();
+        Log.d("TAG", "getToken: " + accessTokens);
         return accessTokens;
     }
 

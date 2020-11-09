@@ -121,8 +121,11 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         mMediaViews.setText(post.getHit() + "");
         mMediaComments.setText(post.getShowItemNumbers() + "");
         mMediaDetails.setText(post.getContent() + "");
+        Log.d("TAG", "setDetails: " +Constants.IMAGE_URL + post.getVideoPath());
 
     }
+
+
 
     private void playMedia(String Path) {
 

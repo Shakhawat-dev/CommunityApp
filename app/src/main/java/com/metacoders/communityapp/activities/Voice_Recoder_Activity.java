@@ -156,7 +156,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
 
 
             AlertDialog alert = new AlertDialog.Builder(this).create();
-            alert.setTitle("What You Want To Do ? ");
+            alert.setTitle("What You Want To Do ?");
             alert.setMessage("Choose Your Saving Method");
             alert.setButton(Dialog.BUTTON_POSITIVE, "Upload It", new DialogInterface.OnClickListener() {
 
@@ -164,11 +164,16 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
                 public void onClick(DialogInterface dialog, int which) {
                     alert.dismiss();
 
-                    Uri uri = Uri.fromFile(new File(mFileName));
-                    Intent post = new Intent(getApplicationContext(), PostUploadActivity.class);
-                    post.putExtra("path", uri.toString());
-                    post.putExtra("media", "audio");
-                    startActivity(post);
+                   try{
+                       Uri uri = Uri.fromFile(new File(mFileName));
+                       Intent post = new Intent(getApplicationContext(), PostUploadActivity.class);
+                       post.putExtra("path", uri.toString());
+                       post.putExtra("media", "audio");
+                       startActivity(post);
+                   }
+                   catch (Exception r ){
+                       Toast.makeText(getApplicationContext(), "There was Some Error !!!" , Toast.LENGTH_LONG).show();
+                   }
                 }
             });
 
@@ -203,7 +208,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
             file.mkdirs();
         }
 
-        return (file.getAbsolutePath() + "/news_rme" + System.currentTimeMillis() + ".aac");
+        return (file.getAbsolutePath() + "/news_rme" + System.currentTimeMillis() + ".mp3");
     }
 
     private void startRecording() {
@@ -216,7 +221,8 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        mediaRecorder.setOutputFile(getFilename());
+        mFileName = getFilename() ;
+        mediaRecorder.setOutputFile(mFileName);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
 
