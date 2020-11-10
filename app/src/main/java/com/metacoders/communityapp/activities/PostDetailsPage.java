@@ -37,7 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class PostDetailsPage extends AppCompatActivity  implements CallBacks.playerCallBack {
+public class PostDetailsPage extends AppCompatActivity implements CallBacks.playerCallBack {
 
     PlayerView playerView;
     SimpleExoPlayer player;
@@ -46,9 +46,9 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
-    ImageView fullscreenButton ;
-    Dialog mFullScreenDialog ;
-    Post_Model post ;
+    ImageView fullscreenButton;
+    Dialog mFullScreenDialog;
+    Post_Model post;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails;
     private Button mMediaAllComments;
@@ -75,14 +75,22 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         post = (Post_Model) o.getSerializableExtra("POST");
         //Toast.makeText(getApplicationContext() , "p" + post.getId()  , Toast.LENGTH_LONG).show(); ;
 
-        mMediaAllComments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
-                intent.putExtra("POST_ID", post.getId()) ;
-                startActivity(intent);
-            }
-        });
+        if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
+
+            mMediaAllComments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
+                    intent.putExtra("POST_ID", post.getId());
+                    startActivity(intent);
+                }
+            });
+
+        } else {
+            mMediaAllComments.setVisibility(View.INVISIBLE);
+        }
+
 
         playerView.setPlayer(PlayerManager.getSharedInstance(PostDetailsPage.this).getPlayerView().getPlayer());
 
@@ -90,17 +98,15 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
         setDetails();
 
-        if(post.getPostType().equals("audio")) {
+        if (post.getPostType().equals("audio")) {
 
             //Toast.makeText(getApplicationContext() , post.getPostType() + "" , Toast.LENGTH_LONG).show();
             loadAudioDetails(post.getId());
-        }
-        else {
+        } else {
             // all other model
             //TODO Check if its post or video
 
-            if(post.getPostType().equals("video"))
-            {
+            if (post.getPostType().equals("video")) {
                 playMedia(post.getVideoPath());
             }
 
@@ -109,17 +115,15 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
         fullscreenButton.setOnClickListener(v -> {
 
-            if (!mExoPlayerFullscreen)
-            {
+            if (!mExoPlayerFullscreen) {
                 // not in fullscreen
 
-                openFullScreenDialog()  ;
+                openFullScreenDialog();
 
 
-            }
-            else {
+            } else {
 
-                closeFullScreenDialog() ;
+                closeFullScreenDialog();
 
             }
 
@@ -132,18 +136,15 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         mMediaTitle.setText(post.getTitle() + "");
         mMediaDate.setText(post.getCreatedAt() + "");
         mMediaViews.setText(post.getHit() + "");
-        mMediaComments.setText(post.getShowItemNumbers() + "");
         mMediaDetails.setText(post.getContent() + "");
-        Log.d("TAG", "setDetails: " +Constants.IMAGE_URL + post.getVideoPath());
+        Log.d("TAG", "setDetails: " + Constants.IMAGE_URL + post.getVideoPath());
 
     }
 
 
-
     private void playMedia(String Path) {
 
-        if( PlayerManager.getSharedInstance(PostDetailsPage.this).isPlayerPlaying())
-        {
+        if (PlayerManager.getSharedInstance(PostDetailsPage.this).isPlayerPlaying()) {
             PlayerManager.getSharedInstance(PostDetailsPage.this).stopPlayer();
         }
 
@@ -160,14 +161,11 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
     }
 
-    public  void initFullsceen() {
+    public void initFullsceen() {
 
-        mFullScreenDialog = new Dialog(PostDetailsPage.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
-        {
-            public  void onBackPressed()
-            {
-                if(mExoPlayerFullscreen)
-                {
+        mFullScreenDialog = new Dialog(PostDetailsPage.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+            public void onBackPressed() {
+                if (mExoPlayerFullscreen) {
                     closeFullScreenDialog();
 
                     super.onBackPressed();
@@ -176,28 +174,26 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
             }
 
 
-        }  ;
-
+        };
 
 
     }
+
     private void closeFullScreenDialog() {
 
 
         ((ViewGroup) playerView.getParent()).removeView(playerView); // removes the player screen
 
 
-        ((FrameLayout) findViewById(R.id.parent_relative )).addView(playerView) ;
+        ((FrameLayout) findViewById(R.id.parent_relative)).addView(playerView);
 
-        mExoPlayerFullscreen = false ;
+        mExoPlayerFullscreen = false;
 
         mFullScreenDialog.dismiss();
 
 
         // change the full screen image
-        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostDetailsPage.this , R.drawable.full));
-
-
+        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostDetailsPage.this, R.drawable.full));
 
 
     }
@@ -209,16 +205,17 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
         ((ViewGroup) playerView.getParent()).removeView(playerView); // removes the player screen
 
-        mFullScreenDialog.addContentView(playerView , new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT ,ViewGroup.LayoutParams.MATCH_PARENT ));
+        mFullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // change the full screen image
-        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostDetailsPage.this , R.drawable.full));
+        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostDetailsPage.this, R.drawable.full));
 
-        mExoPlayerFullscreen = true ;
+        mExoPlayerFullscreen = true;
 
         mFullScreenDialog.show();
 
 
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -229,10 +226,11 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
         }
         finish();
-        overridePendingTransition(R.anim.slide_in_left , R.anim.slide_out_right);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
 
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -243,12 +241,14 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 
 
     }
+
     @Override
     protected void onPause() {
         super.onPause();
 
         PlayerManager.getSharedInstance(PostDetailsPage.this).pausePlayer();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -256,11 +256,11 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
         initFullsceen();
     }
 
-    private   void loadAudioDetails(String id){
+    private void loadAudioDetails(String id) {
 
 //        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
 //        String   accessTokens = sharedPrefManager.getUserToken();
-      //  Log.d("TAG", "loadList: activity " + accessTokens);
+        //  Log.d("TAG", "loadList: activity " + accessTokens);
 
 
 //        Call<News_List_Model> NetworkCall = RetrofitClient
@@ -268,28 +268,27 @@ public class PostDetailsPage extends AppCompatActivity  implements CallBacks.pla
 //                .getApi()
 //                .getNewsList();
 
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
         Call<SinglePostDetails> NetworkCall = api.getPostDetails(
-               id
-        ) ;
+                id
+        );
 
 
         NetworkCall.enqueue(new Callback<SinglePostDetails>() {
             @Override
             public void onResponse(Call<SinglePostDetails> call, Response<SinglePostDetails> response) {
 
-                if(response.code() == 201 ){
+                if (response.code() == 201) {
 
-                    SinglePostDetails postDetails = response.body() ;
+                    SinglePostDetails postDetails = response.body();
 
-                    List< SinglePostDetails.GetNewsAudioDetail > data = postDetails.getGetNewsAudioDetails() ;
+                    List<SinglePostDetails.GetNewsAudioDetail> data = postDetails.getGetNewsAudioDetails();
 
-                  if(data.size() > 0 ){
-                      playMedia(data.get(0).getAudioPath());
+                    if (data.size() > 0) {
+                        playMedia(data.get(0).getAudioPath());
 
-                  }
-
+                    }
 
 
                 }

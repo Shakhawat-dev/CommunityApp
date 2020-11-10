@@ -77,7 +77,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         Post_Model newsFeed = mData.get(position);
         //viewHolder.itemView.animation = AnimationUtils.loadAnimation(context,R.anim.item_animation_fall_down)
 
-        holder.author.setText(newsFeed.getUserId());
+        holder.author.setText(newsFeed.getUser_name());
         holder.title.setText(newsFeed.getTitle());
 //        holder.price.setText("$" + newsFeed.getProduct_price().toString());
 //        holder.description.setText(newsFeed.getDescription());

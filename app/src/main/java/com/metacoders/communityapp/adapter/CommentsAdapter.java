@@ -46,6 +46,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Catego
         //set name
         holder.name.setText(singleComment.getName());
         holder.content.setText(singleComment.getComment());
+        holder.commentTime.setText(singleComment.getCreated_at());
 //            holder.itemView.setBackgroundColor(Color.parseColor(singleCategory.getColor()));
   //      holder.cardView.setCardBackgroundColor(Color.parseColor(singleComment.getColor()));
 
@@ -63,7 +64,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Catego
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView name , content ;
+        public TextView name , content, commentTime;
         public MaterialCardView cardView;
 
 
@@ -76,6 +77,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Catego
 
             name = itemView.findViewById(R.id.comment_text);
             content = itemView.findViewById(R.id.comment);
+            commentTime = itemView.findViewById(R.id.comments_time);
            // cardView = itemView.findViewById(R.id.category_card);
 
           //  this.itemClickListenter = itemClickListenter;

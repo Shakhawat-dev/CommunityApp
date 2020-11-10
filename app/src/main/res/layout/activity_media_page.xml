@@ -115,6 +115,7 @@
                         android:drawableStart="@drawable/ic_baseline_comment_24"
                         android:drawablePadding="4dp"
                         android:drawableTint="@color/colorWhite"
+                        android:visibility="gone"
                         android:textColor="@color/colorWhite"                android:layout_marginStart="8dp"
                         android:text="0" />
 

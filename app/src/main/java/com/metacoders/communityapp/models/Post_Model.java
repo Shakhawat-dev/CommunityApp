@@ -130,11 +130,14 @@ public  class Post_Model implements Serializable {
     @SerializedName("created_at")
     @Expose
     private String createdAt;
+    @SerializedName("user_name")
+    @Expose
+    private String user_name;
 
     public Post_Model() {
     }
 
-    public Post_Model(String ttlView, String id, String langId, String title, String titleSlug, Object titleHash, String keywords, String summary, String content, String categoryId, String subcategoryId, String imageBig, String imageDefault, String imageSlider, String imageMid, String imageSmall, String imageMime, String hit, String optionalUrl, String needAuth, String isSlider, String sliderOrder, String isFeatured, String featuredOrder, String isRecommended, String isBreaking, String isScheduled, String visibility, String showRightColumn, String postType, String videoPath, String imageUrl, String videoEmbedCode, String userId, String status, Object feedId, Object postUrl, String showPostUrl, Object imageDescription, String showItemNumbers, String createdAt) {
+    public Post_Model(String ttlView, String id, String langId, String title, String titleSlug, Object titleHash, String keywords, String summary, String content, String categoryId, String subcategoryId, String imageBig, String imageDefault, String imageSlider, String imageMid, String imageSmall, String imageMime, String hit, String optionalUrl, String needAuth, String isSlider, String sliderOrder, String isFeatured, String featuredOrder, String isRecommended, String isBreaking, String isScheduled, String visibility, String showRightColumn, String postType, String videoPath, String imageUrl, String videoEmbedCode, String userId, String status, Object feedId, Object postUrl, String showPostUrl, Object imageDescription, String showItemNumbers, String createdAt, String user_name) {
         this.ttlView = ttlView;
         this.id = id;
         this.langId = langId;
@@ -176,6 +179,7 @@ public  class Post_Model implements Serializable {
         this.imageDescription = imageDescription;
         this.showItemNumbers = showItemNumbers;
         this.createdAt = createdAt;
+        this.user_name = user_name;
     }
 
     public String getTtlView() {
@@ -504,5 +508,13 @@ public  class Post_Model implements Serializable {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
     }
 }

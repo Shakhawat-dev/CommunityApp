@@ -34,6 +34,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:text="Start Sharing..."
+                        android:visibility="gone"
                         android:textColor="@color/colorAccent" />
 
                     <LinearLayout
