@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.login.LoginManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -147,6 +148,27 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     drawerLayout.closeDrawer(GravityCompat.START);
                 } else {
                     drawerLayout.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+
+        logOUtCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    LoginManager.getInstance().logOut();
+                } catch (Exception e) {
+                    Log.d("TAG", "onCreate: " + e.getMessage());
+                }
+                Intent o = new Intent(getApplicationContext(), HomePage.class);
+                SharedPrefManager manager = new SharedPrefManager(getApplicationContext());
+                manager.logout();
+                o.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(o);
+                try {
+                    finish();
+                } catch (Exception e) {
+
                 }
             }
         });

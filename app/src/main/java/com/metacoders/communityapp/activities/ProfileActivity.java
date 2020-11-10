@@ -102,6 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
             Intent o = new Intent(context, HomePage.class);
             SharedPrefManager manager = new SharedPrefManager(context);
             manager.logout();
+            o.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(o);
             try {
                 finish();
