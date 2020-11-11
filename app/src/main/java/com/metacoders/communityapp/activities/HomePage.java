@@ -1,12 +1,5 @@
 package com.metacoders.communityapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,6 +16,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
@@ -44,10 +44,9 @@ import com.metacoders.communityapp.utils.SharedPrefManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
-    private DrawerLayout drawerLayout;
+public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     NavigationView navigationView;
-    ImageView hamburger, searchBtn, profileBtn , userImage;
+    ImageView hamburger, searchBtn, profileBtn, userImage;
     ViewPager2 viewPager;
     FloatingActionButton emergencyFuel;
     allDataResponse dataResponse;
@@ -57,12 +56,52 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     List<String> idlist = new ArrayList<>();
     CardView myActonSide, jobSide, ShopSide, profileSide, logOUtCard, notificationSide;
     List<allDataResponse.LanguageList> langList;
+    private DrawerLayout drawerLayout;
+    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+                    //   Fragment selectedFragmnet = null ;
+
+                    switch (menuItem.getItemId()) {
+                        case R.id.newsfeed:
+                            viewPager.setCurrentItem(0, false);
+                            break;
+                        case R.id.audio:
+                            viewPager.setCurrentItem(2, false);
+                            break;
+                        case R.id.video:
+                            viewPager.setCurrentItem(1, false);
+                            break;
+                        case R.id.profile:
+                            viewPager.setCurrentItem(3, false);
+                            break;
+                        case R.id.dashboard:
+                            if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
+
+                                viewPager.setCurrentItem(4, false);
+                            } else {
+
+                                createTheAlertDialogue();
+                            }
+
+                            break;
+
+                    }
+                    //      getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, selectedFragmnet).commit();
+
+                    return true;
+
+                }
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        viewPager2_adapter adaper;
+        viewPager2_adapter viewPager2Adapter;
 
         getSupportActionBar().hide();
         RequestPermission();
@@ -82,18 +121,17 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         ShopSide = navigationView.findViewById(R.id.shop);
 
 
-
         dataResponse = (allDataResponse) getIntent().getSerializableExtra("MISC");
-        adaper = new viewPager2_adapter(HomePage.this);
+        viewPager2Adapter = new viewPager2_adapter(HomePage.this);
         // navigationView = findViewById(R.id.navigation_view);
 
-        SharedPrefManager.getInstance(getApplicationContext()).getUser().getName() ;
-        Log.d("detais", "onCreate: " +SharedPrefManager.getInstance(getApplicationContext()).getUser().getName());
-        Log.d("detais", "onCreate: " +SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn());
+        SharedPrefManager.getInstance(getApplicationContext()).getUser().getName();
+     //   Log.d("detais", "onCreate: " + SharedPrefManager.getInstance(getApplicationContext()).getUser().getName());
+    //    Log.d("detais", "onCreate: " + SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn());
 
         navigationBar.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         // getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, new dashboardFragment()).commit();
-        viewPager.setAdapter(adaper);
+        viewPager.setAdapter(viewPager2Adapter);
         viewPager.setUserInputEnabled(false);
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -233,7 +271,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
                         dialog.dismiss();
                         // reload the view pager
-                        viewPager.setAdapter(adaper);
+                        viewPager.setAdapter(viewPager2Adapter);
                         // get back to the past
                         viewPager.setCurrentItem(oldid);
 
@@ -256,71 +294,28 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     private void setUpSideBar() {
         navigationView.setNavigationItemSelectedListener(this);
 
-       if(SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()){
-           UserModel model = SharedPrefManager.getInstance(getApplicationContext()).getUser() ;
+        if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
+            UserModel model = SharedPrefManager.getInstance(getApplicationContext()).getUser();
 
-           userNameOnSide.setText(model.getUsername());
-            try{
+            userNameOnSide.setText(model.getUsername());
+            try {
                 Glide.with(getApplicationContext())
-                        .load(Constants.IMAGE_URL+ model.getAvatar())
+                        .load(Constants.IMAGE_URL + model.getAvatar())
                         .placeholder(R.drawable.placeholder)
                         .error(R.drawable.placeholder)
-                        .into(userImage) ;
-            }
-            catch ( Exception er ){
-                Toast.makeText(getApplicationContext() , "user image error  " + er.getMessage(), Toast.LENGTH_LONG)
+                        .into(userImage);
+            } catch (Exception er) {
+                Toast.makeText(getApplicationContext(), "user image error  " + er.getMessage(), Toast.LENGTH_LONG)
                         .show();
             }
 
 
-       }
-       else {
+        } else {
 
-       }
+        }
 
 
     }
-
-
-    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-                    //   Fragment selectedFragmnet = null ;
-
-                    switch (menuItem.getItemId()) {
-                        case R.id.newsfeed:
-                            viewPager.setCurrentItem(0, false);
-                            break;
-                        case R.id.audio:
-                            viewPager.setCurrentItem(2, false);
-                            break;
-                        case R.id.video:
-                            viewPager.setCurrentItem(1, false);
-                            break;
-                        case R.id.profile:
-                            viewPager.setCurrentItem(3, false);
-                            break;
-                        case R.id.dashboard:
-                            if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
-
-                                viewPager.setCurrentItem(4, false);
-                            } else {
-
-                                createTheAlertDialogue();
-                            }
-
-                            break;
-
-                    }
-                    //      getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, selectedFragmnet).commit();
-
-                    return true;
-
-                }
-            };
 
     private void createTheAlertDialogue() {
 
@@ -371,11 +366,11 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         Dexter.withContext(HomePage.this)
                 .withPermissions(
-                        Manifest.permission.READ_EXTERNAL_STORAGE ,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE ,
-                        Manifest.permission.CAMERA ,
-                        Manifest.permission.ACCESS_FINE_LOCATION ,
-                        Manifest.permission.RECORD_AUDIO )
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.RECORD_AUDIO)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
@@ -390,6 +385,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     }
                 }).onSameThread().check();
     }
+
     private String[] generateLangArray() {
 
         langList = dataResponse.getLanguageList();

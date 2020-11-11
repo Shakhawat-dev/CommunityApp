@@ -19,7 +19,7 @@
         app:cameraGestureLongTap="none"
         android:keepScreenOn="true"
         app:cameraGesturePinch="zoom"
-        app:cameraEngine="camera2"
+        app:cameraEngine="camera1"
         app:cameraGestureTap="autoFocus"
         app:cameraPreview="glSurface"
         app:cameraFacing="back"
