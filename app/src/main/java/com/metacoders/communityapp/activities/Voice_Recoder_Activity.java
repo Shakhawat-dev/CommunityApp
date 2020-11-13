@@ -62,6 +62,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
     String time;
     private AudioPicker audioPicker;
     private Chronometer timer;
+    String orginalPath = null ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +129,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
         audioPicker = new AudioPicker(this);
         audioPicker.setAudioPickerCallback(this);
         audioPicker.setCacheLocation(PickerUtils.getSavedCacheLocation(this));
+
         return audioPicker;
     }
     private void openGalleryForAudio() {
@@ -137,6 +139,20 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
 //        //    startActivityForResult(pickIntent, IMAGE_PICKER_SELECT );
 //        startActivityForResult(Intent.createChooser(pickIntent, "Select Audio"), IMAGE_PICKER_SELECT);
         audioPicker = getAudioPicker();
+        audioPicker.setAudioPickerCallback(new AudioPickerCallback() {
+            @Override
+            public void onAudiosChosen(List<ChosenAudio> list) {
+                orginalPath = list.get(0).getOriginalPath();    ;
+                Log.d("TAGe", "onAudiosChosen: "+ list.get(0).getOriginalPath());    ;
+                uploadAudio();
+                Log.d("TAGED", "onActivityResult: TYPE =  " + orginalPath);
+            }
+
+            @Override
+            public void onError(String s) {
+
+            }
+        });
         audioPicker.pickAudio();
 
    }
@@ -149,6 +165,9 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
             Intent post = new Intent(getApplicationContext(), PostUploadActivity.class);
             post.putExtra("path",galleryUri.toString() );
             post.putExtra("media", "audio");
+            post.putExtra("OR_PATH", orginalPath);
+
+
             startActivity(post);
 
 
@@ -168,6 +187,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
                        Uri uri = Uri.fromFile(new File(mFileName));
                        Intent post = new Intent(getApplicationContext(), PostUploadActivity.class);
                        post.putExtra("path", uri.toString());
+                       post.putExtra("OR_PATH", orginalPath);
                        post.putExtra("media", "audio");
                        startActivity(post);
                    }
@@ -199,8 +219,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
 
     }
 
-    private String getFilename()
-    {
+    private String getFilename() {
         String filepath = Environment.getExternalStorageDirectory().getPath();
         File file = new File(filepath,"NewsRme_Audio");
 
@@ -349,11 +368,17 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
             audioPicker.submit(data);
             Uri selectedMediaUri = data.getData();
              galleryUri = selectedMediaUri;
+
            //  String TYPE = MimeTypeMap.getFileExtensionFromUrl(selectedMediaUri.getLastPathSegment()).toLowerCase();
 
-            Log.d("TAG", "onActivityResult: TYPE =  " + galleryUri);
 
-            uploadAudio();
+            if(audioPicker == null) {
+                audioPicker = new AudioPicker(Voice_Recoder_Activity.this);
+                audioPicker.setAudioPickerCallback(this);
+
+            }
+
+
         }
 
 

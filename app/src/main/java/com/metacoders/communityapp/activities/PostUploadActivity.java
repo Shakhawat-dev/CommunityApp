@@ -50,6 +50,7 @@ import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.utils.CallBacks;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.PlayerManager;
+import com.metacoders.communityapp.utils.ProgressRequestBody;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -72,7 +73,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.http.Part;
 
-public class PostUploadActivity extends AppCompatActivity implements CallBacks.playerCallBack {
+public class PostUploadActivity extends AppCompatActivity implements CallBacks.playerCallBack,
+        ProgressRequestBody.UploadCallbacks {
 
     Uri mediaUri = null;
     String uriPath = null;
@@ -127,24 +129,24 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             //      File tempFile = new File(videoUrl.getFile());
                 Uri test = Uri.parse(getIntent().getStringExtra("path"));
 
-                Cursor c = getContentResolver().query(test, null, null, null, null);
-                c.moveToFirst();
-                String name = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+              //  Cursor c = getContentResolver().query(test, null, null, null, null);
+             //   c.moveToFirst();
+              //  String name = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
 
-                chip.setText(name);
+              //  chip.setText(name);
 
-                c.close();
+                //c.close();
 
 
             } catch (Exception e) {
-                Log.d("TAGERROR", e.getMessage() + "");
-                String rand = getSaltString();
+                Log.d("TAG", e.getMessage() + "");
+             //   String rand = getSaltString();
 
                 if (postType.contains("audio")) {
 
-                    chip.setText(rand + ".mp3");
+                  //  chip.setText(rand + ".mp3");
                 } else {
-                    chip.setText(rand + ".mp4");
+                   // chip.setText(rand + ".mp4");
                 }
 
 
@@ -350,9 +352,10 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 path2 = getPath(PostUploadActivity.this, mFilePathUri);
                 file = new File(path2);
             } catch (Exception e) {
-
                 path2 = mFilePathUri.getPath();
                 file = new File(path2);
+           //
+
             }
 
 
@@ -360,7 +363,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 compressed = new Compressor(getApplicationContext())
                         .setMaxHeight(600)
                         .setMaxWidth(600)
-                        .setQuality(50)
+                        .setQuality(40)
                         .compressToFile(file);
             } catch (Exception e) {
                 compressed = file;
@@ -386,14 +389,15 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                         body1);
 
 
-            } else {
+            }
+            else {
 
                 Intent p = getIntent();
                 uriPath = p.getStringExtra("path");
                 //media Uri has the all the link in it ;
                 mediaUri = Uri.parse(uriPath);
 
-                File mediaFile = null;
+                File mediaFile = null , backupFile = null;
                 String path = null;
 
                 if (mediaUri != null) {
@@ -401,9 +405,12 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                     try {
                         path = getPath(PostUploadActivity.this, mediaUri);
                         mediaFile = new File(path);
+                        backupFile = mediaFile ;
                     } catch (Exception e) {
                         path = mediaUri.getPath();
                         mediaFile = new File(path);
+                        backupFile = mediaFile ;
+                        Log.d("TAG", "createPostServer: im here " + mediaFile + " path" + path );
                     }
                 } else
                     Toast.makeText(getApplicationContext(), "Media File  is empty", Toast.LENGTH_LONG).show();
@@ -415,19 +422,44 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 RequestBody requestMediaFile;
 
                 if (postType.equals("audio")) {
-                    Toast.makeText(getApplicationContext() , "asdfasf" , Toast.LENGTH_LONG ).show();
-                    requestMediaFile = RequestBody.create(MediaType.parse("audio/mp3*"), mediaFile);
+                    String orginaPath = getIntent().getStringExtra("OR_PATH") ;
+                    Log.d("EE", "createPostServer: "+ orginaPath);
+                    if(orginaPath!= null){
+                        mediaFile = new File(orginaPath) ;
+                        Log.d("EE", "createPostServer: ");
+                     //   Toast.makeText(getApplicationContext(), " " + orginaPath , Toast.LENGTH_LONG).show();
+                        if(mediaFile == null){
+                          //  Toast.makeText(getApplicationContext(), " M3edia File Null"  , Toast.LENGTH_LONG).show();
+                            requestMediaFile = RequestBody.create(backupFile, MediaType.parse("audio/*"));
+                            // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
+                            body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), requestMediaFile);
+                        }
+                        else {
+                            requestMediaFile = RequestBody.create(mediaFile, MediaType.parse("audio/*"));
+                            // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
+                            body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), requestMediaFile);
+                        }
 
-                    body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), requestMediaFile);
+                    }
+                    else {
+                        requestMediaFile = RequestBody.create(mediaFile, MediaType.parse("audio/*"));
+                        // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
+                        body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), requestMediaFile);
+                    }
+
 
                 } else {
                     requestMediaFile = RequestBody.create(MediaType.parse("video/mp4"), mediaFile);
-                    body2 = MultipartBody.Part.createFormData("video", mediaFile.getName(), requestMediaFile);
+                    ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "video/mp4",this);
+                    body2 = MultipartBody.Part.createFormData("video", mediaFile.getName(), fileBody);
                 }
+
+
+
 
                 body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
                 Log.d("TAG", "createPostServer: " + mediaFile.getName()  + requestMediaFile.contentType());
-                Toast.makeText(getApplicationContext() , "asdfasf"+ mediaFile.getName() , Toast.LENGTH_LONG ).show();
+             //   Toast.makeText(getApplicationContext() , "asdfasf"+ mediaFile.getName() , Toast.LENGTH_LONG ).show();
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
                 api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
 
@@ -725,6 +757,21 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 )
 
                 .show();
+
+    }
+
+    @Override
+    public void onProgressUpdate(int percentage) {
+        Log.d("TAG", "onProgressUpdate: "+" : " + percentage );
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onFinish() {
 
     }
 }

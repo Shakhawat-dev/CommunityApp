@@ -4,8 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_height="match_parent">
-
-
     <com.otaliastudios.cameraview.CameraView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -29,7 +27,7 @@
         app:cameraAudio="on"
         app:cameraGrid="off"
         app:cameraGridColor="@color/white"
-        app:cameraPlaySounds="true"
+        app:cameraPlaySounds="false"
         app:cameraVideoCodec="deviceDefault"
         app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
         app:cameraUseDeviceOrientation="false"
@@ -37,6 +35,8 @@
         app:cameraPictureSnapshotMetering="true"
         app:cameraPictureFormat="jpeg"
         app:cameraRequestPermissions="true"
+        app:cameraVideoSizeMaxWidth="1280"
+        app:cameraVideoSizeMaxHeight="720"
         app:cameraExperimental="true">
 
         <!-- Watermark! -->
