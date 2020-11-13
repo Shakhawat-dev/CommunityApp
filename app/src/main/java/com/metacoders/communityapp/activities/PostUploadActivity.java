@@ -1,16 +1,9 @@
 package com.metacoders.communityapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -19,18 +12,24 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -42,22 +41,17 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.adapter.CategoryAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.utils.CallBacks;
-import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.PlayerManager;
 import com.metacoders.communityapp.utils.ProgressRequestBody;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -71,21 +65,20 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Part;
 
 public class PostUploadActivity extends AppCompatActivity implements CallBacks.playerCallBack,
         ProgressRequestBody.UploadCallbacks {
 
+    private static final int PICK_IMAGE = 100;
     Uri mediaUri = null;
     String uriPath = null;
     ImageView addImage;
     String postType;
-    ProgressDialog progressDialog;
+    Dialog progressDialog;
     MultipartBody.Part body1;
     MultipartBody.Part body2;
     NewsRmeApi api;
     Intent o;
-    private static final int PICK_IMAGE = 100;
     Button submitBtn;
     Chip chip;
     TextInputEditText title, desc;
@@ -97,10 +90,24 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     Call<LoginResponse.forgetPassResponse> NetworkCall;
     Spinner catgoerySelector, langugaNameSelector;
     String catid = "null", langid = "null";
-    private Bitmap compressedImageFile;
     Uri mFilePathUri = null;
     PlayerView playerView;
+    TextView percent ;
+    ProgressBar pbarr ;
 
+    private Bitmap compressedImageFile;
+    //AlertDialog.Builder builder = new AlertDialog.Builder(PostUploadActivity.this);
+
+    public static String getPath(Context ctx, Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = ctx.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s = cursor.getString(columnIndex);
+        cursor.close();
+        return s;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,13 +119,19 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         playerView.setUseArtwork(true);
         playerView.setPlayer(PlayerManager.getSharedInstance(PostUploadActivity.this).getPlayerView().getPlayer());
         PlayerManager.getSharedInstance(this).setPlayerListener(this);
-        progressDialog = new ProgressDialog(PostUploadActivity.this);
-        progressDialog.setMessage("Uploading...");
+
+        progressDialog = new Dialog(PostUploadActivity.this);
+        progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        progressDialog.setContentView(R.layout.custom_dialogue);
+        percent = progressDialog.findViewById(R.id.progress_state) ;
+        pbarr = progressDialog.findViewById(R.id.progress_bar) ;
+        progressDialog.setCancelable(false);
+
 
         o = getIntent();
         // take the media type ....
         postType = o.getStringExtra("media");
-        Toast.makeText(getApplicationContext() , postType , Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), postType, Toast.LENGTH_LONG).show();
         if (!postType.contains("post")) {
 
             //  Toast.makeText(getApplicationContext(), getIntent().getStringExtra("path"), Toast.LENGTH_SHORT).show();
@@ -126,27 +139,27 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             try {
 //                  URI uri = new URI(getIntent().getStringExtra("path"));
 //                  URL videoUrl = uri.toURL();
-            //      File tempFile = new File(videoUrl.getFile());
+                //      File tempFile = new File(videoUrl.getFile());
                 Uri test = Uri.parse(getIntent().getStringExtra("path"));
 
-              //  Cursor c = getContentResolver().query(test, null, null, null, null);
-             //   c.moveToFirst();
-              //  String name = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                //  Cursor c = getContentResolver().query(test, null, null, null, null);
+                //   c.moveToFirst();
+                //  String name = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
 
-              //  chip.setText(name);
+                //  chip.setText(name);
 
                 //c.close();
 
 
             } catch (Exception e) {
                 Log.d("TAG", e.getMessage() + "");
-             //   String rand = getSaltString();
+                //   String rand = getSaltString();
 
                 if (postType.contains("audio")) {
 
-                  //  chip.setText(rand + ".mp3");
+                    //  chip.setText(rand + ".mp3");
                 } else {
-                   // chip.setText(rand + ".mp4");
+                    // chip.setText(rand + ".mp4");
                 }
 
 
@@ -320,7 +333,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 //
 //
 //        }
-        else if (resultCode == Activity.RESULT_OK){
+        else if (resultCode == Activity.RESULT_OK) {
             try {
                 Uri selectedMediaUri = data.getData();
                 if (!Uri.EMPTY.equals(selectedMediaUri)) {
@@ -347,14 +360,14 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
 
             String path2 = null;
-            File file ,compressed;
+            File file, compressed;
             try {
                 path2 = getPath(PostUploadActivity.this, mFilePathUri);
                 file = new File(path2);
             } catch (Exception e) {
                 path2 = mFilePathUri.getPath();
                 file = new File(path2);
-           //
+                //
 
             }
 
@@ -369,7 +382,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 compressed = file;
             }
             progressDialog.show();
-            progressDialog.setCancelable(false);
+
 
 
             if (postType.equals("post")) {
@@ -380,7 +393,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
 
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
-                Log.d("TAG", "createPostServer: " + file.getName()  + requestFile.contentType());
+                Log.d("TAG", "createPostServer: " + file.getName() + requestFile.contentType());
                 api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
                 NetworkCall = api.uploadPost(createPartFromString(title), createPartFromString(title.toLowerCase()),
                         createPartFromString(desc),
@@ -389,15 +402,14 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                         body1);
 
 
-            }
-            else {
+            } else {
 
                 Intent p = getIntent();
                 uriPath = p.getStringExtra("path");
                 //media Uri has the all the link in it ;
                 mediaUri = Uri.parse(uriPath);
 
-                File mediaFile = null , backupFile = null;
+                File mediaFile = null, backupFile = null;
                 String path = null;
 
                 if (mediaUri != null) {
@@ -405,12 +417,12 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                     try {
                         path = getPath(PostUploadActivity.this, mediaUri);
                         mediaFile = new File(path);
-                        backupFile = mediaFile ;
+                        backupFile = mediaFile;
                     } catch (Exception e) {
                         path = mediaUri.getPath();
                         mediaFile = new File(path);
-                        backupFile = mediaFile ;
-                        Log.d("TAG", "createPostServer: im here " + mediaFile + " path" + path );
+                        backupFile = mediaFile;
+                        Log.d("TAG", "createPostServer: im here " + mediaFile + " path" + path);
                     }
                 } else
                     Toast.makeText(getApplicationContext(), "Media File  is empty", Toast.LENGTH_LONG).show();
@@ -422,44 +434,44 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 RequestBody requestMediaFile;
 
                 if (postType.equals("audio")) {
-                    String orginaPath = getIntent().getStringExtra("OR_PATH") ;
-                    Log.d("EE", "createPostServer: "+ orginaPath);
-                    if(orginaPath!= null){
-                        mediaFile = new File(orginaPath) ;
+                    String orginaPath = getIntent().getStringExtra("OR_PATH");
+                    Log.d("EE", "createPostServer: " + orginaPath);
+                    if (orginaPath != null) {
+                        mediaFile = new File(orginaPath);
                         Log.d("EE", "createPostServer: ");
-                     //   Toast.makeText(getApplicationContext(), " " + orginaPath , Toast.LENGTH_LONG).show();
-                        if(mediaFile == null){
-                          //  Toast.makeText(getApplicationContext(), " M3edia File Null"  , Toast.LENGTH_LONG).show();
+                        //   Toast.makeText(getApplicationContext(), " " + orginaPath , Toast.LENGTH_LONG).show();
+                        if (mediaFile == null) {
+                            //  Toast.makeText(getApplicationContext(), " M3edia File Null"  , Toast.LENGTH_LONG).show();
                             requestMediaFile = RequestBody.create(backupFile, MediaType.parse("audio/*"));
                             // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
-                            body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), requestMediaFile);
-                        }
-                        else {
+                            ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/*", this);
+
+                            body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), fileBody);
+                        } else {
                             requestMediaFile = RequestBody.create(mediaFile, MediaType.parse("audio/*"));
                             // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
-                            body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), requestMediaFile);
+                            ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/*", this);
+                            body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), fileBody);
                         }
 
-                    }
-                    else {
+                    } else {
                         requestMediaFile = RequestBody.create(mediaFile, MediaType.parse("audio/*"));
                         // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
-                        body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), requestMediaFile);
+                        ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/*", this);
+                        body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), fileBody);
                     }
 
 
                 } else {
                     requestMediaFile = RequestBody.create(MediaType.parse("video/mp4"), mediaFile);
-                    ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "video/mp4",this);
+                    ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "video/mp4", this);
                     body2 = MultipartBody.Part.createFormData("video", mediaFile.getName(), fileBody);
                 }
 
 
-
-
                 body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
-                Log.d("TAG", "createPostServer: " + mediaFile.getName()  + requestMediaFile.contentType());
-             //   Toast.makeText(getApplicationContext() , "asdfasf"+ mediaFile.getName() , Toast.LENGTH_LONG ).show();
+                Log.d("TAG", "createPostServer: " + mediaFile.getName() + requestMediaFile.contentType());
+                //   Toast.makeText(getApplicationContext() , "asdfasf"+ mediaFile.getName() , Toast.LENGTH_LONG ).show();
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
                 api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
 
@@ -476,20 +488,19 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 @Override
                 public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
 
-                    Toast.makeText(getApplicationContext(), "CODE" + response.code() , Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "CODE" + response.code(), Toast.LENGTH_LONG).show();
                     if (response.code() == 200 || response.code() == 201) {
                         LoginResponse.forgetPassResponse testRes = response.body();
-                       Toast.makeText(getApplicationContext() ," jj" +testRes.getMessage() ,Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), " jj" + testRes.getMessage(), Toast.LENGTH_LONG).show();
                         progressDialog.dismiss();
                         Intent p = new Intent(getApplicationContext(), HomePage.class);
                         startActivity(p);
                         //   finish();
 
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getApplicationContext(), "" + response.code(), Toast.LENGTH_LONG)
                                 .show();
-                        Log.d("TAG", "onResponse: " + response.raw() );
+                        Log.d("TAG", "onResponse: " + response.raw());
                         progressDialog.dismiss();
                     }
                 }
@@ -516,23 +527,12 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 okhttp3.MultipartBody.FORM, value);
     }
 
-    public static String getPath(Context ctx, Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = ctx.getContentResolver().query(uri, projection, null, null, null);
-        if (cursor == null) return null;
-        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String s = cursor.getString(columnIndex);
-        cursor.close();
-        return s;
-    }
-
     private void BringImagePicker() {
 
         RequestPermission();
         ImagePicker.Companion.with(this)
                 //Final image resolution will be less than 1080 x 1080(Optional)
-                .start() ;
+                .start();
 //        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 //        startActivityForResult(i, PICK_IMAGE);
 //        CropImage.activity()
@@ -731,10 +731,10 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 .setAnimationEnabled(true)
 
                 .addButton(
-                        "✔️ Yes",					// button text
-                        R.color.pdlg_color_white,		// button text color
+                        "✔️ Yes",                    // button text
+                        R.color.pdlg_color_white,        // button text color
                         R.color.pdlg_color_green, // button background color
-                        new PrettyDialogCallback() {		// button OnClick listener
+                        new PrettyDialogCallback() {        // button OnClick listener
                             @Override
                             public void onClick() {
                                 // Do what you gotta do
@@ -762,7 +762,22 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
     @Override
     public void onProgressUpdate(int percentage) {
-        Log.d("TAG", "onProgressUpdate: "+" : " + percentage );
+      //  Log.d("TAG", "onProgressUpdate: " + " : " + percentage);
+        try {
+            if(percentage == 0){
+                pbarr.setIndeterminate(true);
+            }
+            else {
+                pbarr.setIndeterminate(false);
+                percent.setText(percentage+" %");
+                pbarr.setProgress(percentage);
+            }
+
+
+        }catch (Exception e ){
+            Log.d("TAG", "onProgressUpdate: " + e.getMessage());
+        }
+
     }
 
     @Override
