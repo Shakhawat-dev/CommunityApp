@@ -56,6 +56,9 @@ public class SplashScreen extends AppCompatActivity {
 
                 // to the activity
                 loadMiscData();
+
+               // throw new RuntimeException("Test Crash");
+
             }
         }, 200);
 
