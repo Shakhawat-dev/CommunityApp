@@ -15,11 +15,13 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -92,9 +94,11 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     String catid = "null", langid = "null";
     Uri mFilePathUri = null;
     PlayerView playerView;
-    TextView percent ;
-    ProgressBar pbarr ;
-
+    TextView percent;
+    ProgressBar pbarr;
+    ImageView fullscreenButton;
+    Dialog mFullScreenDialog;
+    private boolean mExoPlayerFullscreen = false;
     private Bitmap compressedImageFile;
     //AlertDialog.Builder builder = new AlertDialog.Builder(PostUploadActivity.this);
 
@@ -119,12 +123,12 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         playerView.setUseArtwork(true);
         playerView.setPlayer(PlayerManager.getSharedInstance(PostUploadActivity.this).getPlayerView().getPlayer());
         PlayerManager.getSharedInstance(this).setPlayerListener(this);
-
+        fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
         progressDialog = new Dialog(PostUploadActivity.this);
         progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         progressDialog.setContentView(R.layout.custom_dialogue);
-        percent = progressDialog.findViewById(R.id.progress_state) ;
-        pbarr = progressDialog.findViewById(R.id.progress_bar) ;
+        percent = progressDialog.findViewById(R.id.progress_state);
+        pbarr = progressDialog.findViewById(R.id.progress_bar);
         progressDialog.setCancelable(false);
 
 
@@ -169,6 +173,25 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             } catch (Exception e) {
 
             }
+
+
+            fullscreenButton.setOnClickListener(v -> {
+
+                if (!mExoPlayerFullscreen) {
+                    // not in fullscreen
+
+                    openFullScreenDialog();
+
+
+                } else {
+
+                    closeFullScreenDialog();
+
+                }
+
+
+            });
+
 
             chip.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -353,6 +376,62 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
     }
 
+
+    private void closeFullScreenDialog() {
+
+
+        ((ViewGroup) playerView.getParent()).removeView(playerView); // removes the player screen
+
+
+        ((FrameLayout) findViewById(R.id.parent_relative)).addView(playerView);
+
+        mExoPlayerFullscreen = false;
+
+        mFullScreenDialog.dismiss();
+
+
+        // change the full screen image
+        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostUploadActivity.this, R.drawable.full));
+
+
+    }
+
+    public void initFullsceen() {
+
+        mFullScreenDialog = new Dialog(PostUploadActivity.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+            public void onBackPressed() {
+                if (mExoPlayerFullscreen) {
+                    closeFullScreenDialog();
+
+                    super.onBackPressed();
+                }
+
+            }
+
+
+        };
+
+
+    }
+
+    private void openFullScreenDialog() {
+
+
+        // opening the dialgoue
+
+        ((ViewGroup) playerView.getParent()).removeView(playerView); // removes the player screen
+
+        mFullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        // change the full screen image
+        fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostUploadActivity.this, R.drawable.full));
+
+        mExoPlayerFullscreen = true;
+
+        mFullScreenDialog.show();
+
+
+    }
+
     private void createPostServer(Uri mFilePathUri, String postType, String title, String desc, String catid, String langid) {
 
         if (mFilePathUri != null) {
@@ -382,7 +461,6 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 compressed = file;
             }
             progressDialog.show();
-
 
 
             if (postType.equals("post")) {
@@ -698,6 +776,13 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        initFullsceen();
+    }
+
     private void RequestPermission() {
 
         Dexter.withContext(PostUploadActivity.this)
@@ -762,19 +847,18 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
     @Override
     public void onProgressUpdate(int percentage) {
-      //  Log.d("TAG", "onProgressUpdate: " + " : " + percentage);
+        //  Log.d("TAG", "onProgressUpdate: " + " : " + percentage);
         try {
-            if(percentage == 0){
+            if (percentage == 0) {
                 pbarr.setIndeterminate(true);
-            }
-            else {
+            } else {
                 pbarr.setIndeterminate(false);
-                percent.setText(percentage+" %");
+                percent.setText(percentage + " %");
                 pbarr.setProgress(percentage);
             }
 
 
-        }catch (Exception e ){
+        } catch (Exception e) {
             Log.d("TAG", "onProgressUpdate: " + e.getMessage());
         }
 

@@ -43,7 +43,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     SimpleExoPlayer player;
     boolean isPLaying = false;
     ImageView reportBtn;
-
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
     ImageView fullscreenButton;
@@ -67,7 +66,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         mMediaComments = (TextView) findViewById(R.id.media_comments);
         mMediaDetails = (TextView) findViewById(R.id.media_details);
         mMediaAllComments = (Button) findViewById(R.id.media_see_all_comments);
-
         reportBtn = findViewById(R.id.reportImage);
         playerView = findViewById(R.id.player_view);
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
@@ -199,10 +197,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     }
 
     private void openFullScreenDialog() {
-
-
         // opening the dialgoue
-
         ((ViewGroup) playerView.getParent()).removeView(playerView); // removes the player screen
 
         mFullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

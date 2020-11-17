@@ -188,6 +188,7 @@
             android:id="@+id/wish_list"
             android:clickable="true"
             android:focusable="true"
+            android:visibility="gone"
             android:layout_below="@id/notification"
             android:layout_marginTop="@dimen/_2sdp"
             android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"
@@ -195,6 +196,7 @@
 
             <LinearLayout
                 android:id="@+id/wish"
+
                 android:foreground="?android:attr/selectableItemBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

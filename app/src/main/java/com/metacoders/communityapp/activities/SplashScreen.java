@@ -1,8 +1,5 @@
 package com.metacoders.communityapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -12,11 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -57,7 +53,7 @@ public class SplashScreen extends AppCompatActivity {
                 // to the activity
                 loadMiscData();
 
-               // throw new RuntimeException("Test Crash");
+                // throw new RuntimeException("Test Crash");
 
             }
         }, 200);
