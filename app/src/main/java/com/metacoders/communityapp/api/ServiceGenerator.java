@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.metacoders.communityapp.utils.Constants;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -27,12 +29,12 @@ public class ServiceGenerator {
         if (!authToken.equals("00")) {
             tokenInterceptor2 interceptor =
                     new tokenInterceptor2(authToken);
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+           //HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+          //  logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             if (!httpClient.interceptors().contains(interceptor)) {
                 Log.d("okhttp", "createService: " + authToken);
-                httpClient.addInterceptor(interceptor)
-                .addInterceptor(logging);
+                httpClient.addInterceptor(interceptor);
+             //   .addInterceptor(logging);
 
 
                 retrofit =
@@ -50,15 +52,20 @@ public class ServiceGenerator {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
 
+
             OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(500, TimeUnit.SECONDS)
+                    .writeTimeout(500, TimeUnit.SECONDS)
+                    .readTimeout(500 , TimeUnit.SECONDS)
+
                     .addInterceptor(logging)
                     .build();
             retrofit =
                     new Retrofit.Builder()
                             .baseUrl(API_BASE_URL)
-
                             .addConverterFactory(GsonConverterFactory.create())
                             .client(client)
+
                             .build();
         }
 

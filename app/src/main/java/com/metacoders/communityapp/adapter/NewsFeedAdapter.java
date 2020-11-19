@@ -1,6 +1,7 @@
 package com.metacoders.communityapp.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,6 +84,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 //        holder.description.setText(newsFeed.getDescription());
         holder.viewCount.setText(newsFeed.getHit() + "");
         holder.commentCount.setText("0");
+      //  Log.d("TAGE", "onBindViewHolder: "+ newsFeed.getStatus() + " Vis" + newsFeed.getVisibility());
         // convert time
         SimpleDateFormat df = new SimpleDateFormat(Constants.CREATED_AT_FORMAT);
         try {
