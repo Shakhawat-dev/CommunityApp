@@ -1,17 +1,8 @@
 package com.metacoders.communityapp.Fragments;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +10,15 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.NewsDetailsActivity;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.activities.HomePage;
-import com.metacoders.communityapp.activities.LoginActivity;
 import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
@@ -54,11 +48,19 @@ public class DashboardFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    View view;
+    Context context;
+    TextView tpost, tvideo, taudio, name, mail;
+    NewsFeedAdapter.ItemClickListenter itemClickListenter;
+    RecyclerView recyclerView;
+    CircleImageView circleImageView;
+    ShimmerFrameLayout shimmer_view_container_dash;
+    List<Post_Model> post_modelList = new ArrayList<>();
+    ConstraintLayout emptyLayout;
+    int videoCount = 0, audioCount = 0, postCount = 0;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     public DashboardFragment() {
         // Required empty public constructor
     }
@@ -90,16 +92,6 @@ public class DashboardFragment extends Fragment {
         }
     }
 
-    View view;
-    Context context;
-    TextView tpost, tvideo, taudio, name, mail;
-    NewsFeedAdapter.ItemClickListenter itemClickListenter;
-    RecyclerView recyclerView;
-    CircleImageView circleImageView;
-    ShimmerFrameLayout shimmer_view_container_dash;
-    List<Post_Model> post_modelList = new ArrayList<>();
-    ConstraintLayout emptyLayout;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -122,7 +114,7 @@ public class DashboardFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         if (SharedPrefManager.getInstance(context).isUserLoggedIn()) {
             setDetails();
-            loadSummary();
+            //loadSummary();
             loadUrLost();
 
         }
@@ -131,17 +123,15 @@ public class DashboardFragment extends Fragment {
 
             Post_Model model = new Post_Model();
             model = post_modelList.get(pos);
-            if(model.getPostType().equals("post") ){
+            if (model.getPostType().equals("post")) {
                 Intent p = new Intent(context, NewsDetailsActivity.class);
                 p.putExtra("POST", model);
                 context.startActivity(p);
-            }
-            else {
+            } else {
                 Intent p = new Intent(context, PostDetailsPage.class);
                 p.putExtra("POST", model);
                 context.startActivity(p);
             }
-
 
 
             try {
@@ -218,12 +208,33 @@ public class DashboardFragment extends Fragment {
                 if (response.code() == 201) {
                     post_modelList = ownListModelList.getGetNewsList();
 
-                    try{
+                    try {
                         if (post_modelList.size() == 0) {
 
                             emptyLayout.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         } else {
+                            /*
+                                loop the whole list for counting post type
+
+                             */
+                            for (Post_Model item : post_modelList) {
+
+                                if(item.getPostType().equals("audio")){
+                                    audioCount++ ;
+                                }
+                                else if (item.getPostType().equals("video")){
+                                  videoCount++ ;
+                                }
+                                else {
+                                    postCount++ ;
+                                }
+
+                            }
+                            tpost.setText(postCount + "");
+                            taudio.setText(audioCount + "");
+                            tvideo.setText(videoCount + "");
+
                             NewsFeedAdapter adapter = new NewsFeedAdapter(context, post_modelList, itemClickListenter);
                             // setting the adapter ;
                             recyclerView.setAdapter(adapter);
@@ -252,13 +263,11 @@ public class DashboardFragment extends Fragment {
                                     }
                                 }
                         );
-                    }
-                    catch ( Exception e ){
+                    } catch (Exception e) {
 
                         emptyLayout.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                     }
-
 
 
                     shimmer_view_container_dash.stopShimmer();

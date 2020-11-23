@@ -54,7 +54,7 @@ public class Video_Record_Activity extends AppCompatActivity {
     private static final String TAG = "VIDEO_RECORD";
 
     private static final int IMAGE_PICKER_SELECT = 99;
-    private static final int VIDEOMAXTIME = 600000;
+    private static final int VIDEOMAXTIME = 420000;
     SurfaceView sampleGLView;
     ImageView closeBtn, flashBTn;
     Boolean isFlashOn = false;

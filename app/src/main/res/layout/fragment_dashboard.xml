@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.DashboardFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -195,7 +197,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_detail_linearlayout">
@@ -207,13 +208,13 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:paddingBottom="@dimen/_120sdp"
                 android:orientation="vertical"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                />
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmer_view_container_dash"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="visible">
@@ -235,13 +236,6 @@
 
                     <include layout="@layout/data_placeholder_layout" />
 
-                    <include layout="@layout/data_placeholder_layout" />
-
-                    <include layout="@layout/data_placeholder_layout" />
-
-                    <include layout="@layout/data_placeholder_layout" />
-
-                    <include layout="@layout/data_placeholder_layout" />
                 </LinearLayout>
 
 
@@ -252,4 +246,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</FrameLayout>
+</LinearLayout>

@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.metacoders.communityapp.BuildConfig;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -29,14 +31,22 @@ import retrofit2.Response;
 public class SplashScreen extends AppCompatActivity {
 
     SharedPrefManager manager;
+    TextView versionTv ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        versionTv = findViewById(R.id.versionName) ;
         manager = new SharedPrefManager(getApplicationContext());
 
         getSupportActionBar().hide();
+
+        try{
+            versionTv.setText(BuildConfig.VERSION_NAME+"");
+        }catch (Exception e ){
+
+        }
 
 
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);

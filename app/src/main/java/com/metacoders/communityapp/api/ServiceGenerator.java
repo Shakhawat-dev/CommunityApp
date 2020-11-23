@@ -5,9 +5,11 @@ import android.util.Log;
 
 import com.metacoders.communityapp.utils.Constants;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,14 +28,24 @@ public class ServiceGenerator {
 
     public static <S> S createService(
             Class<S> serviceClass, final String authToken) {
+
         if (!authToken.equals("00")) {
             tokenInterceptor2 interceptor =
                     new tokenInterceptor2(authToken);
            //HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
           //  logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             if (!httpClient.interceptors().contains(interceptor)) {
-                Log.d("okhttp", "createService: " + authToken);
+               // Log.d("okhttp", "createService: " + authToken);
+
                 httpClient.addInterceptor(interceptor);
+                httpClient
+                        .connectTimeout(5, TimeUnit.MINUTES)
+                        .writeTimeout(5, TimeUnit.MINUTES)
+                        .readTimeout(5 , TimeUnit.MINUTES)
+                        //.protocols( Collections.singletonList(Protocol.HTTP_1_1));
+                        ;
+
+                
              //   .addInterceptor(logging);
 
 
@@ -47,7 +59,7 @@ public class ServiceGenerator {
 //                Log.d("TAG", "createService: ME OffasdfN  "  );
             }
         } else {
-            Log.d("TAG", "createService: ME ON  ");
+          //  Log.d("TAG", "createService: ME ON  ");
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -57,8 +69,7 @@ public class ServiceGenerator {
                     .connectTimeout(500, TimeUnit.SECONDS)
                     .writeTimeout(500, TimeUnit.SECONDS)
                     .readTimeout(500 , TimeUnit.SECONDS)
-
-                    .addInterceptor(logging)
+                 //   .addInterceptor(logging)
                     .build();
             retrofit =
                     new Retrofit.Builder()

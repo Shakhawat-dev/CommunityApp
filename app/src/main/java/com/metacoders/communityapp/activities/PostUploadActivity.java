@@ -2,8 +2,10 @@ package com.metacoders.communityapp.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -79,6 +81,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     Dialog progressDialog;
     MultipartBody.Part body1;
     MultipartBody.Part body2;
+    Uri FileUriSizeChecker = null;
     NewsRmeApi api;
     Intent o;
     Button submitBtn;
@@ -135,24 +138,21 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         o = getIntent();
         // take the media type ....
         postType = o.getStringExtra("media");
-        Toast.makeText(getApplicationContext(), postType, Toast.LENGTH_LONG).show();
+        // Toast.makeText(getApplicationContext(), postType, Toast.LENGTH_LONG).show();
         if (!postType.contains("post")) {
 
             //  Toast.makeText(getApplicationContext(), getIntent().getStringExtra("path"), Toast.LENGTH_SHORT).show();
-            chip.setText("Media File Added ");
+//            chip.setText("Media File Added ");
             try {
-//                  URI uri = new URI(getIntent().getStringExtra("path"));
-//                  URL videoUrl = uri.toURL();
-                //      File tempFile = new File(videoUrl.getFile());
-                Uri test = Uri.parse(getIntent().getStringExtra("path"));
 
-                //  Cursor c = getContentResolver().query(test, null, null, null, null);
-                //   c.moveToFirst();
-                //  String name = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
 
-                //  chip.setText(name);
-
-                //c.close();
+                if (!postType.contains("audio")) {
+                    FileUriSizeChecker = Uri.parse(getIntent().getStringExtra("path"));
+                    //  chip.setText(rand + ".mp3");
+                } else {
+                    FileUriSizeChecker = Uri.parse(getIntent().getStringExtra("OR_PATH"));
+                    // chip.setText(rand + ".mp4");
+                }
 
 
             } catch (Exception e) {
@@ -197,7 +197,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 @Override
                 public void onClick(View v) {
                     try {
-                        playMedia(getIntent().getStringExtra("path"));
+                        // playMedia(getIntent().getStringExtra("path"));
                     } catch (Exception e) {
 
                     }
@@ -206,7 +206,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 }
             });
         } else {
-            playerView.setVisibility(View.GONE);
+            findViewById(R.id.parent_relative).setVisibility(View.GONE);
         }
 
         // define Views ...
@@ -252,7 +252,51 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
             if (!TextUtils.isEmpty(Title) || !TextUtils.isEmpty(Desc) || mFilePathUri != null || !catid.equals("null") || !langid.equals("null")) {
 
-                createPostServer(mFilePathUri, postType, Title, Desc, catid, langid);
+                /*
+                    check video sizE
+                 */
+                // Get file from uri
+                try {
+                    String path2 = null;
+                    File file;
+                    try {
+                        path2 = getPath(PostUploadActivity.this, FileUriSizeChecker);
+                        file = new File(path2);
+                    } catch (Exception e) {
+                        path2 = mFilePathUri.getPath();
+                        file = new File(path2);
+                    }
+                    // Get length of file in bytes
+                    long fileSizeInBytes = file.length();
+                    // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+                    long fileSizeInKB = fileSizeInBytes / 1024;
+                    // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+                    long fileSizeInMB = fileSizeInKB / 1024;
+                    Log.d("TAG", "FIle SIze :  " + fileSizeInMB);
+                    if (fileSizeInMB > 110) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder
+                                .setCancelable(false)
+                                .setTitle("Error !! Too Big File")
+                                .setMessage("Please Upload File Which are less Than  110 MB . ")
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                        AlertDialog alert = builder.create();
+                        alert.show();
+
+                    } else {
+                        createPostServer(mFilePathUri, postType, Title, Desc, catid, langid);
+                    }
+                } catch (Exception e) {
+
+                    createPostServer(mFilePathUri, postType, Title, Desc, catid, langid);
+
+                }
 
 
             }
@@ -432,12 +476,11 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
     }
 
-    private void createPostServer(Uri mFilePathUri, String postType, String title, String desc, String catid, String langid) {
+    private void createPostServer(Uri mFilePathUri, String postType, String title, String
+            desc, String catid, String langid) {
 
         if (mFilePathUri != null) {
             // upload the data
-
-
             String path2 = null;
             File file, compressed;
             try {
@@ -449,8 +492,6 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 //
 
             }
-
-
             try {
                 compressed = new Compressor(getApplicationContext())
                         .setMaxHeight(600)
@@ -481,11 +522,10 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
 
             } else {
-
-                Intent p = getIntent();
-                uriPath = p.getStringExtra("path");
-                //media Uri has the all the link in it ;
-                mediaUri = Uri.parse(uriPath);
+                //getting the vido uri
+                // mediaUri = mFilePathUri;
+                mediaUri = Uri.parse(getIntent().getStringExtra("path"));
+                ;
 
                 File mediaFile = null, backupFile = null;
                 String path = null;
@@ -566,18 +606,17 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 @Override
                 public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
 
-                    Toast.makeText(getApplicationContext(), "CODE" + response.code(), Toast.LENGTH_LONG).show();
+                    //   Toast.makeText(getApplicationContext(), "CODE" + response.code(), Toast.LENGTH_LONG).show();
                     if (response.code() == 200 || response.code() == 201) {
                         LoginResponse.forgetPassResponse testRes = response.body();
-                        Toast.makeText(getApplicationContext(), " jj" + testRes.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "" + testRes.getMessage(), Toast.LENGTH_LONG).show();
                         progressDialog.dismiss();
                         Intent p = new Intent(getApplicationContext(), HomePage.class);
                         startActivity(p);
                         //   finish();
 
                     } else {
-                        Toast.makeText(getApplicationContext(), "" + response.code(), Toast.LENGTH_LONG)
-                                .show();
+                        Toast.makeText(getApplicationContext(), "Error Server Code : " + response.code() + " Please Try Again !!", Toast.LENGTH_LONG).show();
                         Log.d("TAG", "onResponse: " + response.raw());
                         progressDialog.dismiss();
                     }

@@ -121,7 +121,7 @@ public class PlayerManager {
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 Log.i(TAG, "onPlayerStateChanged: ");
                 if (playbackState == 4 && mPlayList != null && playlistIndex + 1 < mPlayList.size()) {
-                    Log.e(TAG, "Song Changed...");
+                //    Log.e(TAG, "Song Changed...");
 
                     playlistIndex++;
                     listner.onItemClickOnItem(playlistIndex);

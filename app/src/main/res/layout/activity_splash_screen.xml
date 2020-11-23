@@ -32,6 +32,19 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:indeterminate="true"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="45dp"/>
+
+    <TextView
+        android:id="@+id/versionName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:text="1.5"
+        android:fontFamily="@font/sf"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_marginBottom="10dp"/>
+
 
 </RelativeLayout>
