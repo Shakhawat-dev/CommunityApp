@@ -32,8 +32,6 @@ public class ServiceGenerator {
         if (!authToken.equals("00")) {
             tokenInterceptor2 interceptor =
                     new tokenInterceptor2(authToken);
-           //HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-          //  logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             if (!httpClient.interceptors().contains(interceptor)) {
                // Log.d("okhttp", "createService: " + authToken);
 
