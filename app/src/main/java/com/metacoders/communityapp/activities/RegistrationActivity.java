@@ -2,16 +2,13 @@ package com.metacoders.communityapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -23,12 +20,10 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.google.android.exoplayer2.C;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -38,7 +33,6 @@ import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.RegistrationResponse;
-import com.metacoders.communityapp.models.UserModel;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.metacoders.communityapp.utils.StringGen;
@@ -48,7 +42,6 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -290,46 +283,46 @@ public class RegistrationActivity extends AppCompatActivity {
                         fb_Id,
                         type
                 );
-        call.enqueue(new Callback<LoginResponse>() {
-            @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if(response.code()==201){
-
-                            if(!response.body().getError()){
-
-                                // reg compelete
-
-                                UserModel userModel = new UserModel();
-                                userModel = response.body().getUser();
-
-                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
-                                        userModel.getUsername(),
-                                        userModel.getEmail(), response.body().getToken(),userModel.getRole(), userModel.getUserType() , userModel.getAvatar());
-
-
-                                StringGen.token = userModel.getToken() ;
-                                SharedPrefManager.getInstance(getApplicationContext()).saveUser(userModel.getEmail());
-                                Log.d("TAG", "onResponse: " + userModel.getToken());
-                                //   pbar.setVisibility(View.GONE);
-                                Intent intent = new Intent(RegistrationActivity.this, HomePage.class);
-                                startActivity(intent);
-                                finish();
-
-                            }
-                            else {
-                                // error
-                                Toast.makeText(getApplicationContext(), "Error " + response.body().getError() , Toast.LENGTH_LONG)
-                                        .show();
-                            }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Error " + t.getMessage() , Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
+//        call.enqueue(new Callback<LoginResponse>() {
+//            @Override
+//            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+//                if(response.code()==201){
+//
+//                            if(!response.body().get()){
+//
+//                                // reg compelete
+//
+//                                UserModel userModel = new UserModel();
+//                                userModel = response.body().getUser();
+//
+//                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
+//                                        userModel.getUsername(),
+//                                        userModel.getEmail(), response.body().getToken(),userModel.getRole(), userModel.getUserType() , userModel.getAvatar());
+//
+//
+//                                StringGen.token = userModel.getToken() ;
+//                                SharedPrefManager.getInstance(getApplicationContext()).saveUser(userModel.getEmail());
+//                                Log.d("TAG", "onResponse: " + userModel.getToken());
+//                                //   pbar.setVisibility(View.GONE);
+//                                Intent intent = new Intent(RegistrationActivity.this, HomePage.class);
+//                                startActivity(intent);
+//                                finish();
+//
+//                            }
+//                            else {
+//                                // error
+//                                Toast.makeText(getApplicationContext(), "Error " + response.body().getError() , Toast.LENGTH_LONG)
+//                                        .show();
+//                            }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<LoginResponse> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(), "Error " + t.getMessage() , Toast.LENGTH_LONG)
+//                        .show();
+//            }
+//        });
 
     }
 

@@ -40,6 +40,7 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
     // exo player !!
     implementation 'com.google.android.exoplayer:exoplayer:2.10.2'
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.2'
@@ -47,7 +48,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.2'
     implementation 'com.google.android.exoplayer:extension-mediasession:2.10.2'
     // third party camera library
-    api 'com.otaliastudios:cameraview:2.6.4'
+    api 'com.otaliastudios:cameraview:2.7.1'
     // permission library
     implementation 'com.karumi:dexter:6.2.1'
     //retrofit2

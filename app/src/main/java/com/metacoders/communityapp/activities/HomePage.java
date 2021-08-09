@@ -36,9 +36,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
-import com.metacoders.communityapp.models.UserModel;
 import com.metacoders.communityapp.models.allDataResponse;
-import com.metacoders.communityapp.utils.Constants;
+import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
@@ -125,9 +124,9 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         viewPager2Adapter = new viewPager2_adapter(HomePage.this);
         // navigationView = findViewById(R.id.navigation_view);
 
-        SharedPrefManager.getInstance(getApplicationContext()).getUser().getName();
-     //   Log.d("detais", "onCreate: " + SharedPrefManager.getInstance(getApplicationContext()).getUser().getName());
-    //    Log.d("detais", "onCreate: " + SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn());
+
+        //   Log.d("detais", "onCreate: " + SharedPrefManager.getInstance(getApplicationContext()).getUser().getName());
+        //    Log.d("detais", "onCreate: " + SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn());
 
         navigationBar.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         // getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, new dashboardFragment()).commit();
@@ -295,12 +294,12 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         navigationView.setNavigationItemSelectedListener(this);
 
         if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
-            UserModel model = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+            UserModel model = SharedPrefManager.getInstance(getApplicationContext()).getUserModel();
 
-            userNameOnSide.setText(model.getUsername());
+            userNameOnSide.setText(model.getName());
             try {
                 Glide.with(getApplicationContext())
-                        .load(Constants.IMAGE_URL + model.getAvatar())
+                        .load( model.getImage())
                         .placeholder(R.drawable.placeholder)
                         .error(R.drawable.placeholder)
                         .into(userImage);

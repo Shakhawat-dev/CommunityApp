@@ -1,7 +1,5 @@
 package com.metacoders.communityapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,14 +8,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.metacoders.communityapp.activities.PostDetailsPage;
-import com.metacoders.communityapp.models.Post_Model;
-import com.metacoders.communityapp.utils.Constants;
-import com.metacoders.communityapp.utils.PlayerManager;
+import com.metacoders.communityapp.models.newModels.Post;
 
 public class NewsDetailsActivity extends AppCompatActivity {
     ImageView playerView;
@@ -27,9 +23,9 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
-    ImageView fullscreenButton ;
-    Dialog mFullScreenDialog ;
-    Post_Model post ;
+    ImageView fullscreenButton;
+    Dialog mFullScreenDialog;
+    Post.PostModel post;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails;
     private Button mMediaAllComments;
@@ -56,12 +52,12 @@ public class NewsDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(NewsDetailsActivity.this, CommentsActivity.class);
-                intent.putExtra("POST_ID", post.getId()) ;
+                intent.putExtra("POST_ID", post.getId());
                 startActivity(intent);
             }
         });
 
-        post = (Post_Model) o.getSerializableExtra("POST");
+        post = (Post.PostModel) o.getSerializableExtra("POST");
 
 
         setDetails();
@@ -69,12 +65,16 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
     private void setDetails() {
         mMediaTitle.setText(post.getTitle() + "");
-        mMediaDate.setText(post.getCreatedAt() + "");
+        mMediaDate.setText(post.getCreated_at() + "");
         mMediaViews.setText(post.getHit() + "");
-        mMediaComments.setText(post.getShowItemNumbers() + "");
-        mMediaDetails.setText(post.getContent() + "");
+        mMediaComments.setText("0");
+        mMediaDetails.setText(post.getDescription() + "");
+        String imageLink = "";
+        if (post.getImage() == null || post.getImage().isEmpty()) {
+            imageLink = post.getThumb() + "";
+        } else imageLink = post.getImage() + "";
         Glide.with(getApplicationContext())
-                .load(Constants.IMAGE_URL + post.getImageDefault())
+                .load(imageLink + "")
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(playerView);
     }

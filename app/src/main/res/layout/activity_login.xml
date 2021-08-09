@@ -89,6 +89,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                     app:layout_constraintBottom_toTopOf="@id/linearLayout3">
 
                     <Button
+                        android:visibility="gone"
                         android:id="@+id/fbBtn"
                         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                         android:layout_width="match_parent"
@@ -102,6 +103,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                         app:iconTint="@color/white" />
 
                     <Button
+                        android:visibility="gone"
                         android:id="@+id/gButton"
                         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                         android:layout_width="match_parent"
@@ -128,6 +130,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                         app:iconTint="@color/white" />
 
                     <TextView
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"

@@ -2,6 +2,7 @@ package com.metacoders.communityapp.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.metacoders.communityapp.models.newModels.UserModel;
 
 public class LoginResponse {
     @SerializedName("status")
@@ -20,16 +21,6 @@ public class LoginResponse {
     @Expose
     private UserModel user;
 
-    public LoginResponse() {
-    }
-
-    public LoginResponse(String status, Boolean error, String token, Integer tokenExpire, UserModel user) {
-        this.status = status;
-        this.error = error;
-        this.token = token;
-        this.tokenExpire = tokenExpire;
-        this.user = user;
-    }
 
     public String getStatus() {
         return status;
@@ -39,17 +30,10 @@ public class LoginResponse {
         this.status = status;
     }
 
-    public Boolean getError() {
-        return error;
-    }
-
     public void setError(Boolean error) {
         this.error = error;
     }
 
-    public String getToken() {
-        return token;
-    }
 
     public void setToken(String token) {
         this.token = token;
@@ -63,9 +47,6 @@ public class LoginResponse {
         this.tokenExpire = tokenExpire;
     }
 
-    public UserModel getUser() {
-        return user;
-    }
 
     public void setUser(UserModel user) {
         this.user = user;
@@ -113,4 +94,3 @@ public class LoginResponse {
         }
     }
 }
-

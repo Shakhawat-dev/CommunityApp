@@ -212,6 +212,7 @@
                 android:orientation="vertical"
                 />
 
+
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmer_view_container_dash"
                 android:layout_width="match_parent"

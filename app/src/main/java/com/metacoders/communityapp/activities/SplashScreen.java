@@ -61,7 +61,11 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
 
                 // to the activity
-                loadMiscData();
+                Intent p = new Intent(getApplicationContext(), HomePage.class);
+               // p.putExtra("MISC", dataResponse);
+                startActivity(p);
+                finish();
+
 
                 // throw new RuntimeException("Test Crash");
 
@@ -89,12 +93,6 @@ public class SplashScreen extends AppCompatActivity {
 
                 if (response.code() == 201) {
 
-                    allDataResponse dataResponse = response.body();
-                    Intent p = new Intent(getApplicationContext(), HomePage.class);
-                    p.putExtra("MISC", dataResponse);
-
-                    startActivity(p);
-                    finish();
 
 //                    categoryList = dataResponse.getCategories();
 //                    languageList = dataResponse.getLanguageList();

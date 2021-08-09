@@ -61,6 +61,7 @@ public class DashboardFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
     public DashboardFragment() {
         // Required empty public constructor
     }
@@ -147,17 +148,17 @@ public class DashboardFragment extends Fragment {
     private void setDetails() {
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
         // String   accessTokens = ;
-        name.setText(sharedPrefManager.getUser().getUsername() + " ");
-        mail.setText(sharedPrefManager.getUser().getEmail() + " ");
+        name.setText(sharedPrefManager.getUserModel().getName() + " ");
+        mail.setText(sharedPrefManager.getUserModel().getEmail() + " ");
         Glide.with(context)
-                .load(Constants.IMAGE_URL + sharedPrefManager.getUser().getAvatar())
+                .load(Constants.IMAGE_URL + sharedPrefManager.getUserModel().getImage())
                 .into(circleImageView);
     }
 
     public void loadSummary() {
 
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
-        String accessTokens = sharedPrefManager.getUser().getToken();
+        String accessTokens = sharedPrefManager.getUserToken();
         Log.d("TAG", "loadList: activity " + accessTokens);
 
 
@@ -220,14 +221,12 @@ public class DashboardFragment extends Fragment {
                              */
                             for (Post_Model item : post_modelList) {
 
-                                if(item.getPostType().equals("audio")){
-                                    audioCount++ ;
-                                }
-                                else if (item.getPostType().equals("video")){
-                                  videoCount++ ;
-                                }
-                                else {
-                                    postCount++ ;
+                                if (item.getPostType().equals("audio")) {
+                                    audioCount++;
+                                } else if (item.getPostType().equals("video")) {
+                                    videoCount++;
+                                } else {
+                                    postCount++;
                                 }
 
                             }

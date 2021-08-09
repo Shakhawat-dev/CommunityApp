@@ -1,7 +1,6 @@
 package com.metacoders.communityapp;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,7 +18,7 @@ import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.CommentModel;
 import com.metacoders.communityapp.models.RegistrationResponse;
-import com.metacoders.communityapp.models.UserModel;
+import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class CommentsActivity extends AppCompatActivity {
     private void sendTheCommnet(String commnet) {
         SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
         String accessTokens = sharedPrefManager.getUserToken();
-        UserModel user = sharedPrefManager.getUser();
+        UserModel user = sharedPrefManager.getUserModel();
         ProgressDialog dialog = new ProgressDialog(CommentsActivity.this)  ;
         dialog.setMessage("Adding Your Comment ...");
         dialog.show();
@@ -86,7 +85,7 @@ public class CommentsActivity extends AppCompatActivity {
 //        @Field("ip_address") String ip_address
         Call<RegistrationResponse> NetworkCall = api.post_comments(
                 post_id, commnet, user.getEmail(),
-                user.getUsername(), user.getId(),
+                user.getName(),"user_id",
                 "0", "0", "0"
         );
 
@@ -136,7 +135,7 @@ public class CommentsActivity extends AppCompatActivity {
 
         SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
         String accessTokens = sharedPrefManager.getUserToken();
-        UserModel user = sharedPrefManager.getUser();
+        UserModel user = sharedPrefManager.getUserModel();
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, accessTokens);
         Call<CommentModel> loadCommnetCall = api.getCommentsList(post_id) ;
         loadCommnetCall.enqueue(new Callback<CommentModel>() {

@@ -3,15 +3,15 @@ package com.metacoders.communityapp.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.metacoders.communityapp.models.UserModel;
+import com.google.gson.Gson;
+import com.metacoders.communityapp.models.newModels.UserModel;
 
 public class SharedPrefManager {
 
-    private static SharedPrefManager mInstance;
-    private static Context mCtx;
     private static final String SHARED_PREF_NAME_LOGIN = "newsrmeLogInprefs";
     private static final String SHARED_PREF_NAME = "newsrmesharedprefs";
     private static final String KEY_USER_NAME = "username";
+    private static final String KEY_USER_MODEL = "model";
     private static final String KEY_USER_EMAIL = "useremail";
     private static final String IS_USER_LOGGED_IN = "useremail";
     private static final String KEY_USER_ID = "userid";
@@ -20,7 +20,9 @@ public class SharedPrefManager {
     private static final String KEY_USER_TYPE = "usertype";
     private static final String KEY_USER_LANG_ID = "lang_id";
     private static final String KEY_USER_LANG_NAME = "lang_name";
-    private  static  final String SHARED_PREF_NAME_SETTING = "settings";
+    private static final String SHARED_PREF_NAME_SETTING = "settings";
+    private static SharedPrefManager mInstance;
+    private static Context mCtx;
 
     public SharedPrefManager(Context context) {
         mCtx = context;
@@ -53,24 +55,28 @@ public class SharedPrefManager {
 
     public String getUserToken() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString(KEY_USER_TOKEN, null);
-
+        String token = sharedPreferences.getString(KEY_USER_TOKEN, "000");
         return token;
     }
 
-    public UserModel getUser() {
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+    public void saveUserModel(UserModel model) {
 
-        return new UserModel(
-                sharedPreferences.getString(KEY_USER_ID, null),
-                sharedPreferences.getString(KEY_USER_NAME, null),
-                sharedPreferences.getString(KEY_USER_EMAIL, null),
-                sharedPreferences.getString(KEY_USER_TOKEN, null),
-                sharedPreferences.getString(KEY_USER_ROLE, null),
-                sharedPreferences.getString(KEY_USER_TYPE, null),
-                sharedPreferences.getString("pp", null)
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(model);
+        editor.putString(KEY_USER_MODEL, jsonString);
+        editor.apply();
 
-        );
+    }
+
+
+    public UserModel getUserModel() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
+        String jsonString = sharedPreferences.getString(KEY_USER_MODEL, null);
+        Gson gson = new Gson();
+        UserModel model = gson.fromJson(jsonString, UserModel.class);
+        return model;
     }
 
     /*public boolean isLogged() {
@@ -95,7 +101,7 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences1 = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor1 = sharedPreferences1.edit();
 
-        editor1.clear() ;
+        editor1.clear();
         editor1.apply();
 
 
@@ -104,14 +110,13 @@ public class SharedPrefManager {
     public boolean isUserLoggedIn() {
 
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
-    //    SharedPreferences.Editor editor = sharedPreferences.edit();
+        //    SharedPreferences.Editor editor = sharedPreferences.edit();
 
         String value = sharedPreferences.getString(IS_USER_LOGGED_IN, "no");
-        if(value.equals("yes")){
+        if (value.equals("yes")) {
             return true;
 
-        }
-        else return  false ;
+        } else return false;
 
     }
 
@@ -129,7 +134,7 @@ public class SharedPrefManager {
 
     }
 
-    public void saveLangPref(String id , String name ){
+    public void saveLangPref(String id, String name) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_SETTING, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -138,7 +143,7 @@ public class SharedPrefManager {
         editor.apply();
     }
 
-    public   String[] getLangPref(){
+    public String[] getLangPref() {
 
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_SETTING, Context.MODE_PRIVATE);
 
@@ -149,7 +154,7 @@ public class SharedPrefManager {
          array 0 is id
          array 1 is name
          */
-        return new String[]{id , name };
+        return new String[]{id, name};
     }
 
 }

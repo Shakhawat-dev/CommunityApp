@@ -11,7 +11,11 @@ import com.metacoders.communityapp.models.RegistrationResponse;
 import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.models.Video_List_Model;
 import com.metacoders.communityapp.models.allDataResponse;
+import com.metacoders.communityapp.models.newModels.PostResponse;
+import com.metacoders.communityapp.models.newModels.SignInResponse;
 import com.metacoders.communityapp.models.post_summary;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -25,15 +29,33 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface NewsRmeApi {
 
+
+    // new api start
+    @GET("common-post")
+    Call<PostResponse> getCommonNewsList(
+            @Query("page") int page
+    );
+    @GET("follower-post")
+    Call<PostResponse.FollowerPostResponse> getFollowerPostList(
+            @Query("page") int page
+    );
+
+    //post
+
     @FormUrlEncoded
-    @POST("auth/user-login")
-    Call<LoginResponse> login(
-            @Field("user_name") String userName,
+    @POST("login")
+    Call<SignInResponse> login(
+            @Field("email") String userName,
             @Field("password") String password
     );
+
+    // new api ends
+
+
 
     @FormUrlEncoded
     @POST("registration/user-registration")
@@ -47,7 +69,7 @@ public interface NewsRmeApi {
 
     @FormUrlEncoded
     @POST("auth/forget-password")
-    Call<LoginResponse.forgetPassResponse> forget_password(
+    Call<JSONObject> forget_password(
             @Field("user_name") String user_name,
             @Field("email") String email
     );
