@@ -1,7 +1,5 @@
 package com.metacoders.communityapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -26,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -34,8 +35,6 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.otaliastudios.cameraview.CameraListener;
-import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
@@ -70,6 +69,37 @@ public class Video_Record_Activity extends AppCompatActivity {
     Boolean isGallery = false;
 
     CountDownTimer countDownTimer;
+
+    public static String getPath(Context ctx, Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = ctx.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s = cursor.getString(columnIndex);
+        cursor.close();
+        return s;
+    }
+
+    public static String getIntervalTime(long longInterval) {
+
+        long intMillis = longInterval;
+        long dd = TimeUnit.MILLISECONDS.toDays(intMillis);
+        long daysMillis = TimeUnit.DAYS.toMillis(dd);
+        intMillis -= daysMillis;
+        long hh = TimeUnit.MILLISECONDS.toHours(intMillis);
+        long hoursMillis = TimeUnit.HOURS.toMillis(hh);
+        intMillis -= hoursMillis;
+        long mm = TimeUnit.MILLISECONDS.toMinutes(intMillis);
+        long minutesMillis = TimeUnit.MINUTES.toMillis(mm);
+        intMillis -= minutesMillis;
+        long ss = TimeUnit.MILLISECONDS.toSeconds(intMillis);
+        long secondsMillis = TimeUnit.SECONDS.toMillis(ss);
+        intMillis -= secondsMillis;
+
+        String stringInterval = "%02d:%02d";
+        return String.format(stringInterval, mm, ss);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +138,7 @@ public class Video_Record_Activity extends AppCompatActivity {
         params.drawOnVideoSnapshot = true; // draw on video snapshots
         //   params.drawOnVideoSnapshot = false; // do not draw on video snapshots
 
-// When done, apply
+// When done, apply FileProvider.getUriForFile(this, "com.example.android.fileprovider", it)
 
 
         CameraView camera = findViewById(R.id.camera);
@@ -196,7 +226,6 @@ public class Video_Record_Activity extends AppCompatActivity {
         });
 
 
-
         camera.addCameraListener(new CameraListener() {
             @Override
             public void onPictureTaken(PictureResult result) {
@@ -245,13 +274,10 @@ public class Video_Record_Activity extends AppCompatActivity {
                 Log.d(TAG, "onOrientationChanged: " + orientation);
 
 
-
             }
 
             // And much more
         });
-
-
 
 
         videoButton.setOnClickListener(new View.OnClickListener() {
@@ -264,7 +290,14 @@ public class Video_Record_Activity extends AppCompatActivity {
 
                 long time = System.currentTimeMillis() / 100000;
                 String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
-                file = new File(ROOT_DIR + "/test" + time + ".mp4");
+                String mFileName = getExternalCacheDir().getAbsolutePath() + "/" + "NEWSRME" + System.currentTimeMillis() + ".mp3";
+
+                if (Build.VERSION.SDK_INT >= 30) {
+                    file = new File(mFileName);
+                } else {
+                    file = new File(ROOT_DIR + "/test" + time + ".mp4");
+
+                }
 
                 if (!isRecording) {
                     // stop the camera
@@ -290,7 +323,6 @@ public class Video_Record_Activity extends AppCompatActivity {
 
                         public void onFinish() {
                             timer.setText("done!");
-
                             camera.stopVideo();
                             videoButton.setImageResource(R.color.white);
                             isRecording = false;
@@ -421,6 +453,15 @@ public class Video_Record_Activity extends AppCompatActivity {
         }
     }
 
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+////        Intent i = new Intent(Share_Activity.this, MainActivity.class);
+////        Bundle bndlAnimation = ActivityOptions.makeCustomAnimation(getApplicationContext(), R.anim.enter_from_left, R.anim.exit_to_right).toBundle();
+////        startActivity(i,bndlAnimation);
+////        finish();
+//    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -538,46 +579,6 @@ public class Video_Record_Activity extends AppCompatActivity {
             //  Toast.makeText(getApplicationContext() , "Video Taken  LINK : " + uri.toString() , Toast.LENGTH_SHORT).show();
 
         }
-    }
-
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-////        Intent i = new Intent(Share_Activity.this, MainActivity.class);
-////        Bundle bndlAnimation = ActivityOptions.makeCustomAnimation(getApplicationContext(), R.anim.enter_from_left, R.anim.exit_to_right).toBundle();
-////        startActivity(i,bndlAnimation);
-////        finish();
-//    }
-
-    public static String getPath(Context ctx, Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = ctx.getContentResolver().query(uri, projection, null, null, null);
-        if (cursor == null) return null;
-        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String s = cursor.getString(columnIndex);
-        cursor.close();
-        return s;
-    }
-
-    public static String getIntervalTime(long longInterval) {
-
-        long intMillis = longInterval;
-        long dd = TimeUnit.MILLISECONDS.toDays(intMillis);
-        long daysMillis = TimeUnit.DAYS.toMillis(dd);
-        intMillis -= daysMillis;
-        long hh = TimeUnit.MILLISECONDS.toHours(intMillis);
-        long hoursMillis = TimeUnit.HOURS.toMillis(hh);
-        intMillis -= hoursMillis;
-        long mm = TimeUnit.MILLISECONDS.toMinutes(intMillis);
-        long minutesMillis = TimeUnit.MINUTES.toMillis(mm);
-        intMillis -= minutesMillis;
-        long ss = TimeUnit.MILLISECONDS.toSeconds(intMillis);
-        long secondsMillis = TimeUnit.SECONDS.toMillis(ss);
-        intMillis -= secondsMillis;
-
-        String stringInterval = "%02d:%02d";
-        return String.format(stringInterval, mm, ss);
     }
 
     @Override

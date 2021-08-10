@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -145,6 +146,11 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         pbarr = progressDialog.findViewById(R.id.progress_bar);
         searchableCountySpinner = findViewById(R.id.countrySpinner);
         progressDialog.setCancelable(false);
+        try {
+            AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "Upload POst");
+        } catch (Exception e) {
+
+        }
 
         settingsModel = SharedPrefManager.getInstance(getApplicationContext()).getAppSettingsModel();
 
@@ -363,7 +369,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
                 CountryModel countryModel = (CountryModel) parent.getSelectedItem();
 
-                countyID = countryModel.getId()+"";
+                countyID = countryModel.getId() + "";
             }
 
             @Override
@@ -621,18 +627,44 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                     body2 = MultipartBody.Part.createFormData("video", mediaFile.getName(), fileBody);
                 }
 
-
-                body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+                body1 = MultipartBody.Part.createFormData("thumb_image", file.getName(), requestFile);
                 Log.d("TAG", "createPostServer: " + mediaFile.getName() + requestMediaFile.contentType());
-                //   Toast.makeText(getApplicationContext() , "asdfasf"+ mediaFile.getName() , Toast.LENGTH_LONG ).show();
-                //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
-                api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
+                api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
-                NetworkCall = api.uploadFilePost(body2, createPartFromString(title), createPartFromString(title.toLowerCase()),
-                        createPartFromString(desc),
-                        createPartFromString(postType), createPartFromString(langid),
-                        createPartFromString(catid), createPartFromString("1"),
-                        body1);
+
+                if (postType.equals("audio")) {
+                    // audio update
+                    /*
+                                                             @Part MultipartBody.Part audio,
+                                                          @Part("title") RequestBody title,
+                                                          @Part("description") RequestBody content,
+                                                          @Part("lang") RequestBody lang_id,
+                                                          @Part("category") RequestBody category_id,
+                                                          @Part("country") RequestBody sub_category_id,
+                                                          @Part MultipartBody.Part image);
+                     */
+                    NetworkCall = api.uploadAudioFilePost(body2, createPartFromString(title),
+                            createPartFromString(desc),
+                            createPartFromString(langid), createPartFromString(catid),
+                            createPartFromString(countyID),
+                            body1);
+
+                } else {
+/*
+                                                                @Part MultipartBody.Part file,
+                                                               @Part("title") RequestBody title,
+                                                               @Part("description") RequestBody description,
+                                                               @Part("lang") RequestBody lang_id,
+                                                               @Part("category") RequestBody category_id,
+                                                               @Part("country") RequestBody sub_category_id,
+                                                               @Part MultipartBody.Part image);
+ */
+                    NetworkCall = api.uploadVideoFilePost(body2, createPartFromString(title),
+                            createPartFromString(desc), createPartFromString(langid),
+                            createPartFromString(catid), createPartFromString(countyID),
+                            body1);
+
+                }
 
 
             }

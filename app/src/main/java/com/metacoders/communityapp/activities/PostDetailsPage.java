@@ -155,11 +155,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     public void initFullsceen() {
 
         mFullScreenDialog = new Dialog(PostDetailsPage.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+
             public void onBackPressed() {
                 if (mExoPlayerFullscreen) {
                     closeFullScreenDialog();
-
-                    super.onBackPressed();
                 }
 
             }
@@ -206,18 +205,21 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
 
         if (PlayerManager.getSharedInstance(PostDetailsPage.this).isPlayerPlaying()) {
             PlayerManager.getSharedInstance(PostDetailsPage.this).stopPlayer();
             PlayerManager.getSharedInstance(PostDetailsPage.this).releasePlayer();
 
         }
-        finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+     //   finish();
+        super.onBackPressed();
+
 
 
     }
+
+
 
     @Override
     protected void onDestroy() {

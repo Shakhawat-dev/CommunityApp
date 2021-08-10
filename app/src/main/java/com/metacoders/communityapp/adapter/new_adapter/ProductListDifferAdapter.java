@@ -160,7 +160,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         try {
             holder.desc.setText(newsFeed.getDescription().toString() + "");
         } catch (Exception r) {
-
+            holder.desc.setText( "");
         }
 
 

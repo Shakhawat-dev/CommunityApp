@@ -11,6 +11,12 @@ import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 
+import org.json.JSONObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     TextInputEditText username, email;
@@ -51,37 +57,23 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-//        Call<LoginResponse.forgetPassResponse> Call = api.forget_password(userName, eMail);
-//
-//        Call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
-//            @Override
-//            public void onResponse(retrofit2.Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
-//                if (response.isSuccessful() || response.code() == 201) {
-//                    LoginResponse.forgetPassResponse model = response.body();
-//
-//                    if (!model.getError()) {
-//                        // response ok . password sent
-//                        dialog.setTitle("Success...") ;
-//                        dialog.setMessage("" + model.getMessage());
-//
-//                    }
-//                    else {
-//                        dialog.setTitle("Error!!") ;
-//                        dialog.setMessage("Please Try Again");
-//                    }
-//                    dialog.setCancelable(true);
-//                    dialog.show();
-//
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(retrofit2.Call<LoginResponse.forgetPassResponse> call, Throwable t) {
-//
-//            }
-//        });
+        Call<JSONObject> Call = api.forget_password(eMail);
+
+        Call.enqueue(new Callback<JSONObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<JSONObject> call, Response<JSONObject> response) {
+                if (response.isSuccessful() || response.code() == 201) {
+
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JSONObject> call, Throwable t) {
+
+            }
+        });
 
     }
 }

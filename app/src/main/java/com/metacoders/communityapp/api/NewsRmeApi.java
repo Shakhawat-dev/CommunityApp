@@ -91,9 +91,8 @@ public interface NewsRmeApi {
 
 
     @FormUrlEncoded
-    @POST("auth/forget-password")
+    @POST("forgot-password")
     Call<JSONObject> forget_password(
-            @Field("user_name") String user_name,
             @Field("email") String email
     );
 
@@ -151,19 +150,27 @@ public interface NewsRmeApi {
 
     // @FormUrlEncoded
     @Multipart
-    @POST("dashboard/news-post")
+    @POST("store-audio")
     //("video\"; filename=\"myfile.mp4\" ")  ("image\"; filename=\"myfifle.image\" ")
-    Call<LoginResponse.forgetPassResponse> uploadFilePost(@Part MultipartBody.Part file,
-                                                          @Part("title") RequestBody title,
-                                                          @Part("title_slug") RequestBody title_slug,
-                                                          @Part("content") RequestBody content,
-                                                          @Part("post_type") RequestBody post_type,
-                                                          @Part("lang_id") RequestBody lang_id,
-                                                          @Part("category_id") RequestBody category_id,
-                                                          @Part("sub_category_id") RequestBody sub_category_id,
-                                                          @Part MultipartBody.Part image);
+    Call<LoginResponse.forgetPassResponse> uploadAudioFilePost(@Part MultipartBody.Part audio,
+                                                               @Part("title") RequestBody title,
+                                                               @Part("description") RequestBody content,
+                                                               @Part("lang") RequestBody lang_id,
+                                                               @Part("category") RequestBody category_id,
+                                                               @Part("country") RequestBody sub_category_id,
+                                                               @Part MultipartBody.Part image);
 
 
+    @Multipart
+    @POST("store-video")
+        // lang, category, country, title, thumb_image, video, description
+    Call<LoginResponse.forgetPassResponse> uploadVideoFilePost(@Part MultipartBody.Part file,
+                                                               @Part("title") RequestBody title,
+                                                               @Part("description") RequestBody description,
+                                                               @Part("lang") RequestBody lang_id,
+                                                               @Part("category") RequestBody category_id,
+                                                               @Part("country") RequestBody sub_category_id,
+                                                               @Part MultipartBody.Part image);
     // socila login
 
     @FormUrlEncoded

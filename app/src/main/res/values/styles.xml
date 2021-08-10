@@ -5,6 +5,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item
+            name="android:windowEnterAnimation">@anim/slide_in_right</item>
+        <item
+            name="android:windowExitAnimation">@anim/slide_out_left</item>
     </style>
 
     <style name="AppThemeNoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -12,6 +17,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item
+            name="android:windowEnterAnimation">@anim/slide_in_right</item>
+        <item
+            name="android:windowExitAnimation">@anim/slide_out_left</item>
     </style>
 
     <style name="CustomButton" parent="Widget.AppCompat.Button">

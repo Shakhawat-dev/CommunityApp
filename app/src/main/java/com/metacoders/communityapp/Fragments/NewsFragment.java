@@ -329,7 +329,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
                         globalPage += 1;
                     } else if (globalPage < 0) {
                         globalPage = 0;
-                        isFollowerLoaded = false ;
+                        isFollowerLoaded = false;
                         loadCommonPost(commonCurrentPage);
                     } else {
                         progressBar.setVisibility(View.GONE);
@@ -376,19 +376,14 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
     public void onItemClick(Post.PostModel model) {
 
         Intent p;
-        if (model.getType().equals("post")) {
-            p = new Intent(context, NewsDetailsActivity.class);
-        } else {
+        if (model.getType().equals("audio") || model.getType().equals("video")) {
             p = new Intent(context, PostDetailsPage.class);
+        } else {
+            p = new Intent(context, NewsDetailsActivity.class);
         }
         p.putExtra("POST", model);
-        context.startActivity(p);
+        startActivity(p);
 
-        try {
-            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } catch (Exception e) {
-            Log.e("TAG", "onItemClick: " + e.getMessage());
-        }
 
     }
 

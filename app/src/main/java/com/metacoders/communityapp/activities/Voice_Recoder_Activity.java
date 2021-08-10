@@ -13,8 +13,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -45,6 +47,7 @@ import java.util.Locale;
 
 public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPickerCallback {
     String mFileName = null;
+    private  static  int  AUDIO_DURATION = 420000 ;
     private static final int IMAGE_PICKER_SELECT = 99;
     String name, ph;
     Boolean isGallery = false;
@@ -106,11 +109,12 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
 
                         // above two line added just to  reset the clock bug ......
                         //if dont work delete it for own caution
+
                         try{
                             startRecording();
                         }
                         catch (Exception r){
-                            Toast.makeText(getApplicationContext() , "Error " + r.getMessage() , Toast.LENGTH_LONG)
+                            Toast.makeText(getApplicationContext() , "Error " + r.getLocalizedMessage() , Toast.LENGTH_LONG)
                                     .show();
                         }
 
@@ -134,10 +138,7 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
     }
     private void openGalleryForAudio() {
         isGallery = true;
-//        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-//        pickIntent.setType("audio/*");
-//        //    startActivityForResult(pickIntent, IMAGE_PICKER_SELECT );
-//        startActivityForResult(Intent.createChooser(pickIntent, "Select Audio"), IMAGE_PICKER_SELECT);
+
         audioPicker = getAudioPicker();
         audioPicker.setAudioPickerCallback(new AudioPickerCallback() {
             @Override
@@ -167,8 +168,11 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
             post.putExtra("media", "audio");
             post.putExtra("OR_PATH", orginalPath);
 
+            if(Integer.parseInt(getAudioFileLength(orginalPath , false)) >  AUDIO_DURATION ){
+                Toast.makeText(getApplicationContext() , "Error : Audio File is More Than 7 minutes" , Toast.LENGTH_LONG).show();
+            }else  startActivity(post);
 
-            startActivity(post);
+
 
 
         } else {
@@ -189,10 +193,14 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
                        post.putExtra("path", uri.toString());
                        post.putExtra("OR_PATH", orginalPath);
                        post.putExtra("media", "audio");
-                       startActivity(post);
+
+                       if(Integer.parseInt(getAudioFileLength(mFileName , false)) >  AUDIO_DURATION ){
+                           Toast.makeText(getApplicationContext() , "Error : Audio File CanNot Be More Than 7 minutes" , Toast.LENGTH_LONG).show();
+                       }else  startActivity(post);
+
                    }
                    catch (Exception r ){
-                       Toast.makeText(getApplicationContext(), "There was Some Error !!!" , Toast.LENGTH_LONG).show();
+                       Toast.makeText(getApplicationContext(), "There was Some Error !!!" +r.getMessage() , Toast.LENGTH_LONG).show();
                    }
                 }
             });
@@ -240,14 +248,18 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        mFileName = getFilename() ;
+        if(Build.VERSION.SDK_INT >= 30){
+            mFileName = getExternalCacheDir().getAbsolutePath() + "/"+"NEWSRME" +System.currentTimeMillis()+".mp3" ;
+        }else {
+            mFileName = getFilename() ;
+        }
         mediaRecorder.setOutputFile(mFileName);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
 
         try {
             mediaRecorder.prepare();
-        } catch (IOException ie) {
+        } catch (Exception ie) {
             Log.e("TAG", "Fail + " + ie.getMessage());
         }
         mediaRecorder.start();
@@ -348,31 +360,12 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
 
         super.onActivityResult(requestCode, resultCode, data);
 
-//        if (resultCode == RESULT_OK && requestCode == IMAGE_PICKER_SELECT && data != null) {
-//            Uri selectedMediaUri = data.getData();
-//
-//             galleryUri = selectedMediaUri;
-//
-//
-//
-//            //  String TYPE = MimeTypeMap.getFileExtensionFromUrl(selectedMediaUri.getLastPathSegment()).toLowerCase();
-//
-//            Log.d("TAG", "onActivityResult: TYPE =  " + galleryUri);
-//
-//            uploadAudio();
-//
-//
-//        }
-
         if (requestCode == Picker.PICK_AUDIO && resultCode == RESULT_OK) {
             audioPicker.submit(data);
             Uri selectedMediaUri = data.getData();
              galleryUri = selectedMediaUri;
 
-           //  String TYPE = MimeTypeMap.getFileExtensionFromUrl(selectedMediaUri.getLastPathSegment()).toLowerCase();
-
-
-            if(audioPicker == null) {
+             if(audioPicker == null) {
                 audioPicker = new AudioPicker(Voice_Recoder_Activity.this);
                 audioPicker.setAudioPickerCallback(this);
 
@@ -419,6 +412,33 @@ public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPi
     @Override
     public void onAudiosChosen(List<ChosenAudio> list) {
 
+    }
+
+
+    public String getAudioFileLength(String path, boolean stringFormat) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            Uri uri = Uri.parse(path);
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(Voice_Recoder_Activity.this, uri);
+            String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            int millSecond = Integer.parseInt(duration);
+            if (millSecond < 0) return String.valueOf(0); // if some error then we say duration is zero
+            if (!stringFormat) return String.valueOf(millSecond);
+            int hours, minutes, seconds = millSecond / 1000;
+            hours = (seconds / 3600);
+            minutes = (seconds / 60) % 60;
+            seconds = seconds % 60;
+            if (hours > 0 && hours < 10) stringBuilder.append("0").append(hours).append(":");
+            else if (hours > 0) stringBuilder.append(hours).append(":");
+            if (minutes < 10) stringBuilder.append("0").append(minutes).append(":");
+            else stringBuilder.append(minutes).append(":");
+            if (seconds < 10) stringBuilder.append("0").append(seconds);
+            else stringBuilder.append(seconds);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
     }
 
     @Override
