@@ -49,14 +49,20 @@ import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.allDataResponse;
+import com.metacoders.communityapp.models.newModels.CategoryModel;
+import com.metacoders.communityapp.models.newModels.CountryModel;
+import com.metacoders.communityapp.models.newModels.SettingsModel;
+import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.CallBacks;
 import com.metacoders.communityapp.utils.PlayerManager;
 import com.metacoders.communityapp.utils.ProgressRequestBody;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -80,6 +86,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     String postType;
     Dialog progressDialog;
     MultipartBody.Part body1;
+    String countyID = "22";
     MultipartBody.Part body2;
     Uri FileUriSizeChecker = null;
     NewsRmeApi api;
@@ -88,6 +95,8 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     Chip chip;
     TextInputEditText title, desc;
     String Title, Desc;
+    SearchableSpinner searchableCountySpinner;
+
     List<allDataResponse.Category> categoryList;
     List<String> categoryNameList = new ArrayList<>();
     List<allDataResponse.LanguageList> languageList = new ArrayList<>();
@@ -101,8 +110,10 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     ProgressBar pbarr;
     ImageView fullscreenButton;
     Dialog mFullScreenDialog;
+    SettingsModel settingsModel;
     private boolean mExoPlayerFullscreen = false;
     private Bitmap compressedImageFile;
+
     //AlertDialog.Builder builder = new AlertDialog.Builder(PostUploadActivity.this);
 
     public static String getPath(Context ctx, Uri uri) {
@@ -132,8 +143,10 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         progressDialog.setContentView(R.layout.custom_dialogue);
         percent = progressDialog.findViewById(R.id.progress_state);
         pbarr = progressDialog.findViewById(R.id.progress_bar);
+        searchableCountySpinner = findViewById(R.id.countrySpinner);
         progressDialog.setCancelable(false);
 
+        settingsModel = SharedPrefManager.getInstance(getApplicationContext()).getAppSettingsModel();
 
         o = getIntent();
         // take the media type ....
@@ -308,13 +321,9 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (categoryList.size() > 0) {
-
-                    catid = categoryList.get(position).getId();
-
-                    //Toast.makeText(getApplicationContext() ,catid , Toast.LENGTH_SHORT ).show();
-                }
-
+                CategoryModel categoryModel = (CategoryModel) parent.getSelectedItem();
+                catid = categoryModel.getCategory_name();
+                // Toast.makeText(getApplicationContext(), catid, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -327,11 +336,34 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         langugaNameSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (languageList.size() > 0) {
 
-                    langid = languageList.get(position).getId();
-                    // Toast.makeText(getApplicationContext() ,catid + " "+ langid, Toast.LENGTH_SHORT ).show();
+
+                langid = parent.getSelectedItem().toString();
+
+                if (langid.contains("English")) {
+                    langid = "en";
+                } else {
+                    langid = "bn";
                 }
+                // Toast.makeText(getApplicationContext() ,catid + " "+ langid, Toast.LENGTH_SHORT ).show();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                langid = "null";
+            }
+        });
+
+
+        searchableCountySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                CountryModel countryModel = (CountryModel) parent.getSelectedItem();
+
+                countyID = countryModel.getId()+"";
             }
 
             @Override
@@ -513,11 +545,14 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
                 Log.d("TAG", "createPostServer: " + file.getName() + requestFile.contentType());
-                api = ServiceGenerator.createService(NewsRmeApi.class, getToken());
-                NetworkCall = api.uploadPost(createPartFromString(title), createPartFromString(title.toLowerCase()),
+                api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+                NetworkCall = api.uploadPost(
+                        createPartFromString(title),
                         createPartFromString(desc),
-                        createPartFromString(postType), createPartFromString(langid),
-                        createPartFromString(catid), createPartFromString("1"),
+                        createPartFromString(langid),
+                        createPartFromString(countyID),
+                        createPartFromString(catid),
                         body1);
 
 
@@ -669,60 +704,27 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     }
 
     private void loadMiscData() {
-        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
-        String accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
+        Collections.reverse(settingsModel.getCategories());
+        Collections.reverse(settingsModel.getCountries());
+        ArrayAdapter<CategoryModel> catgoery_adapter = new ArrayAdapter<CategoryModel>(PostUploadActivity.this,
+                android.R.layout.simple_spinner_item, settingsModel.getCategories());
+        catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        catgoerySelector.setAdapter(catgoery_adapter);
+
+        String[] languages = {"English", "Bangla"};
+        ArrayAdapter<String> langiage_adapter = new ArrayAdapter<String>(PostUploadActivity.this,
+                android.R.layout.simple_spinner_item, languages);
+        langiage_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        langugaNameSelector.setAdapter(langiage_adapter);
+
+        searchableCountySpinner.setTitle("Select Country");
+
+        ArrayAdapter<CountryModel> country_adapter = new ArrayAdapter<CountryModel>(PostUploadActivity.this,
+                android.R.layout.simple_spinner_item, settingsModel.getCountries());
+        country_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        searchableCountySpinner.setAdapter(country_adapter);
 
 
-        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, accessTokens);
-
-        Call<allDataResponse> catCall = api.getCategoryList();
-
-        catCall.enqueue(new Callback<allDataResponse>() {
-            @Override
-            public void onResponse(Call<allDataResponse> call, Response<allDataResponse> response) {
-
-                if (response.code() == 201) {
-
-                    allDataResponse dataResponse = response.body();
-
-                    categoryList = dataResponse.getCategories();
-                    languageList = dataResponse.getLanguageList();
-
-                    // load all the category name
-                    for (int i = 0; i < categoryList.size(); i++) {
-                        categoryNameList.add(categoryList.get(i).getName().toString());
-
-                    }
-                    for (int i = 0; i < languageList.size(); i++) {
-                        languageNameList.add(languageList.get(i).getName().toString());
-
-                    }
-
-                    // send it to adaper
-
-                    ArrayAdapter<String> langAdapter = new ArrayAdapter<>(PostUploadActivity.this,
-                            android.R.layout.simple_spinner_item, languageNameList);
-                    langAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                    langugaNameSelector.setAdapter(langAdapter);
-
-
-                    ArrayAdapter<String> catgoery_adapter = new ArrayAdapter<>(PostUploadActivity.this,
-                            android.R.layout.simple_spinner_item, categoryNameList);
-                    catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                    catgoerySelector.setAdapter(catgoery_adapter);
-                } else {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<allDataResponse> call, Throwable t) {
-
-            }
-        });
     }
 
     private void playMedia(String Path) {

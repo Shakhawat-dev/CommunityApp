@@ -1,24 +1,26 @@
 package com.metacoders.communityapp;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.AutoCompleteTextView;
-
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.activities.PostDetailsPage;
-import com.metacoders.communityapp.adapter.NewsFeedAdapter;
+import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
-import com.metacoders.communityapp.models.News_List_Model;
-import com.metacoders.communityapp.models.Post_Model;
+import com.metacoders.communityapp.models.newModels.CategoryResponse;
+import com.metacoders.communityapp.models.newModels.Post;
+import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
@@ -28,18 +30,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class singleList extends AppCompatActivity {
+public class singleList extends AppCompatActivity implements ProductListDifferAdapter.ItemClickListener {
 
     RecyclerView recyclerView;
-    String searchMeta = "";
+    int countryID = 0;
     SharedPrefManager sharedPrefManager;
-    List<Post_Model> postsList = new ArrayList<>();
-    List<Post_Model> filterList = new ArrayList<>();
-    NewsFeedAdapter.ItemClickListenter itemClickListenter;
-    NewsFeedAdapter adapter;
+    List<Post.PostModel> postsList = new ArrayList<>();
+    List<Post.PostModel> filterList = new ArrayList<>();
+    ProductListDifferAdapter productListDifferAdapter;
     ConstraintLayout emptyLayout;
     ShimmerFrameLayout shimmerFrameLayout;
-
+    String typeMeta = "";
+    String cateGoryName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,54 +54,47 @@ public class singleList extends AppCompatActivity {
         recyclerView.setVisibility(View.VISIBLE);
         shimmerFrameLayout = findViewById(R.id.shimmer_view_container);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        productListDifferAdapter = new ProductListDifferAdapter(getApplicationContext(), this);
+
+
+
         Intent o = getIntent();
-        searchMeta = o.getStringExtra("id");
+        typeMeta = o.getStringExtra("type");
 
 
-        itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
-            @Override
-            public void onItemClick(View view, int pos) {
-                Post_Model model = new Post_Model();
-                model = postsList.get(pos);
-                Intent p = new Intent(getApplicationContext(), PostDetailsPage.class);
-                p.putExtra("POST", model);
-                startActivity(p);
-                try {
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                } catch (Exception e) {
-                    Log.e("TAG", "onItemClick: " + e.getMessage());
-                }
+        if (typeMeta != null && typeMeta.contains("cat")) {
+            cateGoryName = o.getStringExtra("cat_name");
+            loadCateogryedList(cateGoryName);
+            try {
+                AppPreferences.setActionbarTextColor(getSupportActionBar() , Color.WHITE ,cateGoryName ) ;
+            }catch (Exception e){
+
             }
-        };
+        } else {
+            countryID = o.getIntExtra("id", 0);
+        }
 
-        loadList();
     }
 
 
-    private void loadList() {
+    private void loadCateogryedList(String cateGoryName) {
         //setting up layout
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
 
-//        Call<News_List_Model> NetworkCall = RetrofitClient
-//                .getInstance()
-//                .getApi()
-//                .getNewsList();
-
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-        Call<News_List_Model> NetworkCall = api.getNewsList();
+        Call<CategoryResponse> NetworkCall = api.getCategoricalPost(cateGoryName);
 
-        NetworkCall.enqueue(new Callback<News_List_Model>() {
+        NetworkCall.enqueue(new Callback<CategoryResponse>() {
             @Override
-            public void onResponse(Call<News_List_Model> call, Response<News_List_Model> response) {
+            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
                 // u have the response
-                if (response.code() == 201) {
-                    News_List_Model model = response.body();
+                if (response.code() == 200) {
+                    CategoryResponse model = response.body();
 
-                    postsList = model.getGetNewsList();
-
+                    postsList = model.getCateooryPost();
 
                     if (postsList != null && !postsList.isEmpty()) {
                         // i know its werid but thats r8 cheaking list is popluted
@@ -108,25 +103,11 @@ public class singleList extends AppCompatActivity {
 
                         // process the list
 
-                        for (int i = 0; i < postsList.size(); i++) {
-
-                            if (postsList.get(i).getCategoryId().equals(searchMeta)) {
-
-                                // add to filltered list
-                                filterList.add(postsList.get(i));
-                            }
-                        }
-
-
-
-                        adapter = new NewsFeedAdapter(getApplicationContext(), filterList, itemClickListenter);
-
+                        productListDifferAdapter.submitlist(postsList);
                         // setting the adapter ;
-                        recyclerView.setAdapter(adapter);
-                        // setting the adapter ;
-                        recyclerView.setAdapter(adapter);
+                        recyclerView.setAdapter(productListDifferAdapter);
                         // checking if the list is empty or not
-                        if (filterList.size() == 0) {
+                        if (postsList.size() == 0) {
                             emptyLayout.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         } else {
@@ -162,22 +143,25 @@ public class singleList extends AppCompatActivity {
 
                     } else {
                         // the list is empty
-                        Log.d("TAG", "Error: List Is Empty  " + response.errorBody());
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                        shimmerFrameLayout.stopShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
                     }
 
                 } else {
-                    Log.d("TAG", "Error: " + response.errorBody() +
-                            " Code : " + response.code());
+                    Toast.makeText(getApplicationContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();
                 }
 
             }
 
             @Override
-            public void onFailure(Call<News_List_Model> call, Throwable t) {
+            public void onFailure(Call<CategoryResponse> call, Throwable t) {
                 Log.d("TAG", "Error On Failed Response: " + t.getMessage());
             }
         });
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -190,4 +174,22 @@ public class singleList extends AppCompatActivity {
         super.onPause();
     }
 
+    @Override
+    public void onItemClick(Post.PostModel model) {
+        Intent p;
+        if (model.getType().equals("post")) {
+            p = new Intent(getApplicationContext(), NewsDetailsActivity.class);
+        } else {
+            p = new Intent(getApplicationContext(), PostDetailsPage.class);
+        }
+        p.putExtra("POST", model);
+        startActivity(p);
+
+        try {
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        } catch (Exception e) {
+            Log.e("TAG", "onItemClick: " + e.getMessage());
+        }
+
+    }
 }

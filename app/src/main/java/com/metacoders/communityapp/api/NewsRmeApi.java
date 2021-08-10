@@ -11,7 +11,9 @@ import com.metacoders.communityapp.models.RegistrationResponse;
 import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.models.Video_List_Model;
 import com.metacoders.communityapp.models.allDataResponse;
+import com.metacoders.communityapp.models.newModels.CategoryResponse;
 import com.metacoders.communityapp.models.newModels.PostResponse;
+import com.metacoders.communityapp.models.newModels.SettingsModel;
 import com.metacoders.communityapp.models.newModels.SignInResponse;
 import com.metacoders.communityapp.models.post_summary;
 
@@ -39,10 +41,24 @@ public interface NewsRmeApi {
     Call<PostResponse> getCommonNewsList(
             @Query("page") int page
     );
+
     @GET("follower-post")
     Call<PostResponse.FollowerPostResponse> getFollowerPostList(
             @Query("page") int page
     );
+
+    //category-country
+    @GET("category-country")
+    Call<SettingsModel> getCategories_Countries(
+    );
+
+    //categorical post
+
+    @GET("category-wise-post/{category}")
+    Call<CategoryResponse> getCategoricalPost(
+            @Path("category") String path
+    );
+
 
     //post
 
@@ -53,8 +69,15 @@ public interface NewsRmeApi {
             @Field("password") String password
     );
 
+    @Multipart
+    @POST("store-article")
+    Call<LoginResponse.forgetPassResponse> uploadPost(@Part("title") RequestBody title,
+                                                      @Part("description") RequestBody content,
+                                                      @Part("lang") RequestBody lang_id,
+                                                      @Part("country") RequestBody county,
+                                                      @Part("category") RequestBody category,
+                                                      @Part MultipartBody.Part image);
     // new api ends
-
 
 
     @FormUrlEncoded
@@ -140,17 +163,6 @@ public interface NewsRmeApi {
                                                           @Part("sub_category_id") RequestBody sub_category_id,
                                                           @Part MultipartBody.Part image);
 
-    @Multipart
-    @POST("dashboard/news-post")
-        //("video\"; filename=\"myfile.mp4\" ")  ("image\"; filename=\"myfifle.image\" ")
-    Call<LoginResponse.forgetPassResponse> uploadPost(@Part("title") RequestBody title,
-                                                      @Part("title_slug") RequestBody title_slug,
-                                                      @Part("content") RequestBody content,
-                                                      @Part("post_type") RequestBody post_type,
-                                                      @Part("lang_id") RequestBody lang_id,
-                                                      @Part("category_id") RequestBody category_id,
-                                                      @Part("sub_category_id") RequestBody sub_category_id,
-                                                      @Part MultipartBody.Part image);
 
     // socila login
 

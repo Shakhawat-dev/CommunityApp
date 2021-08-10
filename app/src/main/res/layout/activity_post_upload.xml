@@ -77,7 +77,7 @@
                     android:layout_marginTop="10dp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/nunito_regular"
-                    android:text="Please Select an Image (Click On The Pluse Sign)"
+                    android:text=" Please Select an Image (Click On The Pluse Sign)"
                     android:layout_height="wrap_content"/>
                 <ImageView
                     android:id="@+id/add_image"
@@ -132,7 +132,30 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:hint="Category"
+                        app:boxStrokeColor="@color/colorPrimary"
+                        app:hintTextColor="@color/black">
+
+                        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                            android:id="@+id/countrySpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"

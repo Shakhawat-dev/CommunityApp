@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.metacoders.communityapp.models.newModels.SettingsModel;
 import com.metacoders.communityapp.models.newModels.UserModel;
 
 public class SharedPrefManager {
@@ -15,6 +16,7 @@ public class SharedPrefManager {
     private static final String KEY_USER_EMAIL = "useremail";
     private static final String IS_USER_LOGGED_IN = "useremail";
     private static final String KEY_USER_ID = "userid";
+    private static final String KEY_APP_SETTINGS = "app_settings";
     private static final String KEY_USER_ROLE = "userrole";
     private static final String KEY_USER_TOKEN = "usertoken";
     private static final String KEY_USER_TYPE = "usertype";
@@ -156,5 +158,23 @@ public class SharedPrefManager {
          */
         return new String[]{id, name};
     }
+
+    public void saveAppSettings(SettingsModel model) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(model);
+        editor.putString(KEY_APP_SETTINGS, jsonString);
+        editor.apply();
+    }
+
+    public SettingsModel getAppSettingsModel() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
+        String jsonString = sharedPreferences.getString(KEY_APP_SETTINGS, null);
+        Gson gson = new Gson();
+        SettingsModel model = gson.fromJson(jsonString, SettingsModel.class);
+        return model;
+    }
+
 
 }

@@ -1,29 +1,27 @@
 package com.metacoders.communityapp.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.models.allDataResponse;
-
+import com.metacoders.communityapp.models.newModels.CategoryModel;
+import com.metacoders.communityapp.utils.AppPreferences;
 
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
     private Context ctx;
-    private List<allDataResponse.Category> categoryList;
+    private List<CategoryModel> categoryList;
     private ItemClickListenter itemClickListenter;
 
-    public CategoryAdapter(Context ctx, List<allDataResponse.Category> newsfeedList, ItemClickListenter itemClickListenter) {
+    public CategoryAdapter(Context ctx, List<CategoryModel> newsfeedList, ItemClickListenter itemClickListenter) {
         this.ctx = ctx;
         this.categoryList = newsfeedList;
         this.itemClickListenter = itemClickListenter;
@@ -43,12 +41,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
 
         // single cateogry ;
-        allDataResponse.Category singleCategory = categoryList.get(position);
+        CategoryModel singleCategory = categoryList.get(position);
 
         //set name
-        holder.title.setText(singleCategory.getName());
-//            holder.itemView.setBackgroundColor(Color.parseColor(singleCategory.getColor()));
-        holder.cardView.setCardBackgroundColor(Color.parseColor(singleCategory.getColor()));
+        holder.title.setText(singleCategory.getCategory_name());
+        holder.cardView.setCardBackgroundColor(AppPreferences.getRandomMaterialColor("500", ctx));
 
 
     }

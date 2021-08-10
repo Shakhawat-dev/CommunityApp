@@ -34,7 +34,9 @@ public class ServiceGenerator {
                     new tokenInterceptor2(authToken);
             if (!httpClient.interceptors().contains(interceptor)) {
                // Log.d("okhttp", "createService: " + authToken);
-
+                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+                httpClient.addInterceptor(logging);
                 httpClient.addInterceptor(interceptor);
                 httpClient
                         .connectTimeout(5, TimeUnit.MINUTES)
@@ -44,7 +46,7 @@ public class ServiceGenerator {
                         ;
 
                 
-             //   .addInterceptor(logging);
+             //
 
 
                 retrofit =
@@ -67,7 +69,7 @@ public class ServiceGenerator {
                     .connectTimeout(500, TimeUnit.SECONDS)
                     .writeTimeout(500, TimeUnit.SECONDS)
                     .readTimeout(500 , TimeUnit.SECONDS)
-                 //   .addInterceptor(logging)
+                   .addInterceptor(logging)
                     .build();
             retrofit =
                     new Retrofit.Builder()

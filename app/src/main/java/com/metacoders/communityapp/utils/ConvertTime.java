@@ -1,6 +1,7 @@
 package com.metacoders.communityapp.utils;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,16 +55,17 @@ public class ConvertTime {
     }
 
     public static String getTimeAgo(Date date) {
-        long time = date.getTime();
+        long time = date.getTime()  + ((23)*HOUR_MILLIS) + 55*MINUTE_MILLIS ;
+        Log.d("NOW_RECIVED " , ""+ time);
+
         if (time < 1000000000000L) {
-            time *= 1000;
+            time *= 1000 ;
         }
 
         long now = currentDate().getTime();
         if (time > now || time <= 0) {
             return "just now";
         }
-
         final long diff = now - time;
         if (diff < MINUTE_MILLIS) {
             return "moments ago";

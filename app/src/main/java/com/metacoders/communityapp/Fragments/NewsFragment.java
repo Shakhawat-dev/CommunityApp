@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -34,7 +33,6 @@ import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
-import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.models.newModels.Post;
 import com.metacoders.communityapp.models.newModels.PostResponse;
@@ -160,104 +158,9 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
 
         return view;
     }
-    private void loadList() {
-        // setting up  layout
-        emptyLayout.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
 
-
-        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
-
-        Call<News_List_Model> NetworkCall = api.getNewsList();
-
-        NetworkCall.enqueue(new Callback<News_List_Model>() {
-            @Override
-            public void onResponse(Call<News_List_Model> call, Response<News_List_Model> response) {
-                // u have the response
-                if (response.code() == 201) {
-
-                    News_List_Model model = response.body();
-
-                    postsList = model.getGetNewsList();
-
-                    postsList.addAll(postsList);
-
-
-                    if (postsList != null && !postsList.isEmpty()) {
-                        // i know its werid but thats r8 cheaking list is popluted
-                        // its not empty
-                        // Call the adapter to show the data
-
-                        // filter the list
-                        filteredList.clear();
-
-                        for (Post_Model post : postsList) {
-                            if (post.getLangId().equals(id)) {
-                                filteredList.add(post);
-                            }
-                        }
-
-                        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
-
-                        // setting the adapter ;
-
-
-                        // checking if the list is empty or not
-                        if (filteredList.size() == 0) {
-                            emptyLayout.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-                        } else {
-                            emptyLayout.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
-
-                        }
-
-                        mShimmerViewContainer.stopShimmer();
-                        mShimmerViewContainer.setVisibility(View.GONE);
-
-                        recyclerView.getViewTreeObserver().addOnPreDrawListener(
-
-                                new ViewTreeObserver.OnPreDrawListener() {
-                                    @Override
-                                    public boolean onPreDraw() {
-
-                                        recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                                        for (int i = 0; i < recyclerView.getChildCount(); i++) {
-                                            View v = recyclerView.getChildAt(i);
-                                            v.setAlpha(0.0f);
-                                            v.animate()
-                                                    .alpha(1.0f)
-                                                    .setDuration(300)
-                                                    .setStartDelay(i * 50)
-                                                    .start();
-                                        }
-                                        return true;
-                                    }
-                                }
-                        );
-
-
-                    } else {
-                        // the list is empty
-                        Log.d("TAG", "Error: List Is Empty  " + response.errorBody());
-                    }
-
-                } else {
-                    Log.d("TAG", "Error: " + response.errorBody() +
-                            " Code : " + response.code());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<News_List_Model> call, Throwable t) {
-                Log.d("TAG", "Error On Failed Response: " + t.getMessage());
-            }
-        });
-    }
 
     public void fetchTimelineAsync() {
-
         commonCurrentPage = 1;
         followerCurrentPage = 1;
         globalPage = 0;
@@ -426,7 +329,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
                         globalPage += 1;
                     } else if (globalPage < 0) {
                         globalPage = 0;
-
+                        isFollowerLoaded = false ;
                         loadCommonPost(commonCurrentPage);
                     } else {
                         progressBar.setVisibility(View.GONE);
@@ -465,7 +368,6 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
         // load the array  arr[0] = id arr[1] = name
         id = arr[0];
         // Toast.makeText(context, id, Toast.LENGTH_LONG).show();
-
 
     }
 
@@ -563,6 +465,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
                 Toast.makeText(getContext(), "Your At The End Of The List!!!", Toast.LENGTH_LONG).show();
             } else {
                 //incerease the common post
+                Log.d("TAG", "loadMore: Here To Increase the ");
                 commonCurrentPage += 1;
                 progressBar.setVisibility(View.VISIBLE);
                 loadCommonPost(commonCurrentPage);
