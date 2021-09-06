@@ -31,24 +31,24 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_pic"
-                        android:layout_width="128dp"
-                        android:layout_height="128dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:layout_marginTop="64dp"
-                        android:elevation="4dp"
-                        android:src="@drawable/placeholder" />
+                        android:elevation="4dp" />
 
                     <ImageView
+                        android:id="@+id/edit"
                         android:layout_width="wrap_content"
-                        android:background="@drawable/ic_baseline_edit_24"
+                        android:layout_height="wrap_content"
                         android:layout_below="@+id/profile_pic"
                         android:layout_centerHorizontal="true"
-                        android:layout_toEndOf="@id/profile_pic"
-                        android:layout_marginTop="-23dp"
                         android:layout_marginStart="-23dp"
-                        android:layout_height="wrap_content"/>
+                        android:layout_marginTop="-23dp"
+                        android:layout_toEndOf="@id/profile_pic"
+                        android:background="@drawable/ic_baseline_edit_24" />
 
                 </RelativeLayout>
 
@@ -110,12 +110,13 @@
 
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/edit_myProfile"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp">
 
                     <LinearLayout
+                        android:id="@+id/edit_myProfile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -127,6 +128,7 @@
                             android:drawableRight="@drawable/ic_baseline_chevron_right_24"
                             android:drawablePadding="8dp"
                             android:padding="@dimen/_8sdp"
+                            android:gravity="center_vertical"
                             android:text="Edit My Profile" />
 
                     </LinearLayout>
@@ -353,6 +355,33 @@
 
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawableLeft="@drawable/ic_baseline_track_changes_24"
+                                android:drawablePadding="8dp"
+                                android:gravity="center_vertical"
+                                android:paddingLeft="8dp"
+                                android:text="Bio"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/user_bio"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="36dp"
+                                android:drawablePadding="8dp"
+                                android:gravity="center_vertical"
+                                android:padding="4dp"
+                                android:text="" />
+
+                        </LinearLayout>
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -427,6 +456,7 @@
                     android:layout_marginTop="4dp">
 
                     <LinearLayout
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -503,5 +533,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/pbar"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 
 </FrameLayout>

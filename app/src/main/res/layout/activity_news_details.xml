@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,15 +8,16 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <FrameLayout
                 android:id="@+id/parent_relative"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_210sdp">
+                android:layout_height="wrap_content">
 
 
                 <TextView
@@ -38,11 +38,9 @@
                 </TextView>
 
                 <ImageView
-                    android:src="@drawable/placeholder"
                     android:id="@+id/player_view"
-                    android:scaleType="centerCrop"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     />
 
 
@@ -67,77 +65,133 @@
                     android:id="@+id/media_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="22sp"
                     android:maxLines="2"
-                    android:minLines="2"
+                    android:minLines="1"
                     android:padding="8dp"
+                    android:text="hat a reader wed by the readable content of a page"
                     android:textColor="@color/black"
-                    android:text="It is a long established fact that a reader will be distracted by the readable content of a page"/>
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:orientation="horizontal">
+                    android:paddingRight="8dp">
 
-                    <TextView
-                        android:id="@+id/media_date"
-                        android:layout_width="wrap_content"
+
+                    <com.varunest.sparkbutton.SparkButton
+                        android:id="@+id/spark_button"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="2dp"
+                        app:sparkbutton_activeImage="@drawable/ic_like"
+                        app:sparkbutton_iconSize="24dp"
+                        app:sparkbutton_inActiveImage="@drawable/ic_unlike"
+                        app:sparkbutton_primaryColor="@color/colorBlue"
+                        app:sparkbutton_secondaryColor="@color/pdlg_color_yellow" />
+
+                    <ImageView
+                        android:id="@+id/msgIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:background="@drawable/ic_message" />
+
+                    <ImageView
+                        android:id="@+id/shareIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:background="@drawable/ic_baseline_share_24"
+                        android:backgroundTint="@color/black" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_baseline_date_range_10"
-                        android:gravity="center"
-                        android:drawableTint="@color/black"
-                        android:textColor="@color/black"
-                        android:drawablePadding="4dp"
-                        android:text="05/21/2020"  />
+                        android:orientation="horizontal"
+                        android:paddingLeft="8dp"
+                        android:gravity="end"
+                        android:paddingRight="8dp">
 
-                    <TextView
-                        android:id="@+id/media_views"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_baseline_remove_red_eye_24"
-                        android:drawablePadding="4dp"
-                        android:drawableTint="@color/black"
-                        android:textColor="@color/black"                android:layout_marginStart="8dp"
-                        android:text="0" />
+                        <TextView
+                            android:id="@+id/media_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_baseline_date_range_10"
+                            android:drawablePadding="4dp"
+                            android:drawableTint="@color/black"
+                            android:gravity="center"
+                            android:text="05/21/2020"
+                            android:textColor="@color/black" />
 
-                    <TextView
-                        android:id="@+id/media_comments"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_baseline_comment_24"
-                        android:drawablePadding="4dp"
-                        android:visibility="gone"
-                        android:drawableTint="@color/black"
-                        android:textColor="@color/black"                android:layout_marginStart="8dp"
-                        android:text="0" />
 
+                        <TextView
+                            android:id="@+id/author"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:drawableStart="@drawable/ic_baseline_account_circle_24"
+                            android:drawablePadding="4dp"
+                            android:drawableTint="@color/black"
+                            android:fontFamily="@font/nunito_semi_bold"
+                            android:text="John Doe"
+                            android:textColor="@color/colorGreen" />
+
+                        <TextView
+                            android:id="@+id/media_comments"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:drawableStart="@drawable/ic_baseline_comment_24"
+                            android:drawablePadding="4dp"
+                            android:drawableTint="@color/colorWhite"
+                            android:text="0"
+                            android:textColor="@color/colorWhite"
+                            android:visibility="gone" />
+
+
+                    </LinearLayout>
                 </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/media_views"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:drawableStart="@drawable/ic_baseline_remove_red_eye_24"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/black"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/media_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="4dp"
-                    android:padding="8dp"
                     android:drawableTint="@color/black"
-                    android:textColor="@color/black"            android:text="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)." />
+                    android:padding="8dp"
+                    android:text="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
+                    android:textColor="@color/black" />
 
                 <Button
                     android:id="@+id/media_see_all_comments"
+                    style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="See all comments"
-                    style="?attr/materialButtonOutlinedStyle" />
+                    android:text="See all comments" />
 
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-
 
 
 </LinearLayout>

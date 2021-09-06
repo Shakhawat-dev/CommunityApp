@@ -45,6 +45,7 @@ public class Post implements Serializable {
     @Expose
     private Integer total;
 
+
     public List<PostModel> getData() {
         return data;
     }
@@ -141,11 +142,14 @@ public class Post implements Serializable {
         this.total = total;
     }
 
-    public  class PostModel implements Serializable {
+    public class PostModel implements Serializable {
 
         @Expose
         @SerializedName("updated_at")
         private String updated_at;
+        @Expose
+        @SerializedName("user")
+        private UserModel auther;
         @Expose
         @SerializedName("created_at")
         private String created_at;
@@ -197,17 +201,22 @@ public class Post implements Serializable {
         @Expose
         @SerializedName("id")
         private int id;
+        @SerializedName("name")
+        @Expose
+        private String name;
 
         public PostModel() {
         }
 
-        public PostModel(String updated_at, String created_at, String description, int hit, int admin_role, int publication_status, String type, String thumb, String path, String metaphone, String slug, String title, String country, String category_id, String lang, int user_id, int id) {
+        public PostModel(String updated_at, UserModel auther, String created_at, String description, int hit, int admin_role, int publication_status, String image, String type, String thumb, String path, String metaphone, String slug, String title, String country, String category_id, String lang, int user_id, int id) {
             this.updated_at = updated_at;
+            this.auther = auther;
             this.created_at = created_at;
             this.description = description;
             this.hit = hit;
             this.admin_role = admin_role;
             this.publication_status = publication_status;
+            this.image = image;
             this.type = type;
             this.thumb = thumb;
             this.path = path;
@@ -219,6 +228,22 @@ public class Post implements Serializable {
             this.lang = lang;
             this.user_id = user_id;
             this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public UserModel getAuther() {
+            return auther;
+        }
+
+        public void setAuther(UserModel auther) {
+            this.auther = auther;
         }
 
         public String getUpdated_at() {

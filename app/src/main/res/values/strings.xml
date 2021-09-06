@@ -5,6 +5,13 @@
 
 
     <string name="facebook_app_id">370531994107270</string>
+
     <string name="fb_login_protocol_scheme">fb370531994107270</string>
 
+    <string-array name="gender">
+        <item>Select Your Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Others</item>
+    </string-array>
 </resources>

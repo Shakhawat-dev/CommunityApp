@@ -1,30 +1,28 @@
 package com.metacoders.communityapp.activities;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.Adapter;
-import android.widget.Button;
-
-
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.adapter.NewsFeedAdapter;
+import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
-import com.metacoders.communityapp.models.News_List_Model;
-import com.metacoders.communityapp.models.Post_Model;
-import com.metacoders.communityapp.utils.SharedPrefManager;
+import com.metacoders.communityapp.models.newModels.Post;
+import com.metacoders.communityapp.models.newModels.PostResponse;
+import com.metacoders.communityapp.utils.AppPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,23 +31,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SerachActivity extends AppCompatActivity {
-    List<Post_Model> postsList = new ArrayList<>();
-    List<Post_Model> filteredList = new ArrayList<>();
-    List<Post_Model> tempList = new ArrayList<>();
+public class SerachActivity extends AppCompatActivity implements ProductListDifferAdapter.ItemClickListener {
+    List<Post.PostModel> postsList = new ArrayList<>();
+    ProductListDifferAdapter mAdapter;
     String searchTerm = " ";
-    boolean categorySearchEnabled = false;
-    String categoryCode = "0";
-
-    NewsFeedAdapter.ItemClickListenter itemClickListenter;
-    NewsFeedAdapter adapter;
     Context context;
     RecyclerView recyclerView;
-    LinearLayoutManager linearLayoutManager;
-    Button audioBtn, imageBtn;
     SearchView searchView;
+    boolean isScrolling = false;
+    LinearLayoutManager manager;
     ShimmerFrameLayout shimmerFrameLayout;
     ConstraintLayout emptyLayout;
+    ProgressBar centerProgressBar, bottomProgressBar;
+    int currentItems = 0, totalItems = 0, scrollOutItems = 0;
+    int currentPage = 1, endPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,19 +55,35 @@ public class SerachActivity extends AppCompatActivity {
         shimmerFrameLayout = findViewById(R.id.shimmer_view_container);
         shimmerFrameLayout.setVisibility(View.GONE);
         emptyLayout = findViewById(R.id.emptyLayout);
+        centerProgressBar = findViewById(R.id.center_progress);
+        bottomProgressBar = findViewById(R.id.bottom_progress);
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new ProductListDifferAdapter(this, this, false);
         context = getApplicationContext();
+        manager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(mAdapter);
+
+        initScrollListener();
+
+        try {
+            AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "Search");
+        } catch (Exception e) {
+
+        }
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                shimmerFrameLayout.setVisibility(View.VISIBLE);
+                shimmerFrameLayout.setVisibility(View.GONE);
                 postsList.clear();
-                adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
-                recyclerView.setAdapter(adapter);
-                loadList(query.trim(), "", "", "");
+
+                mAdapter.submitlist(postsList);
+                currentPage = 1;
+                searchTerm = query.trim();
+                loadList(query.trim(), currentPage);
 
                 return false;
             }
@@ -83,99 +94,73 @@ public class SerachActivity extends AppCompatActivity {
                 return false;
             }
         });
-        itemClickListenter = (view, pos) -> {
 
-            Post_Model model = new Post_Model();
-            model = postsList.get(pos);
-            Intent p = new Intent(getApplicationContext(), PostDetailsPage.class);
-            p.putExtra("POST", model);
-            startActivity(p);
-            try {
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            } catch (Exception e) {
-                Log.e("TAG", "onItemClick: " + e.getMessage());
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                postsList.clear();
+                mAdapter.submitlist(postsList);
+                searchView.setQueryHint("Search For Anything..");
+                return false;
             }
-
-
-        };
+        });
 
     }
 
 
-    private void loadList(String searchTerm, String cat_id, String sub_cat, String lang_id) {
+    private void loadList(String searchTerm, int page) {
+        if (page == 1) {
+            centerProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            bottomProgressBar.setVisibility(View.VISIBLE);
+        }
         //setting up layout
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
-//        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
-//        String   accessTokens = sharedPrefManager.getUserToken();
-//        Log.d("TAG", "loadList: activity " + accessTokens);
-
-
-//        Call<News_List_Model> NetworkCall = RetrofitClient
-//                .getInstance()
-//                .getApi()
-//                .getNewsList();
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-        Call<List<Post_Model>> NetworkCall = api.getSearchResult(
-                searchTerm, cat_id, sub_cat, lang_id
+        Call<PostResponse.SerachResult> NetworkCall = api.getSearchResult(
+                page,
+                searchTerm
         );
 
-        NetworkCall.enqueue(new Callback<List<Post_Model>>() {
+        NetworkCall.enqueue(new Callback<PostResponse.SerachResult>() {
             @Override
-            public void onResponse(Call<List<Post_Model>> call, Response<List<Post_Model>> response) {
+            public void onResponse(Call<PostResponse.SerachResult> call, Response<PostResponse.SerachResult> response) {
                 // u have the response
-                if (response.code() == 201) {
+                if (page == 1) {
+                    centerProgressBar.setVisibility(View.GONE);
+                } else {
+                    bottomProgressBar.setVisibility(View.GONE);
+                }
+
+                if (response.code() == 200) {
 
 
-                    postsList = response.body();
+                    Post posts = response.body().getSearchResults();
 
+                    currentPage = posts.getCurrentPage();
+                    endPage = posts.getLastPage();
+                    postsList.addAll(posts.getData());
 
                     if (postsList != null && !postsList.isEmpty()) {
-                        // i know its werid but thats r8 cheaking list is popluted
-                        // its not empty
-
-
-                        // Call the adapter to show the data
-
-                        adapter = new NewsFeedAdapter(context, postsList, itemClickListenter);
-                        // setting the adapter ;
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                         // checking if the list is empty or not
-                        if (postsList.size() == 0) {
-                            emptyLayout.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-                        } else {
-                            emptyLayout.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
 
-                        }
+                        mAdapter.submitlist(postsList);
+                        Log.d("TAG", "onResponse: " + mAdapter.getItemCount());
 
-                        recyclerView.setAdapter(adapter);
-                        shimmerFrameLayout.stopShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
-                        recyclerView.getViewTreeObserver().addOnPreDrawListener(
-
-                                new ViewTreeObserver.OnPreDrawListener() {
-                                    @Override
-                                    public boolean onPreDraw() {
-
-                                        recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                                        for (int i = 0; i < recyclerView.getChildCount(); i++) {
-                                            View v = recyclerView.getChildAt(i);
-                                            v.setAlpha(0.0f);
-                                            v.animate()
-                                                    .alpha(1.0f)
-                                                    .setDuration(300)
-                                                    .setStartDelay(i * 50)
-                                                    .start();
-                                        }
-                                        return true;
-                                    }
-                                }
-                        );
+//                        if (mAdapter.getItemCount() == 0) {
+//                            emptyLayout.setVisibility(View.VISIBLE);
+//                            recyclerView.setVisibility(View.GONE);
+//                        } else {
+//                            emptyLayout.setVisibility(View.GONE);
+//                            recyclerView.setVisibility(View.VISIBLE);
+//
+//                        }
+                        //shimmerFrameLayout.stopShimmer();
 
 
                     } else {
@@ -185,56 +170,27 @@ public class SerachActivity extends AppCompatActivity {
                         emptyLayout.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
 
-                        shimmerFrameLayout.stopShimmer();
-                        shimmerFrameLayout.setVisibility(View.GONE);
+                        // shimmerFrameLayout.stopShimmer();
                     }
+                    shimmerFrameLayout.setVisibility(View.GONE);
+
 
                 } else {
-                    Log.d("TAG", "Error: " + response.errorBody() +
-                            " Code : " + response.code());
+
+                    Toast.makeText(getApplicationContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();
+
                 }
 
             }
 
             @Override
-            public void onFailure(Call<List<Post_Model>> call, Throwable t) {
+            public void onFailure(Call<PostResponse.SerachResult> call, Throwable t) {
                 Log.d("TAG", "Error On Failed Response: " + t.getMessage());
+                Toast.makeText(getApplicationContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
+
             }
         });
     }
-//    private  void setSearch(String searchTerm){
-//
-//
-//        for(int i  = 0 ; i< postsList.size() ; i++){
-//
-//            if(postsList.get(i).getTitle().toLowerCase().contains(searchTerm)){
-//                filteredList.add(postsList.get(i)) ;  // adding the filtered list to the new array list
-//            }
-//
-//        }
-//        // if country search  enabled then
-//        if(categorySearchEnabled){
-//            tempList  = new ArrayList<>(filteredList) ;
-//            filteredList.clear();
-//
-//            for(int y  = 0 ; y< tempList.size() ; y++){
-//
-//                if(tempList.get(y).getCategoryId().equals(categoryCode)){
-//                    filteredList.add(tempList.get(y)) ;  // adding the filtered list to the new array list
-//                }
-//
-//            }
-//        }
-//
-//
-//        // Call the adapter to show the data
-//
-//        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
-//
-//        // setting the adapter ;
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.setAdapter(adapter);
-//    }
 
     @Override
     protected void onStart() {
@@ -245,13 +201,76 @@ public class SerachActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        shimmerFrameLayout.stopShimmer();
+        // shimmerFrameLayout.stopShimmer();
     }
 
     @Override
     public void onPause() {
-        shimmerFrameLayout.stopShimmer();
+        //  shimmerFrameLayout.stopShimmer();
         super.onPause();
     }
 
+    @Override
+    public void onItemClick(Post.PostModel model) {
+
+    }
+
+    private void initScrollListener() {
+        // for nested scroll
+//        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+//            if (v.getChildAt(v.getChildCount() - 1) != null) {
+//                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+//                        scrollY > oldScrollY) {
+//                    //code to fetch more data for endless scrolling
+//
+//                    int test = (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight());
+//                    ;
+//                    Log.d("TAG", "initScrollListener: " + test + " old " + oldScrollY + "new " + scrollY);
+//                    loadMore();
+//
+//                }
+//            }
+//        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScrolling = true;
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) { // scroll down
+                    currentItems = manager.getChildCount();
+                    totalItems = manager.getItemCount();
+                    scrollOutItems = manager.findFirstVisibleItemPosition();
+
+                    if (isScrolling && (currentItems + scrollOutItems == totalItems)) {
+                        isScrolling = false;
+                        loadMore();
+                    }
+                }
+
+
+            }
+        });
+
+
+    }
+
+    private void loadMore() {
+        if (currentPage == endPage) {
+            Toast.makeText(getApplicationContext(), "Your At The End Of The List!!!", Toast.LENGTH_LONG).show();
+        } else {
+            currentPage += 1;
+            bottomProgressBar.setVisibility(View.VISIBLE);
+            loadList(searchTerm, currentPage);
+
+
+        }
+
+    }
 }

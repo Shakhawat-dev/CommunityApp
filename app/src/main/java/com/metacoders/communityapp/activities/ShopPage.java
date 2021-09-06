@@ -23,7 +23,7 @@ public class ShopPage extends AppCompatActivity  implements AdvancedWebView.List
         mWebView.setListener(this, this);
         mWebView.setMixedContentAllowed(false);
         mWebView.setCookiesEnabled(true);
-        mWebView.loadUrl("https://shop.newsrme.com/");
+        mWebView.loadUrl("https://shoprme.com/");
 
         // ...
     }

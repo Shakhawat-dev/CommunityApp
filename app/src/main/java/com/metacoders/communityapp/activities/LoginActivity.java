@@ -1,7 +1,6 @@
 package com.metacoders.communityapp.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -202,12 +201,8 @@ public class LoginActivity extends AppCompatActivity {
 
                         UserModel userModel = new UserModel();
                         userModel = response.body().getUser();
+                        manager.saveUser_ID_access_token(response.body().getUser_id()+"" , res.getAccess_token());
 
-
-                        manager.userLogin(response.body().getAccess_token(),
-                                userModel.getName(),
-                                userModel.getEmail(), response.body().getAccess_token(), "role", "type", userModel.getImage());
-                        manager.saveUser(userModel.getEmail());
                         manager.saveUserModel(userModel);
                         Intent intent = new Intent(LoginActivity.this, HomePage.class);
                         startActivity(intent);
@@ -322,49 +317,6 @@ public class LoginActivity extends AppCompatActivity {
                 type
         );
 
-//        callwd.enqueue(new Callback<LoginResponse>() {
-//            @Override
-//            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-//                if (response.code() == 201) {
-//
-//                    if (!response.body().getError()) {
-//
-//                        // reg compelete
-//
-//                        UserModel userModel = new UserModel();
-//                        userModel = response.body().getUser();
-//
-//                        SharedPrefManager.getInstance(getApplicationContext()).userLogin(userModel.getId(),
-//                                userName,
-//                                userModel.getEmail(), "response.body().getToken()", userModel.getRole(), userModel.getUserType(), userModel.getAvatar());
-//
-//
-////                        StringGen.token = userModel.getToken() ;
-//                        SharedPrefManager.getInstance(getApplicationContext()).saveUser(userModel.getEmail());
-//                        Log.d("TAGE", "reciveid Mail : " + userModel.getEmail());
-//
-//                        Log.d("TAGE", "sent mail : " + email + " id" + fb_Id + " GID " + google_id + userName + name);
-//                        pbar.setVisibility(View.GONE);
-//                        Intent intent = new Intent(LoginActivity.this, HomePage.class);
-//                        startActivity(intent);
-//                        finish();
-//
-//                    } else {
-//                        // error
-//                        pbar.setVisibility(View.INVISIBLE);
-//                        Toast.makeText(getApplicationContext(), "Error : Try Agian " + response.body().getError(), Toast.LENGTH_LONG)
-//                                .show();
-//                        Log.d("TAG", "onResponse: " + response.toString());
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<LoginResponse> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), "Error " + t.getMessage(), Toast.LENGTH_LONG)
-//                        .show();
-//            }
-//        });
 
     }
 

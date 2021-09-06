@@ -3,23 +3,19 @@ package com.metacoders.communityapp.api;
 import com.metacoders.communityapp.models.Audio_List_Model;
 import com.metacoders.communityapp.models.CommentModel;
 import com.metacoders.communityapp.models.LoginResponse;
-import com.metacoders.communityapp.models.News_List_Model;
-import com.metacoders.communityapp.models.OwnListModel;
-import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.models.Profile_Model;
 import com.metacoders.communityapp.models.RegistrationResponse;
 import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.models.Video_List_Model;
 import com.metacoders.communityapp.models.allDataResponse;
+import com.metacoders.communityapp.models.newModels.AuthorPostResponse;
 import com.metacoders.communityapp.models.newModels.CategoryResponse;
 import com.metacoders.communityapp.models.newModels.PostResponse;
+import com.metacoders.communityapp.models.newModels.RegistrationResp;
 import com.metacoders.communityapp.models.newModels.SettingsModel;
 import com.metacoders.communityapp.models.newModels.SignInResponse;
-import com.metacoders.communityapp.models.post_summary;
 
 import org.json.JSONObject;
-
-import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -35,6 +31,44 @@ import retrofit2.http.Query;
 
 public interface NewsRmeApi {
 
+///:2
+//:42
+
+    // name, email, phone,
+    @FormUrlEncoded
+    @POST("contact-message")
+    Call<LoginResponse.forgetPassResponse> createContactMessage(
+            @Field("name") String name,
+            @Field("email") String email,
+            @Field("phone") String phone,
+            @Field("message") String message
+    );
+
+    @FormUrlEncoded
+    @POST("like-post/{id}")
+    Call<LoginResponse.forgetPassResponse> likePost(
+            @Path("id") Integer id,
+            @Field("user_id") Integer user_id,
+            @Field("post_id") Integer post_id
+
+    );
+
+
+    @FormUrlEncoded
+    @POST("follow-reporter")
+    Call<LoginResponse.forgetPassResponse> followAuthor(
+            @Field("reporter_id") String reporter_id,
+            @Field("follower_id") String follower_id
+    );
+
+    @GET("other-profile-post/{id}")
+    Call<AuthorPostResponse> getAuthorPost(
+            @Path("id") String id
+    );
+
+    @GET("own-post")
+    Call<PostResponse.OwnPostResponse> getOwnPost(
+    );
 
     // new api start
     @GET("common-post")
@@ -56,7 +90,8 @@ public interface NewsRmeApi {
 
     @GET("category-wise-post/{category}")
     Call<CategoryResponse> getCategoricalPost(
-            @Path("category") String path
+            @Path("category") String path ,
+            @Query("page") int page
     );
 
 
@@ -81,12 +116,14 @@ public interface NewsRmeApi {
 
 
     @FormUrlEncoded
-    @POST("registration/user-registration")
-    Call<RegistrationResponse> registration(
+    @POST("register")
+    Call<RegistrationResp> registration(
             @Field("name") String name,
-            @Field("user_name") String username,
             @Field("email") String email,
-            @Field("password") String password
+            @Field("gender") String gender,
+            @Field("password") String password,
+            @Field("password_confirmation") String password_confirmation
+
     );
 
 
@@ -104,24 +141,12 @@ public interface NewsRmeApi {
             @Field("new_password") String new_password
     );
 
-    @FormUrlEncoded
-    @POST("common/post-search-result")
-    Call<List<Post_Model>> getSearchResult(
-            @Field("search") String search,
-            @Field("category_id") String category_id,
-            @Field("subcategory_id") String subcategory_id,
-            @Field("lang_id") String lang_id
+    @GET("search")
+    Call<PostResponse.SerachResult> getSearchResult(
+            @Query("page") int page,
+            @Query("search") String search
     );
 
-
-    @GET("dashboard/get-own-news-summary")
-    Call<post_summary> get_post_summary();
-
-    @GET("dashboard/get-own-news-list")
-    Call<OwnListModel> get_post_list();
-
-    @GET("common/get-news-lists")
-    Call<News_List_Model> getNewsList();
 
     @GET("common/get-all-data-list")
     Call<allDataResponse> getCategoryList();
@@ -141,12 +166,15 @@ public interface NewsRmeApi {
 
     // get comment
 
-    @GET("dashboard/get-comments/{id}")
-    Call<CommentModel> getCommentsList(@Path("id") String id);
+    @GET("get-comment-with-reply/{slug}")
+    Call<CommentModel> getCommentsList(@Path("slug") String slug);
 
     @Multipart
-    @POST("profile/store-photo")
-    Call<UploadResult> uploadImage(@Part("image\"; filename=\"myfile.jpg\" ") RequestBody file);
+    @POST("update-user-profile/{user_id}")
+    Call<LoginResponse.forgetPassResponse> uploadImage(
+            @Path("user_id") String user_id,
+            @Part("name") RequestBody name,
+            @Part MultipartBody.Part image);
 
     // @FormUrlEncoded
     @Multipart
@@ -189,36 +217,41 @@ public interface NewsRmeApi {
     Call<RegistrationResponse> sendDOc(
             @Part("image\"; filename=\"myfile.jpg\" ") RequestBody file
     );
-
+/*
+                        full_name,
+                        phone,
+                        bio ,
+                        company,
+                        address
+ */
 
     @FormUrlEncoded
-    @POST("profile/update-profile-info")
+    @POST("update-user-profile/{user_id}")
     Call<RegistrationResponse> update_profile(
+            @Path("user_id") String user_id,
             @Field("name") String name,
-            @Field("mobile") String mobile,
-            @Field("email") String email,
-            @Field("latitude") String latitude,
-            @Field("longitude") String longitude,
-            @Field("profession") String profession,
-            @Field("last_degree") String last_degree,
-            @Field("city") String city,
-            @Field("country") String country,
+            @Field("phone") String phone,
+            @Field("bio") String bio,
+            @Field("company") String company,
             @Field("address") String address
-
     );
 
     // create a comment via
     @FormUrlEncoded
-    @POST("dashboard/post-comments")
-    Call<RegistrationResponse> post_comments(
+    @POST("comment")
+    Call<LoginResponse.forgetPassResponse> post_comments(
             @Field("post_id") String post_id,
-            @Field("comment") String comment,
-            @Field("email") String email,
-            @Field("name") String name,
             @Field("user_id") String user_id,
-            @Field("parent_id") String parent_id,
-            @Field("like_count") String like_count,
-            @Field("ip_address") String ip_address
+            @Field("comment") String comment
+    );
 
+    @FormUrlEncoded
+    @POST("Reply")
+    Call<LoginResponse.forgetPassResponse> post_reply(
+            @Field("post_id") String post_id,
+            @Field("user_id") String user_id,
+            @Field("comment_id") String comment_id,
+            @Field("Reply") String comment
     );
 }
+

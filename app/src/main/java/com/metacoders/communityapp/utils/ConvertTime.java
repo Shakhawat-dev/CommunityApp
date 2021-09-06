@@ -55,7 +55,7 @@ public class ConvertTime {
     }
 
     public static String getTimeAgo(Date date) {
-        long time = date.getTime()  + ((23)*HOUR_MILLIS) + 55*MINUTE_MILLIS ;
+        long time = date.getTime()  + ((2)*HOUR_MILLIS) + 0*MINUTE_MILLIS ;
         Log.d("NOW_RECIVED " , ""+ time);
 
         if (time < 1000000000000L) {

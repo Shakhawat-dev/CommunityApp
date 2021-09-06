@@ -2,14 +2,16 @@ package com.metacoders.communityapp.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.metacoders.communityapp.models.newModels.UserModel;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public  class CommentModel implements Serializable {
+public class CommentModel implements Serializable {
     @Expose
     @SerializedName("comments")
-    private List<comments> comments = null;
+    private List<comments> comments = new ArrayList<>();
 
     public CommentModel(List<CommentModel.comments> comments) {
         this.comments = comments;
@@ -23,116 +25,188 @@ public  class CommentModel implements Serializable {
         this.comments = comments;
     }
 
-    public  class  comments implements Serializable {
-       @Expose
-       @SerializedName("created_at")
-       private String created_at;
-       @Expose
-       @SerializedName("like_count")
-       private String like_count;
-       @Expose
-       @SerializedName("ip_address")
-       private String ip_address;
-       @Expose
-       @SerializedName("comment")
-       private String comment;
-       @Expose
-       @SerializedName("name")
-       private String name;
-       @Expose
-       @SerializedName("email")
-       private String email;
-       @Expose
-       @SerializedName("user_id")
-       private String user_id;
-       @Expose
-       @SerializedName("post_id")
-       private String post_id;
-       @Expose
-       @SerializedName("parent_id")
-       private String parent_id;
-       @Expose
-       @SerializedName("id")
-       private String id;
+    public class comments implements Serializable {
+        @Expose
+        @SerializedName("updated_at")
+        private String updated_at;
+        @Expose
+        @SerializedName("created_at")
+        private String created_at;
+        @Expose
+        @SerializedName("comment")
+        private String comment;
+        @Expose
+        @SerializedName("post_id")
+        private int post_id;
+        @Expose
+        @SerializedName("user_id")
+        private int user_id;
+        @Expose
+        @SerializedName("id")
+        private int id;
+        @Expose
+        @SerializedName("user")
+        private UserModel user;
 
-       public String getCreated_at() {
-           return created_at;
-       }
+        @Expose
+        @SerializedName("reply")
+        private List<Reply> reply;
 
-       public void setCreated_at(String created_at) {
-           this.created_at = created_at;
-       }
 
-       public String getLike_count() {
-           return like_count;
-       }
+        public List<Reply> getReply() {
+            return reply;
+        }
 
-       public void setLike_count(String like_count) {
-           this.like_count = like_count;
-       }
+        public void setReply(List<Reply> reply) {
+            this.reply = reply;
+        }
 
-       public String getIp_address() {
-           return ip_address;
-       }
+        public UserModel getUser() {
+            return user;
+        }
 
-       public void setIp_address(String ip_address) {
-           this.ip_address = ip_address;
-       }
+        public void setUser(UserModel user) {
+            this.user = user;
+        }
 
-       public String getComment() {
-           return comment;
-       }
+        public String getUpdated_at() {
+            return updated_at;
+        }
 
-       public void setComment(String comment) {
-           this.comment = comment;
-       }
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
+        }
 
-       public String getName() {
-           return name;
-       }
+        public String getCreated_at() {
+            return created_at;
+        }
 
-       public void setName(String name) {
-           this.name = name;
-       }
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
 
-       public String getEmail() {
-           return email;
-       }
+        public String getComment() {
+            return comment;
+        }
 
-       public void setEmail(String email) {
-           this.email = email;
-       }
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
 
-       public String getUser_id() {
-           return user_id;
-       }
+        public int getPost_id() {
+            return post_id;
+        }
 
-       public void setUser_id(String user_id) {
-           this.user_id = user_id;
-       }
+        public void setPost_id(int post_id) {
+            this.post_id = post_id;
+        }
 
-       public String getPost_id() {
-           return post_id;
-       }
+        public int getUser_id() {
+            return user_id;
+        }
 
-       public void setPost_id(String post_id) {
-           this.post_id = post_id;
-       }
+        public void setUser_id(int user_id) {
+            this.user_id = user_id;
+        }
 
-       public String getParent_id() {
-           return parent_id;
-       }
+        public int getId() {
+            return id;
+        }
 
-       public void setParent_id(String parent_id) {
-           this.parent_id = parent_id;
-       }
+        public void setId(int id) {
+            this.id = id;
+        }
+    }
 
-       public String getId() {
-           return id;
-       }
+    public class Reply implements Serializable {
+        @Expose
+        @SerializedName("updated_at")
+        private String updated_at;
+        @Expose
+        @SerializedName("created_at")
+        private String created_at;
+        @Expose
+        @SerializedName("reply")
+        private String reply;
+        @Expose
+        @SerializedName("comment_id")
+        private int comment_id;
+        @Expose
+        @SerializedName("post_id")
+        private int post_id;
+        @Expose
+        @SerializedName("user_id")
+        private int user_id;
+        @Expose
+        @SerializedName("id")
+        private int id;
+        @Expose
+        @SerializedName("user")
+        private UserModel user;
 
-       public void setId(String id) {
-           this.id = id;
-       }
-   }
+        public UserModel getUser() {
+            return user;
+        }
+
+        public void setUser(UserModel user) {
+            this.user = user;
+        }
+
+        public String getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public String getReply() {
+            return reply;
+        }
+
+        public void setReply(String reply) {
+            this.reply = reply;
+        }
+
+        public int getComment_id() {
+            return comment_id;
+        }
+
+        public void setComment_id(int comment_id) {
+            this.comment_id = comment_id;
+        }
+
+        public int getPost_id() {
+            return post_id;
+        }
+
+        public void setPost_id(int post_id) {
+            this.post_id = post_id;
+        }
+
+        public int getUser_id() {
+            return user_id;
+        }
+
+        public void setUser_id(int user_id) {
+            this.user_id = user_id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+    }
+
 }

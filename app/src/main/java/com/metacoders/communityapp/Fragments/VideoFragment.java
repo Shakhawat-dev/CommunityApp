@@ -1,7 +1,6 @@
 package com.metacoders.communityapp.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,19 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.activities.PostDetailsPage;
-import com.metacoders.communityapp.adapter.NewsFeedAdapter;
+
 import com.metacoders.communityapp.api.NewsRmeApi;
-import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
-import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
 import com.metacoders.communityapp.models.Video_List_Model;
-import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
@@ -86,8 +80,6 @@ public class VideoFragment extends Fragment {
 
     View view;
     List<Post_Model> postsList = new ArrayList<>();
-    NewsFeedAdapter.ItemClickListenter itemClickListenter;
-    NewsFeedAdapter adapter;
     Context context;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
@@ -123,24 +115,6 @@ public class VideoFragment extends Fragment {
         loadMiscData();
         loadList();
 
-        // calling the interface for click
-        itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
-            @Override
-            public void onItemClick(View view, int pos) {
-
-                Post_Model model = new Post_Model();
-                model = postsList.get(pos);
-                Intent p = new Intent(context, PostDetailsPage.class);
-                p.putExtra("POST", model);
-                context.startActivity(p);
-                try {
-                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                } catch (Exception e) {
-                    Log.e("TAG", "onItemClick: " + e.getMessage());
-                }
-
-            }
-        };
 
         return view;
     }
@@ -175,10 +149,10 @@ public class VideoFragment extends Fragment {
                             }
                         }
 
-                        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
-
-                        // setting the adapter ;
-                        recyclerView.setAdapter(adapter);
+//                        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
+//
+//                        // setting the adapter ;
+//                        recyclerView.setAdapter(adapter);
                         // checking if the list is empty or not
                         if (filteredList.size() == 0) {
                             emptyLayout.setVisibility(View.VISIBLE);
@@ -233,7 +207,7 @@ public class VideoFragment extends Fragment {
     }
     public void fetchTimelineAsync() {
 
-        adapter.clear();
+        //adapter.clear();
         mShimmerViewContainer2.setVisibility(View.VISIBLE);
         mShimmerViewContainer2.startShimmer();
         loadList();

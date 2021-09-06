@@ -22,14 +22,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.metacoders.communityapp.NewsDetailsActivity;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.LoginActivity;
-import com.metacoders.communityapp.activities.PostDetailsPage;
 import com.metacoders.communityapp.activities.PostUploadActivity;
 import com.metacoders.communityapp.activities.Video_Record_Activity;
 import com.metacoders.communityapp.activities.Voice_Recoder_Activity;
-import com.metacoders.communityapp.adapter.NewsFeedAdapter;
+import com.metacoders.communityapp.activities.details.NewsDetailsActivity;
+import com.metacoders.communityapp.activities.details.PostDetailsPage;
 import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -61,8 +60,6 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
     boolean isFollowerLoaded = false;
     View view;
     List<Post_Model> postsList = new ArrayList<>();
-    NewsFeedAdapter.ItemClickListenter itemClickListenter;
-    NewsFeedAdapter adapter;
     Context context;
     List<Post.PostModel> newsList = new ArrayList<>();
     List<Post_Model> filteredList = new ArrayList<>();
@@ -112,7 +109,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
                 android.R.color.holo_red_light);
         // loadMiscData();
         initScrollListener();
-        newAdapter = new ProductListDifferAdapter(getContext(), this);
+        newAdapter = new ProductListDifferAdapter(getContext(), this, true);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(newAdapter);
 
@@ -275,7 +272,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
 
     private void loadFollowerPost(int page) {
         // setting up  layout
-        Log.d("TAG", "loading FollowerPost: page loading --> " + page);
+        Log.d("TAG", "loading FollowerPost: page loading --> "  + page);
         emptyLayout.setVisibility(View.GONE);
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(context));
 
@@ -313,6 +310,12 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
                     if (followerCurrentPage == 1 && followerCurrentPage == followerLastPage) {
                         // it is the last
                         globalPage = -1;
+                    } else if (followerCurrentPage == followerLastPage) {
+                        // last page of follower content
+                        // init the the loading of common post
+                       // Toast.makeText(getContext(), "END" , Toast.LENGTH_LONG).show();
+                        commonCurrentPage = 1;
+                        loadCommonPost(commonCurrentPage);
                     }
                     // checking if the list is empty or not
                     if (newAdapter.getItemCount() == 0) {
@@ -446,9 +449,9 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
                 commonCurrentPage = 1;
                 loadCommonPost(commonCurrentPage);
             } else {
-                followerLastPage += 1;
+                followerCurrentPage += 1;
                 progressBar.setVisibility(View.VISIBLE);
-                loadFollowerPost(followerLastPage);
+                loadFollowerPost(followerCurrentPage);
             }
 
 
@@ -476,6 +479,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
             insertContainer.setVisibility(View.VISIBLE);
             isFollowerLoaded = true;
             loadFollowerPost(followerCurrentPage);
+
 
         } else {
             insertContainer.setVisibility(View.GONE);

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,37 +8,42 @@
     tools:context=".activities.SerachActivity">
 
     <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:queryHint="Search Here!!"
+        android:layout_margin="20dp"
+        android:background="@drawable/editext_background"
+        android:backgroundTint="@color/gray"
+        app:backgroundTint="@color/gray"
         app:iconifiedByDefault="false"
-        android:id="@+id/search_bar"
-        android:layout_margin="20dp"/>
+        app:queryHint="Search Here!!" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:fitsSystemWindows="true">
+        <include layout="@layout/layout_empty_response" />
 
-        <include layout="@layout/layout_empty_response"/>
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
             android:id="@+id/newsfeed"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/_60sdp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
+
             android:id="@+id/shimmer_view_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:orientation="vertical">
 
                 <include layout="@layout/data_placeholder_layout" />
@@ -68,8 +72,21 @@
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
-    </FrameLayout>
+        <ProgressBar
+            android:id="@+id/center_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
+        <ProgressBar
+            android:id="@+id/bottom_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 
 </LinearLayout>

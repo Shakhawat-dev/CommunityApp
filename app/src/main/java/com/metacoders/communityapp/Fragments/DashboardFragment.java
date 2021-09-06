@@ -3,12 +3,12 @@ package com.metacoders.communityapp.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -16,20 +16,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.metacoders.communityapp.NewsDetailsActivity;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.activities.PostDetailsPage;
-import com.metacoders.communityapp.adapter.NewsFeedAdapter;
+import com.metacoders.communityapp.activities.details.NewsDetailsActivity;
+import com.metacoders.communityapp.activities.details.PostDetailsPage;
+import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
-import com.metacoders.communityapp.models.OwnListModel;
-import com.metacoders.communityapp.models.Post_Model;
-import com.metacoders.communityapp.models.post_summary;
-import com.metacoders.communityapp.utils.Constants;
+import com.metacoders.communityapp.models.newModels.AuthorPostResponse;
+import com.metacoders.communityapp.models.newModels.Post;
+import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -37,25 +39,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DashboardFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class DashboardFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class DashboardFragment extends Fragment implements ProductListDifferAdapter.ItemClickListener {
+
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     View view;
     Context context;
     TextView tpost, tvideo, taudio, name, mail;
-    NewsFeedAdapter.ItemClickListenter itemClickListenter;
     RecyclerView recyclerView;
     CircleImageView circleImageView;
     ShimmerFrameLayout shimmer_view_container_dash;
-    List<Post_Model> post_modelList = new ArrayList<>();
+    List<Post.PostModel> post_modelList = new ArrayList<>();
+    ProductListDifferAdapter mAdapter;
     ConstraintLayout emptyLayout;
     int videoCount = 0, audioCount = 0, postCount = 0;
     // TODO: Rename and change types of parameters
@@ -111,36 +108,17 @@ public class DashboardFragment extends Fragment {
         recyclerView.setVisibility(View.VISIBLE);
         circleImageView = view.findViewById(R.id.dashboard_profile_pic);
 
-
+        mAdapter = new ProductListDifferAdapter(getContext(), DashboardFragment.this, false);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(mAdapter);
         if (SharedPrefManager.getInstance(context).isUserLoggedIn()) {
             setDetails();
             //loadSummary();
-            loadUrLost();
+            loadUrPost();
 
         }
 
-        itemClickListenter = (view, pos) -> {
 
-            Post_Model model = new Post_Model();
-            model = post_modelList.get(pos);
-            if (model.getPostType().equals("post")) {
-                Intent p = new Intent(context, NewsDetailsActivity.class);
-                p.putExtra("POST", model);
-                context.startActivity(p);
-            } else {
-                Intent p = new Intent(context, PostDetailsPage.class);
-                p.putExtra("POST", model);
-                context.startActivity(p);
-            }
-
-
-            try {
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            } catch (Exception e) {
-                Log.e("TAG", "onItemClick: " + e.getMessage());
-            }
-        };
         return view;
     }
 
@@ -151,65 +129,33 @@ public class DashboardFragment extends Fragment {
         name.setText(sharedPrefManager.getUserModel().getName() + " ");
         mail.setText(sharedPrefManager.getUserModel().getEmail() + " ");
         Glide.with(context)
-                .load(Constants.IMAGE_URL + sharedPrefManager.getUserModel().getImage())
+                .load(sharedPrefManager.getUserModel().getImage())
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(circleImageView);
     }
 
-    public void loadSummary() {
 
-        SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
-        String accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
-
-
-        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, accessTokens);
-        Call<post_summary> catCall = api.get_post_summary();
-
-        catCall.enqueue(new Callback<post_summary>() {
-            @Override
-            public void onResponse(Call<post_summary> call, Response<post_summary> response) {
-                if (response.code() == 201) {
-
-                    post_summary post = response.body();
-                    List<post_summary.Audio> audio = post.getAudio();
-                    List<post_summary.Video> video = post.getVideo();
-                    List<post_summary.Post> posst = post.getPost();
-
-                    tpost.setText(posst.get(0).getTtl() + "");
-                    taudio.setText(audio.get(0).getTtl() + "");
-                    tvideo.setText(video.get(0).getTtl() + "");
-
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<post_summary> call, Throwable t) {
-
-            }
-        });
-    }
-
-    public void loadUrLost() {
+    public void loadUrPost() {
         //setting up layout
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-        SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
-        String accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
 
 
-        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, accessTokens);
-        Call<OwnListModel> catCall = api.get_post_list();
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getContext()));
+        Call<AuthorPostResponse> catCall = api.getAuthorPost(SharedPrefManager.getInstance(getContext()).getUser_ID() + "");
 
-        catCall.enqueue(new Callback<OwnListModel>() {
+        catCall.enqueue(new Callback<AuthorPostResponse>() {
             @Override
-            public void onResponse(Call<OwnListModel> call, Response<OwnListModel> response) {
-                OwnListModel ownListModelList = response.body();
-                if (response.code() == 201) {
-                    post_modelList = ownListModelList.getGetNewsList();
-
+            public void onResponse(Call<AuthorPostResponse> call, Response<AuthorPostResponse> response) {
+                AuthorPostResponse ownListModelList = response.body();
+                if (response.code() == 200) {
                     try {
+                        post_modelList = ownListModelList.getOwnVideos();
+                        post_modelList.addAll(ownListModelList.getOwnArticles());
+                        post_modelList.addAll(ownListModelList.getOwnAudios());
+
+                        Collections.sort(post_modelList, (o1, o2) -> o2.getId() - o1.getId());
+
                         if (post_modelList.size() == 0) {
 
                             emptyLayout.setVisibility(View.VISIBLE);
@@ -219,24 +165,19 @@ public class DashboardFragment extends Fragment {
                                 loop the whole list for counting post type
 
                              */
-                            for (Post_Model item : post_modelList) {
 
-                                if (item.getPostType().equals("audio")) {
-                                    audioCount++;
-                                } else if (item.getPostType().equals("video")) {
-                                    videoCount++;
-                                } else {
-                                    postCount++;
-                                }
+                            try {
+                                taudio.setText(ownListModelList.getOwnAudios().size() + "");
+                                tvideo.setText(ownListModelList.getOwnVideos().size() + "");
+                                tpost.setText(ownListModelList.getAuthor().getTotal_point() + "");
+
+                            } catch (Exception e) {
 
                             }
-                            tpost.setText(postCount + "");
-                            taudio.setText(audioCount + "");
-                            tvideo.setText(videoCount + "");
 
-                            NewsFeedAdapter adapter = new NewsFeedAdapter(context, post_modelList, itemClickListenter);
-                            // setting the adapter ;
-                            recyclerView.setAdapter(adapter);
+
+                            mAdapter.submitlist(post_modelList);
+
                             // checking if the list is empty or not
                             emptyLayout.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
@@ -273,12 +214,15 @@ public class DashboardFragment extends Fragment {
                     shimmer_view_container_dash.setVisibility(View.GONE);
 
 
+                } else {
+                    Toast.makeText(getContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();
                 }
 
             }
 
             @Override
-            public void onFailure(Call<OwnListModel> call, Throwable t) {
+            public void onFailure(Call<AuthorPostResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         });
@@ -294,5 +238,18 @@ public class DashboardFragment extends Fragment {
     public void onPause() {
         shimmer_view_container_dash.stopShimmer();
         super.onPause();
+    }
+
+    @Override
+    public void onItemClick(Post.PostModel model) {
+        Intent p;
+        if (model.getType().equals("audio") || model.getType().equals("video")) {
+            p = new Intent(context, PostDetailsPage.class);
+        } else {
+            p = new Intent(context, NewsDetailsActivity.class);
+        }
+        p.putExtra("POST", model);
+        startActivity(p);
+
     }
 }

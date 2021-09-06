@@ -29,15 +29,18 @@ import com.facebook.login.LoginManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.hbb20.CountryCodePicker;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.activities.contactPage.ContactPage;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
 import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.models.newModels.UserModel;
+import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
@@ -52,9 +55,12 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     TextView lang;
     TextView userNameOnSide;
     Dialog dialog;
+    CountryCodePicker countryCodePicker;
+
+    TextView logOut;
     List<String> idlist = new ArrayList<>();
-    CardView myActonSide, jobSide, ShopSide, profileSide, logOUtCard, notificationSide;
-    List<allDataResponse.LanguageList> langList;
+    CardView myActonSide, jobSide, ShopSide, profileSide, logOUtCard, notificationSide, contact_us;
+    List<String> langList = new ArrayList<>();
     private DrawerLayout drawerLayout;
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
 
@@ -68,19 +74,19 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                         case R.id.newsfeed:
                             viewPager.setCurrentItem(0, false);
                             break;
-                        case R.id.audio:
-                            viewPager.setCurrentItem(2, false);
-                            break;
-                        case R.id.video:
-                            viewPager.setCurrentItem(1, false);
-                            break;
+//                        case R.id.audio:
+//                            viewPager.setCurrentItem(2, false);
+//                            break;
+//                        case R.id.video:
+//                            viewPager.setCurrentItem(1, false);
+//                            break;
                         case R.id.profile:
-                            viewPager.setCurrentItem(3, false);
+                            viewPager.setCurrentItem(1, false);
                             break;
                         case R.id.dashboard:
                             if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
 
-                                viewPager.setCurrentItem(4, false);
+                                viewPager.setCurrentItem(2, false);
                             } else {
 
                                 createTheAlertDialogue();
@@ -111,22 +117,21 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         searchBtn = findViewById(R.id.searchBtn);
         lang = findViewById(R.id.langId);
 
+        countryCodePicker = findViewById(R.id.ccp);
+
+
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         userImage = navigationView.findViewById(R.id.proImg);
+        contact_us = navigationView.findViewById(R.id.contact_us);
         userNameOnSide = navigationView.findViewById(R.id.user_name);
         hamburger = findViewById(R.id.menu);
         logOUtCard = navigationView.findViewById(R.id.LogOut);
         myActonSide = navigationView.findViewById(R.id.myAcnt);
         ShopSide = navigationView.findViewById(R.id.shop);
-
+        logOut = navigationView.findViewById(R.id.LogOutTV);
 
         dataResponse = (allDataResponse) getIntent().getSerializableExtra("MISC");
         viewPager2Adapter = new viewPager2_adapter(HomePage.this);
-        // navigationView = findViewById(R.id.navigation_view);
-
-
-        //   Log.d("detais", "onCreate: " + SharedPrefManager.getInstance(getApplicationContext()).getUser().getName());
-        //    Log.d("detais", "onCreate: " + SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn());
 
         navigationBar.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         // getSupportFragmentManager().beginTransaction().replace(R.id.view_pager, new dashboardFragment()).commit();
@@ -145,16 +150,16 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     case 0:
                         navigationBar.getMenu().findItem(R.id.newsfeed).setChecked(true);
                         break;
+//                    case 1:
+//                        navigationBar.getMenu().findItem(R.id.video).setChecked(true);
+//                        break;
+//                    case 2:
+//                        navigationBar.getMenu().findItem(R.id.audio).setChecked(true);
+//                        break;
                     case 1:
-                        navigationBar.getMenu().findItem(R.id.video).setChecked(true);
-                        break;
-                    case 2:
-                        navigationBar.getMenu().findItem(R.id.audio).setChecked(true);
-                        break;
-                    case 3:
                         navigationBar.getMenu().findItem(R.id.profile).setChecked(true);
                         break;
-                    case 4:
+                    case 2:
                         navigationBar.getMenu().findItem(R.id.dashboard).setChecked(true);
                         break;
 
@@ -189,24 +194,38 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             }
         });
 
+
         logOUtCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    LoginManager.getInstance().logOut();
-                } catch (Exception e) {
-                    Log.d("TAG", "onCreate: " + e.getMessage());
-                }
-                Intent o = new Intent(getApplicationContext(), HomePage.class);
-                SharedPrefManager manager = new SharedPrefManager(getApplicationContext());
-                manager.logout();
-                o.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(o);
-                try {
-                    finish();
-                } catch (Exception e) {
 
+                SharedPrefManager pref = new SharedPrefManager(getApplicationContext());
+
+                if (pref.isUserLoggedIn()) {
+                    try {
+                        LoginManager.getInstance().logOut();
+                    } catch (Exception e) {
+                        Log.d("TAG", "onCreate: " + e.getMessage());
+                    }
+                    Intent o = new Intent(getApplicationContext(), LoginActivity.class);
+                    SharedPrefManager manager = new SharedPrefManager(getApplicationContext());
+                    manager.logout();
+                    o.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(o);
+                    finish();
+                } else {
+                    Intent p = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(p);
                 }
+
+
+            }
+        });
+
+        contact_us.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ContactPage.class));
             }
         });
 
@@ -226,18 +245,20 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             Intent p = new Intent(getApplicationContext(), SerachActivity.class);
             startActivity(p);
         });
+
+
+
+        countryCodePicker.setOnCountryChangeListener(() -> {
+             SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
+                    countryCodePicker.getSelectedCountryCode() + "",
+                    countryCodePicker.getSelectedCountryNameCode());
+        });
         lang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                // trigger a dialogue
-
-
-//                Toast.makeText(getApplicationContext(), "saved:", Toast.LENGTH_LONG).show();
-//                String[] arr = SharedPrefManager.getInstance(getApplicationContext()).getLangPref();
-//                Log.d("TAG", "onClick: " + arr[0] + arr[1]);
-
-
+                langList.add(Constants.ENGLISH_CODE + " English");
+                langList.add(Constants.BD_CODE + " Bangla");
                 // create a dialouge
 
                 dialog = new Dialog(HomePage.this);
@@ -248,7 +269,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
 
                 ArrayAdapter adapter = new ArrayAdapter<String>(HomePage.this,
-                        android.R.layout.simple_list_item_1, generateLangArray());
+                        android.R.layout.simple_list_item_1, langList);
 
                 list.setAdapter(adapter);
 
@@ -257,14 +278,21 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     @Override
                     public void onItemClick(AdapterView<?> parent, final View view,
                                             int position, long id) {
-                        final String item = (String) parent.getItemAtPosition(position);
                         // have to save this setting
-                        SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
-                                langList.get(position).getId(),
-                                langList.get(position).getShortForm());
+                        if (position == 0) {
+                            SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
+                                    position + "",
+                                    "EN");
+                            lang.setText(Constants.ENGLISH_CODE);
+                        } else {
+                            SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
+                                    position + "",
+                                    "BD");
+
+                            lang.setText(Constants.BD_CODE);
+                        }
 
 
-                        lang.setText(langList.get(position).getShortForm().toUpperCase() + "");
                         // now save the past
                         int oldid = viewPager.getCurrentItem();
 
@@ -286,6 +314,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         });
 
         setUpSideBar();
+        countryCodePicker.setDefaultCountryUsingNameCode("GB");
         loadMiscData();
 
     }
@@ -299,7 +328,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             userNameOnSide.setText(model.getName());
             try {
                 Glide.with(getApplicationContext())
-                        .load( model.getImage())
+                        .load(model.getImage())
                         .placeholder(R.drawable.placeholder)
                         .error(R.drawable.placeholder)
                         .into(userImage);
@@ -357,7 +386,12 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     private void loadMiscData() {
         String[] arr = SharedPrefManager.getInstance(getApplicationContext()).getLangPref();
         // load the array  arr[0] = id arr[1] = name
-        lang.setText(arr[1] + "");
+
+        try{
+            countryCodePicker.setCountryForNameCode(arr[1]);
+        }catch (Exception e){
+            countryCodePicker.setCountryForNameCode("GB");
+        }
 
     }
 
@@ -385,26 +419,22 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 }).onSameThread().check();
     }
 
-    private String[] generateLangArray() {
-
-        langList = dataResponse.getLanguageList();
-        // List<String> langlist = new ArrayList<>();
-        String[] langArray = new String[langList.size()];
-
-        for (int i = 0; i < langList.size(); i++) {
-
-            langArray[i] = langList.get(i).getName();
-
-
-        }
-        return langArray;
-    }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPrefManager pref = new SharedPrefManager(getApplicationContext());
+        if (pref.isUserLoggedIn()) {
+            logOut.setText("Log Out");
+        } else {
+            logOut.setText("Log In");
+        }
     }
 }

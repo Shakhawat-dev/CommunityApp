@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -45,10 +46,13 @@ public class CategoryFragment extends Fragment {
     RecyclerView recyclerView;
     List<CategoryModel> categoryList;
     CategoryAdapter adapter;
+    ProgressBar progressBar;
+
     CategoryAdapter.ItemClickListenter itemClickListenter;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
     public CategoryFragment() {
         // Required empty public constructor
     }
@@ -90,14 +94,15 @@ public class CategoryFragment extends Fragment {
         context = view.getContext();
         recyclerView = view.findViewById(R.id.categoryList);
         recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
-
+        progressBar = (ProgressBar) view.findViewById(R.id.pbar);
+        progressBar.setVisibility(View.GONE);
         itemClickListenter = new CategoryAdapter.ItemClickListenter() {
             @Override
             public void onItemClick(View view, int pos) {
 
                 Intent o = new Intent(getContext(), singleList.class);
                 o.putExtra("cat_name", categoryList.get(pos).getCategory_name());
-                o.putExtra("type" , "cat");
+                o.putExtra("type", "cat");
                 startActivity(o);
 
             }
@@ -111,6 +116,7 @@ public class CategoryFragment extends Fragment {
     }
 
     private void LoadData() {
+        progressBar.setVisibility(View.VISIBLE);
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
         String accessTokens = sharedPrefManager.getUserToken();
         Log.d("TAG", "loadList: activity " + accessTokens);
@@ -123,7 +129,7 @@ public class CategoryFragment extends Fragment {
         catCall.enqueue(new Callback<SettingsModel>() {
             @Override
             public void onResponse(Call<SettingsModel> call, Response<SettingsModel> response) {
-
+                progressBar.setVisibility(View.GONE);
                 if (response.code() == 200) {
 
                     SettingsModel dataResponse = response.body();
@@ -142,13 +148,13 @@ public class CategoryFragment extends Fragment {
 
 
                 } else {
-
+                    Toast.makeText(getContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<SettingsModel> call, Throwable t) {
-
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

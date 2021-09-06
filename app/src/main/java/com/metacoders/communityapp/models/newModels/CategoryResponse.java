@@ -1,24 +1,21 @@
 package com.metacoders.communityapp.models.newModels;
 
-import androidx.annotation.NonNull;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.List;
 
-public  class CategoryResponse implements Serializable {
+public class CategoryResponse implements Serializable {
 
     @Expose
     @SerializedName("cateooryPost")
-    private List<Post.PostModel> categoryPost;
+    private Post categoryPost;
 
-    public List<Post.PostModel> getCateooryPost() {
+    public Post getCateooryPost() {
         return categoryPost;
     }
 
-    public void setCateooryPost(List<Post.PostModel> categoryPost) {
+    public void setCateooryPost(Post categoryPost) {
         this.categoryPost = categoryPost;
     }
 

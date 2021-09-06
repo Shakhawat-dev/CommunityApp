@@ -1,6 +1,12 @@
 package com.metacoders.communityapp.adapter.new_adapter;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.models.newModels.Post;
 import com.metacoders.communityapp.utils.Constants;
@@ -25,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -33,6 +42,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
     private static final int BIG_ROW = 1;
     private static final int SMALL_ROW = 0;
     Context context;
+    private Boolean will_show_big_row = false;
     private AsyncListDiffer<Post.PostModel> mDiffer;
     private List<Post.PostModel> mData = new ArrayList<>();
     // private List<ProductModel> mDataFiltered = new ArrayList<>();
@@ -51,12 +61,13 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
 
     };
 
-    public ProductListDifferAdapter(Context context, ItemClickListener itemClickListener) {
+    public ProductListDifferAdapter(Context context, ItemClickListener itemClickListener, Boolean will_show_big_row) {
         this.mInflater = LayoutInflater.from(context);
         // this.mData = productList;
         this.context = context;
         this.itemClickListener = itemClickListener;
         mDiffer = new AsyncListDiffer<>(this, diffCallback);
+        this.will_show_big_row = will_show_big_row;
 
     }
 
@@ -64,7 +75,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
     public int getItemViewType(int position) {
 
 
-        if (position == 0) {
+        if (position == 0 && will_show_big_row) {
 
             return BIG_ROW;
 
@@ -124,10 +135,8 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         Post.PostModel newsFeed = mDiffer.getCurrentList().get(position);
         //viewHolder.itemView.animation = AnimationUtils.loadAnimation(context,R.anim.item_animation_fall_down)
 
-        holder.author.setText("");
+        holder.author.setText(newsFeed.getName());
         holder.title.setText(newsFeed.getTitle());
-//        holder.price.setText("$" + newsFeed.getProduct_price().toString());
-//        holder.description.setText(newsFeed.getDescription());
         holder.viewCount.setText(newsFeed.getHit() + "");
         holder.commentCount.setText("0");
         //  Log.d("TAGE", "onBindViewHolder: "+ newsFeed.getStatus() + " Vis" + newsFeed.getVisibility());
@@ -141,26 +150,49 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
             holder.date.setText(newsFeed.getCreated_at());
         }
         String imageLink = "";
+        boolean isVideo = false ;
 
-        if (newsFeed.getImage() == null || newsFeed.getImage().isEmpty()) {
-            imageLink = newsFeed.getThumb() + "";
-        } else imageLink = newsFeed.getImage() + "";
+        if (newsFeed.getType().equals("video")) {
+            if ((newsFeed.getThumb() == null || newsFeed.getThumb().isEmpty())) {
+                imageLink = newsFeed.getPath() + "";
+                isVideo = true ;
+            } else {
+                isVideo = false ;
+                imageLink = newsFeed.getThumb() + "";
+            }
 
-        Log.d("TAGGED", "onBindViewHolder: " + imageLink);
-        Glide.with(context)
-                .load(imageLink)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .thumbnail(/*sizeMultiplier=*/ 0.25f)
-                .placeholder(R.drawable.placeholder)
-                .into(holder.image);
+        } else {
+            isVideo = false ;
+            if ((newsFeed.getThumb() == null || newsFeed.getThumb().isEmpty())) {
+                imageLink = newsFeed.getImage() + "";
+            } else imageLink = newsFeed.getThumb() + "";
+        }
+
+//
+//
+//
+
+        DrawableCrossFadeFactory factory =
+                new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
+
+
+            Glide.with(context)
+                    .load(imageLink)
+                    .centerCrop()
+                    .transition(withCrossFade(factory))
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .placeholder(R.drawable.placeholder)
+                    .into(holder.image);
+
+
+
 
 
         // setting details
         try {
             holder.desc.setText(newsFeed.getDescription().toString() + "");
         } catch (Exception r) {
-            holder.desc.setText( "");
+            holder.desc.setText("");
         }
 
 
@@ -180,7 +212,14 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
 
     }
 
-
+    public  void  loadImage(String url ){
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        //give YourVideoUrl below
+        retriever.setDataSource("YourVideoUrl", new HashMap<String, String>());
+// this gets frame at 2nd second
+        Bitmap image = retriever.getFrameAtTime(2000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+//use this bitmap image
+    }
     public interface ItemClickListener {
         void onItemClick(Post.PostModel model);
     }

@@ -155,7 +155,7 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textEmailAddress"
-                            android:hint="Mail Address" />
+                            android:hint="Your Email" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 

@@ -190,7 +190,10 @@ public class PlayerManager {
 
     public void playStream(String urlToPlay) {
         uriString = urlToPlay;
+
+
         Uri mp4VideoUri = Uri.parse(uriString);
+
         MediaSource videoSource;
         // String filenameArray[] = urlToPlay.split("\\.");
         if (uriString.toUpperCase().contains("M3U8")) {

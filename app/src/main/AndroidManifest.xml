@@ -14,7 +14,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:fullBackupOnly="false"
@@ -27,12 +26,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-
         tools:replace="android:allowBackup">
-        <activity android:name=".CommentsActivity"></activity>
+        <activity
+            android:name=".activities.contactPage.ContactPage"
+            android:exported="true" />
+        <activity
+            android:name=".activities.auther.AuthorPageActivity"
+            android:exported="true"></activity>
+        <activity android:name=".activities.comments.CommentsActivity" />
         <activity android:name=".activities.ShopPage" />
         <activity android:name=".activities.EditProfile" />
-        <activity android:name=".NewsDetailsActivity" />
+        <activity android:name=".activities.details.NewsDetailsActivity" />
         <activity android:name=".singleList" />
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.SerachActivity" />
@@ -49,11 +53,9 @@
         <activity android:name=".activities.ForgotPasswordActivity" />
         <activity android:name=".activities.ChangePasswordActivity" />
         <activity
-            android:name=".activities.PostDetailsPage"
+            android:name=".activities.details.PostDetailsPage"
             android:configChanges="orientation|screenSize|layoutDirection" />
-        <activity android:name=".activities.HomePage">
-
-        </activity>
+        <activity android:name=".activities.HomePage" />
         <activity
             android:name=".activities.Voice_Recoder_Activity"
             android:configChanges="orientation|screenSize|layoutDirection"

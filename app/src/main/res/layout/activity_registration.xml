@@ -125,24 +125,6 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="4dp"
-                        app:boxStrokeColor="@color/colorPrimary"
-                        app:hintAnimationEnabled="true"
-                        app:hintTextColor="@color/black">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/regi_user_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Enter a user name"
-                            android:inputType="textPersonName" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -163,6 +145,13 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+
+                    <Spinner
+                        android:layout_marginVertical="4dp"
+                        android:id="@+id/genderList"
+                        android:layout_width="match_parent"
+                        android:background="@drawable/spinner_background"
+                       android:layout_height="@dimen/_40sdp"/>
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"

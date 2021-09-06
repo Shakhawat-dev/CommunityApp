@@ -53,7 +53,7 @@ public class SplashScreen extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean fstart = prefs.getBoolean("firstStart", true);
         if (fstart) {
-            show_Dialog_after_Install();
+          //  show_Dialog_after_Install();
 
         }
         Handler handler = new Handler();
@@ -74,51 +74,7 @@ public class SplashScreen extends AppCompatActivity {
 
     }
 
-    private void loadMiscData() {
-//        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
-//        String accessTokens = sharedPrefManager.getUserToken();
-//        Log.d("TAG", "loadList: activity " + accessTokens);
 
-
-        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
-
-        Call<allDataResponse> catCall = api.getCategoryList();
-
-        catCall.enqueue(new Callback<allDataResponse>() {
-            @Override
-            public void onResponse(Call<allDataResponse> call, Response<allDataResponse> response) {
-
-                if (response.code() == 201) {
-
-
-//                    categoryList = dataResponse.getCategories();
-//                    languageList = dataResponse.getLanguageList();
-
-                    // load all the category name
-//                    for (int i = 0; i < categoryList.size(); i++) {
-//                        categoryNameList.add(categoryList.get(i).getName().toString());
-//
-//                    }
-//                    for (int i = 0; i < languageList.size(); i++) {
-//                        languageNameList.add(languageList.get(i).getName().toString());
-//
-//                    }
-
-                    // send it to adaper
-
-                } else {
-                    loadMiscData();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<allDataResponse> call, Throwable t) {
-
-                Toast.makeText(getApplicationContext(), "" + t.getMessage(), Toast.LENGTH_LONG).show();
-
-            }
-        });
-    }
 
     private void printKeyHash() {
 
@@ -177,11 +133,19 @@ public class SplashScreen extends AppCompatActivity {
                     }
                     // send it to adaper
 
-                    // to the activity
-                    Intent p = new Intent(getApplicationContext(), HomePage.class);
-                    // p.putExtra("MISC", dataResponse);
-                    startActivity(p);
-                    finish();
+                    if(SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()){
+                        // to the activity
+                        Intent p = new Intent(getApplicationContext(), HomePage.class);
+                        // p.putExtra("MISC", dataResponse);
+                        startActivity(p);
+                        finish();
+                    }else {
+                        // to the activity
+                        Intent p = new Intent(getApplicationContext(), LoginActivity.class);
+                        // p.putExtra("MISC", dataResponse);
+                        startActivity(p);
+                        finish();
+                    }
 
                 } else {
 

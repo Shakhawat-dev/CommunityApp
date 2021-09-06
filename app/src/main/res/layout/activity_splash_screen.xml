@@ -9,10 +9,11 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="@dimen/_150sdp"
-        android:src="@drawable/circle"
+        android:layout_width="wrap_content"
+        android:scaleType="centerCrop"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_height="@dimen/_100sdp"/>
+        android:src="@drawable/logo" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -22,6 +23,7 @@
         android:layout_marginTop="@dimen/_8sdp"
         android:fontFamily="@font/nunito_semi_bold"
         android:text="NewsRme"
+        android:visibility="gone"
         android:textColor="@color/black"
         android:textSize="19sp" />
 

@@ -13,11 +13,22 @@ public class SignInResponse implements Serializable {
     @SerializedName("user")
     private UserModel user;
     @Expose
+    @SerializedName("user_id")
+    private int user_id;
+    @Expose
     @SerializedName("message")
     private String message;
 
     public String getAccess_token() {
         return access_token;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public void setAccess_token(String access_token) {

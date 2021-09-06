@@ -8,8 +8,11 @@ import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
+
+import java.text.SimpleDateFormat;
 
 public class AppPreferences {
 
@@ -34,6 +37,23 @@ public class AppPreferences {
         return returnColor;
     }
 
+    public static String covertTime(String date) {
+        String outputDate = "";
+        if (date != null) {
+            try {
+                SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'.000000Z'");
+                SimpleDateFormat formatter = new SimpleDateFormat("EEEE dd MMMM 'at' hh:mm aa");
+                outputDate = formatter.format(parser.parse(date));
+
+            } catch (Exception e) {
+                Log.d("TAG", "convertDate: " + e.getMessage());
+                outputDate = date;
+            }
+        }
+
+        return outputDate;
+    }
+
     public static void setActionbarTextColor(ActionBar actBar, int color, String title) {
 
         Spannable spannablerTitle = new SpannableString(title);
@@ -47,13 +67,25 @@ public class AppPreferences {
         int secondLetter = Character.codePointAt(countryCode, 1) - 0x41 + 0x1F1E6;
         return new String(Character.toChars(firstLetter)) + new String(Character.toChars(secondLetter));
     }
+
+    public static String postLinkBUilder(String slug, String languag) {
+        return "https://newsrme.com/" + languag + "/single-post/" + slug;
+    }
+
     public static String getAccessToken(Context context) {
         return SharedPrefManager.getInstance(context).getUserToken();
+    }
+
+    public static String getUSerID(Context context) {
+        String userID = SharedPrefManager.getInstance(context).getUser_ID();
+
+        return userID;
     }
 
     public int getCacheLocation() {
         return prefs.getInt(KEY_CACHE_LOCATION, 0);
     }
+
 
     public void setCacheLocation(int cacheLocation) {
         prefs.edit().putInt(KEY_CACHE_LOCATION, cacheLocation).apply();

@@ -38,25 +38,8 @@ public class SharedPrefManager {
         return mInstance;
     }
 
-    public boolean userLogin(String id, String name, String email, String token, String role, String userType, String pp) {
-
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putString(KEY_USER_ID, id);
-        editor.putString(KEY_USER_NAME, name);
-        editor.putString(KEY_USER_EMAIL, email);
-        editor.putString(KEY_USER_TOKEN, token);
-        editor.putString(KEY_USER_ROLE, role);
-        editor.putString(KEY_USER_TYPE, userType);
-        editor.putString("pp", pp);
-        editor.apply();
-
-        return true;
-    }
-
     public String getUserToken() {
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
         String token = sharedPreferences.getString(KEY_USER_TOKEN, "000");
         return token;
     }
@@ -81,14 +64,7 @@ public class SharedPrefManager {
         return model;
     }
 
-    /*public boolean isLogged() {
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        if (sharedPreferences.getString(KEY_USER_NAME, null) != null) {
-            return true;
-        }
 
-        return false;
-    }*/
 
     public void logout() {
 
@@ -97,14 +73,14 @@ public class SharedPrefManager {
         editor.putString(KEY_USER_EMAIL, "null");
         editor.putString(IS_USER_LOGGED_IN, "no");
 
-        editor.clear();
+       // editor.clear();
         editor.apply();
 
-        SharedPreferences sharedPreferences1 = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor1 = sharedPreferences1.edit();
-
-        editor1.clear();
-        editor1.apply();
+//        SharedPreferences sharedPreferences1 = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor1 = sharedPreferences1.edit();
+//
+//        editor1.clear();
+//        editor1.apply();
 
 
     }
@@ -122,19 +98,25 @@ public class SharedPrefManager {
 
     }
 
-    public void saveUser(String email) {
+    public void saveUser_ID_access_token(String userID , String accessToken ) {
 
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putString(KEY_USER_EMAIL, email);
+        editor.putString(KEY_USER_ID, userID);
         editor.putString(IS_USER_LOGGED_IN, "yes");
-
-
+        editor.putString(KEY_USER_TOKEN , accessToken) ;
         editor.apply();
 
 
     }
+
+    public  String getUser_ID(){
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_LOGIN, Context.MODE_PRIVATE);
+        String user = sharedPreferences.getString(KEY_USER_ID, "0");
+        return  user ;
+    }
+
 
     public void saveLangPref(String id, String name) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_SETTING, Context.MODE_PRIVATE);
@@ -149,8 +131,8 @@ public class SharedPrefManager {
 
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME_SETTING, Context.MODE_PRIVATE);
 
-        String id = sharedPreferences.getString(KEY_USER_LANG_ID, "1");
-        String name = sharedPreferences.getString(KEY_USER_LANG_NAME, "en");
+        String id = sharedPreferences.getString(KEY_USER_LANG_ID, "0");
+        String name = sharedPreferences.getString(KEY_USER_LANG_NAME, "GB");
 
         /*
          array 0 is id

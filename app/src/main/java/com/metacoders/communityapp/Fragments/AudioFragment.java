@@ -1,8 +1,12 @@
 package com.metacoders.communityapp.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -10,24 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Toast;
-
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.activities.PostDetailsPage;
-import com.metacoders.communityapp.adapter.NewsFeedAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
-import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.Audio_List_Model;
 import com.metacoders.communityapp.models.Post_Model;
-import com.metacoders.communityapp.models.allDataResponse;
-import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
@@ -48,11 +40,19 @@ public class AudioFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    View view;
+    List<Post_Model> postsList = new ArrayList<>();
+    Context context;
+    RecyclerView recyclerView;
+    LinearLayoutManager linearLayoutManager;
+    List<Post_Model> filteredList = new ArrayList<>();
+    ConstraintLayout emptyLayout;
+    String id = "1";
+    SwipeRefreshLayout swipeContainer;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private ShimmerFrameLayout mShimmerViewContainer1;
     public AudioFragment() {
         // Required empty public constructor
     }
@@ -84,26 +84,14 @@ public class AudioFragment extends Fragment {
         }
     }
 
-    View view;
-    List<Post_Model> postsList = new ArrayList<>();
-    NewsFeedAdapter.ItemClickListenter itemClickListenter;
-    NewsFeedAdapter adapter;
-    Context context;
-    RecyclerView recyclerView;
-    LinearLayoutManager linearLayoutManager;
-    private ShimmerFrameLayout mShimmerViewContainer1;
-    List<Post_Model> filteredList = new ArrayList<>( ) ;
-    ConstraintLayout emptyLayout  ;
-    String id = "1" ;
-    SwipeRefreshLayout swipeContainer  ;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_audio, container, false);
-        mShimmerViewContainer1 = view.findViewById(R.id.shimmer_view_container_audio) ;
+        mShimmerViewContainer1 = view.findViewById(R.id.shimmer_view_container_audio);
         recyclerView = view.findViewById(R.id.audioList);
-        emptyLayout = view.findViewById(R.id.emptyLayout) ;
+        emptyLayout = view.findViewById(R.id.emptyLayout);
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
         // Lookup the swipe container view
@@ -123,23 +111,7 @@ public class AudioFragment extends Fragment {
         loadList();
 
         // calling the interface for click
-        itemClickListenter = new NewsFeedAdapter.ItemClickListenter() {
-            @Override
-            public void onItemClick(View view, int pos) {
 
-                Post_Model model = new Post_Model() ;
-                model = postsList.get(pos) ;
-                Intent p = new Intent(context, PostDetailsPage.class);
-                p.putExtra("POST", model);
-                context.startActivity(p);
-                try {
-                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                } catch (Exception e) {
-                    Log.e("TAG", "onItemClick: " + e.getMessage());
-                }
-
-            }
-        };
 
         return view;
     }
@@ -148,7 +120,7 @@ public class AudioFragment extends Fragment {
         //setting up layout
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , "00") ;
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
         Call<Audio_List_Model> NetworkCall = api.getAudioList();
 
@@ -168,22 +140,21 @@ public class AudioFragment extends Fragment {
 
                         filteredList.clear();
 
-                        for(Post_Model post : postsList){
-                            if(post.getLangId().equals(id)){
-                                filteredList.add(post) ;
+                        for (Post_Model post : postsList) {
+                            if (post.getLangId().equals(id)) {
+                                filteredList.add(post);
                             }
                         }
 
-                        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
-
-                        // setting the adapter ;
-                        recyclerView.setAdapter(adapter);
+//                        adapter = new NewsFeedAdapter(context, filteredList, itemClickListenter);
+//
+//                        // setting the adapter ;
+//                        recyclerView.setAdapter(adapter);
                         // checking if the list is empty or not
-                        if(filteredList.size() == 0 ){
+                        if (filteredList.size() == 0) {
                             emptyLayout.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
-                        }
-                        else {
+                        } else {
                             emptyLayout.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
 
@@ -233,9 +204,9 @@ public class AudioFragment extends Fragment {
             }
         });
     }
+
     public void fetchTimelineAsync() {
 
-        adapter.clear();
         mShimmerViewContainer1.setVisibility(View.VISIBLE);
         mShimmerViewContainer1.startShimmer();
         loadList();
@@ -243,6 +214,7 @@ public class AudioFragment extends Fragment {
         swipeContainer.setRefreshing(false);
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -261,8 +233,8 @@ public class AudioFragment extends Fragment {
         // load the array  arr[0] = id arr[1] = name
 
 
-        id = arr[0] ;
-       // Toast.makeText(context, id, Toast.LENGTH_LONG).show();
+        id = arr[0];
+        // Toast.makeText(context, id, Toast.LENGTH_LONG).show();
 
 
     }

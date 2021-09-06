@@ -292,12 +292,12 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                     // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
                     long fileSizeInMB = fileSizeInKB / 1024;
                     Log.d("TAG", "FIle SIze :  " + fileSizeInMB);
-                    if (fileSizeInMB > 110) {
+                    if (fileSizeInMB > 205) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder
                                 .setCancelable(false)
                                 .setTitle("Error !! Too Big File")
-                                .setMessage("Please Upload File Which are less Than  110 MB . ")
+                                .setMessage("Please Upload File Which are less Than  205 MB . ")
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -517,40 +517,49 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
     private void createPostServer(Uri mFilePathUri, String postType, String title, String
             desc, String catid, String langid) {
 
-        if (mFilePathUri != null) {
+
             // upload the data
             String path2 = null;
             File file, compressed;
-            try {
-                path2 = getPath(PostUploadActivity.this, mFilePathUri);
-                file = new File(path2);
-            } catch (Exception e) {
-                path2 = mFilePathUri.getPath();
-                file = new File(path2);
-                //
+         if(mFilePathUri != null){
+             try {
+                 path2 = getPath(PostUploadActivity.this, mFilePathUri);
+                 file = new File(path2);
+             } catch (Exception e) {
+                 path2 = mFilePathUri.getPath();
+                 file = new File(path2);
+                 //
 
-            }
-            try {
-                compressed = new Compressor(getApplicationContext())
-                        .setMaxHeight(600)
-                        .setMaxWidth(600)
-                        .setQuality(40)
-                        .compressToFile(file);
-            } catch (Exception e) {
-                compressed = file;
-            }
+             }
+             try {
+                 compressed = new Compressor(getApplicationContext())
+                         .setMaxHeight(600)
+                         .setMaxWidth(600)
+                         .setQuality(40)
+                         .compressToFile(file);
+             } catch (Exception e) {
+                 compressed = file;
+             }
+         }
+         else {
+             compressed = null ;
+             file = null ;
+         }
             progressDialog.show();
 
 
             if (postType.equals("post")) {
 
                 //creating request body for file
-                RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
+                RequestBody requestFile = null ;
+                if(mFilePathUri != null){
 
-                body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
-
+                    requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
+                    body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+                }else {
+                    body1 = null ;
+                }
                 //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
-                Log.d("TAG", "createPostServer: " + file.getName() + requestFile.contentType());
                 api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
                 NetworkCall = api.uploadPost(
@@ -562,7 +571,8 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                         body1);
 
 
-            } else {
+            }
+            else {
                 //getting the vido uri
                 // mediaUri = mFilePathUri;
                 mediaUri = Uri.parse(getIntent().getStringExtra("path"));
@@ -586,9 +596,12 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 } else
                     Toast.makeText(getApplicationContext(), "Media File  is empty", Toast.LENGTH_LONG).show();
 
-
+                RequestBody requestFile = null ;
                 //creating request body for file
-                RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
+                if(mFilePathUri != null){
+                     requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
+                }
+
                 // changing media_type
                 RequestBody requestMediaFile;
 
@@ -627,9 +640,16 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                     body2 = MultipartBody.Part.createFormData("video", mediaFile.getName(), fileBody);
                 }
 
-                body1 = MultipartBody.Part.createFormData("thumb_image", file.getName(), requestFile);
+                if(mFilePathUri != null){
+                    body1 = MultipartBody.Part.createFormData("thumb_image", file.getName(), requestFile);
+                }else {
+                    body1 = null ;
+                }
+
                 Log.d("TAG", "createPostServer: " + mediaFile.getName() + requestMediaFile.contentType());
                 api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+
 
 
                 if (postType.equals("audio")) {
@@ -643,6 +663,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                                                           @Part("country") RequestBody sub_category_id,
                                                           @Part MultipartBody.Part image);
                      */
+
                     NetworkCall = api.uploadAudioFilePost(body2, createPartFromString(title),
                             createPartFromString(desc),
                             createPartFromString(langid), createPartFromString(catid),
@@ -669,38 +690,44 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
             }
 
-            NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
-                @Override
-                public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+            if(postType.equals("post") && mFilePathUri == null){
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Please Pick An Image!!", Toast.LENGTH_LONG).show();
+            }else {
+                NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
 
-                    //   Toast.makeText(getApplicationContext(), "CODE" + response.code(), Toast.LENGTH_LONG).show();
-                    if (response.code() == 200 || response.code() == 201) {
-                        LoginResponse.forgetPassResponse testRes = response.body();
-                        Toast.makeText(getApplicationContext(), "" + testRes.getMessage(), Toast.LENGTH_LONG).show();
-                        progressDialog.dismiss();
-                        Intent p = new Intent(getApplicationContext(), HomePage.class);
-                        startActivity(p);
-                        //   finish();
+                        //   Toast.makeText(getApplicationContext(), "CODE" + response.code(), Toast.LENGTH_LONG).show();
+                        if (response.code() == 200 || response.code() == 201) {
+                            LoginResponse.forgetPassResponse testRes = response.body();
+                            Toast.makeText(getApplicationContext(), "" + testRes.getMessage(), Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+                            Intent p = new Intent(getApplicationContext(), HomePage.class);
+                            startActivity(p);
+                            //   finish();
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error Server Code : " + response.code() + " Please Try Again !!", Toast.LENGTH_LONG).show();
-                        Log.d("TAG", "onResponse: " + response.raw());
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error Server Code : " + response.code() + " Please Try Again !!", Toast.LENGTH_LONG).show();
+                            Log.d("TAG", "onResponse: " + response.raw());
+                            progressDialog.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG)
+                                .show();
                         progressDialog.dismiss();
                     }
-                }
+                });
+            }
 
-                @Override
-                public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG)
-                            .show();
-                    progressDialog.dismiss();
-                }
-            });
-
-        } else {
-
-            Toast.makeText(getApplicationContext(), "Please Pick An Image!!", Toast.LENGTH_LONG).show();
-        }
+//        }
+//        else {
+//
+//            Toast.makeText(getApplicationContext(), "Please Pick An Image!!", Toast.LENGTH_LONG).show();
+//        }
 
 
     }

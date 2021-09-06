@@ -28,13 +28,13 @@ public class viewPager2_adapter extends FragmentStateAdapter {
         switch (position) {
             case 0:
                 return new NewsFragment();
+//            case 1:
+//                return new VideoFragment();
+//            case 2:
+//                return new AudioFragment();
             case 1:
-                return new VideoFragment();
-            case 2:
-                return new AudioFragment();
-            case 3:
                 return new CategoryFragment();
-            case 4:
+            case 2:
                 return new DashboardFragment();
 
         }
@@ -48,7 +48,7 @@ public class viewPager2_adapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 3;
     }
 
 }

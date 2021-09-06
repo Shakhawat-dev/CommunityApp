@@ -1,7 +1,8 @@
-package com.metacoders.communityapp.activities;
+package com.metacoders.communityapp.activities.details;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,23 +11,32 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.metacoders.communityapp.CommentsActivity;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.activities.auther.AuthorPageActivity;
+import com.metacoders.communityapp.activities.comments.CommentsActivity;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
+import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.models.newModels.Post;
+import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.CallBacks;
 import com.metacoders.communityapp.utils.Constants;
+import com.metacoders.communityapp.utils.ConvertTime;
 import com.metacoders.communityapp.utils.PlayerManager;
-import com.metacoders.communityapp.utils.SharedPrefManager;
+import com.varunest.sparkbutton.SparkButton;
+import com.varunest.sparkbutton.SparkEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,7 +56,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     Dialog mFullScreenDialog;
     Post.PostModel post;
     private boolean mExoPlayerFullscreen = false;
-    private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails;
+    private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
     private Button mMediaAllComments;
 
     @Override
@@ -58,6 +68,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         TextView textView = findViewById(R.id.titleTV);
         mMediaTitle = (TextView) findViewById(R.id.media_title);
+        authorTv = findViewById(R.id.author);
         mMediaDate = (TextView) findViewById(R.id.media_date);
         mMediaViews = (TextView) findViewById(R.id.media_views);
         mMediaComments = (TextView) findViewById(R.id.media_comments);
@@ -70,21 +81,43 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         post = (Post.PostModel) o.getSerializableExtra("POST");
         //Toast.makeText(getApplicationContext() , "p" + post.getId()  , Toast.LENGTH_LONG).show(); ;
 
-        if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
+        setUpIcon();
+        try {
+            AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "Post Details");
+        } catch (Exception e) {
 
-            mMediaAllComments.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        }
 
+        findViewById(R.id.msgIcon).setOnClickListener(
+                v -> {
                     Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
                     intent.putExtra("POST_ID", post.getId());
+                    intent.putExtra("slug", post.getSlug());
                     startActivity(intent);
-                }
-            });
+                });
 
-        } else {
-            mMediaAllComments.setVisibility(View.INVISIBLE);
-        }
+        findViewById(R.id.shareIcon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.putExtra(Intent.EXTRA_SUBJECT, "Check This From NewsRme");
+                share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(post.getSlug()  , post.getLang()));
+                startActivity(Intent.createChooser(share, "Share link!"));
+
+
+            }
+        });
+
+
+        mMediaAllComments.setOnClickListener(view -> {
+
+            Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
+            intent.putExtra("POST_ID", post.getId());
+            intent.putExtra("slug", post.getSlug());
+
+            startActivity(intent);
+        });
 
 
         playerView.setPlayer(PlayerManager.getSharedInstance(PostDetailsPage.this).getPlayerView().getPlayer());
@@ -121,14 +154,36 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         });
 
+        authorTv.setOnClickListener(v -> {
+
+            Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
+            p.putExtra("author_id", post.getUser_id());
+            startActivity(p);
+
+
+        });
+
     }
 
     private void setDetails() {
         mMediaTitle.setText(post.getTitle() + "");
-        mMediaDate.setText(post.getCreated_at() + "");
-        mMediaViews.setText(post.getHit() + "");
-        mMediaDetails.setText(post.getDescription() + "");
+        SimpleDateFormat df = new SimpleDateFormat(Constants.CREATED_AT_FORMAT);
+        try {
+            Date date = df.parse(post.getCreated_at());
+            mMediaDate.setText(ConvertTime.getTimeAgo(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            mMediaDate.setText(post.getCreated_at() + "");
+        }
 
+        mMediaViews.setText(post.getHit() + " Views");
+        if (post.getDescription() == null || post.getDescription().isEmpty()) {
+            mMediaDetails.setText("No Description");
+        } else {
+            mMediaDetails.setText(post.getDescription() + "");
+        }
+
+        authorTv.setText(post.getName() + "");
 
     }
 
@@ -139,7 +194,13 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             PlayerManager.getSharedInstance(PostDetailsPage.this).stopPlayer();
         }
 
-        PlayerManager.getSharedInstance(PostDetailsPage.this).playStream( Path);
+        try {
+
+            PlayerManager.getSharedInstance(PostDetailsPage.this).playStream(Path);
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Something Wen Wrong !!!", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
@@ -212,13 +273,11 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             PlayerManager.getSharedInstance(PostDetailsPage.this).releasePlayer();
 
         }
-     //   finish();
+        //   finish();
         super.onBackPressed();
 
 
-
     }
-
 
 
     @Override
@@ -293,4 +352,58 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     }
 
+    private void setUpIcon() {
+        SparkButton button = findViewById(R.id.spark_button);
+
+        button.setEventListener(new SparkEventListener() {
+            @Override
+            public void onEvent(ImageView button, boolean buttonState) {
+
+                if (buttonState) {
+                    // Button is active
+                } else {
+                    // Button is inactive
+                }
+                createLike();
+            }
+
+            @Override
+            public void onEventAnimationEnd(ImageView button, boolean buttonState) {
+
+            }
+
+            @Override
+            public void onEventAnimationStart(ImageView button, boolean buttonState) {
+
+            }
+        });
+    }
+
+    private void createLike() {
+
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+        Call<LoginResponse.forgetPassResponse> callwd = api.likePost(
+                post.getId(),
+                post.getUser_id(),
+                post.getId()
+        );
+
+        callwd.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+                if (response.isSuccessful() && response.code() == 200) {
+                    Toast.makeText(getApplicationContext(), "Message : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error : " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+    }
 }

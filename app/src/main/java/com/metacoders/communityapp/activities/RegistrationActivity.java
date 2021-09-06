@@ -1,15 +1,18 @@
 package com.metacoders.communityapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -32,10 +35,7 @@ import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
-import com.metacoders.communityapp.models.RegistrationResponse;
-import com.metacoders.communityapp.utils.Constants;
-import com.metacoders.communityapp.utils.SharedPrefManager;
-import com.metacoders.communityapp.utils.StringGen;
+import com.metacoders.communityapp.models.newModels.RegistrationResp;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,14 +49,17 @@ import retrofit2.Response;
 public class RegistrationActivity extends AppCompatActivity {
 
 
-    private TextInputEditText mName, mUserName, mEmail, mPassword;
-    private Button mSignUpBtn;
+    private static final int RC_SIGN_IN = 1000;
     CheckBox isCehcked;
     Button googleBtn, fbBtn, vk;
     GoogleSignInOptions gso;
+    Spinner genderSpinner;
     GoogleSignInClient mGoogleSignInClient;
     CallbackManager callbackManager;
-    private static final int RC_SIGN_IN = 1000;
+    private TextInputEditText mName, mEmail, mPassword;
+    private Button mSignUpBtn;
+    private String gender = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +87,13 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (isCehcked.isChecked()) {
-                    register();
+                    if (gender.contains("gender")) {
+                        Toast.makeText(getApplicationContext(), "Please Select Your Gender", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        register();
+                    }
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Please Agree To ur Terms & Conditions", Toast.LENGTH_SHORT).show();
                 }
@@ -153,10 +162,10 @@ public class RegistrationActivity extends AppCompatActivity {
                     String first_name = object.getString("first_name");
                     String last_name = object.getString("last_name");
                     String mail = object.getString("email");
-                    String id = object.getString("id") ;
+                    String id = object.getString("id");
 
-//            String name, String userName, String fb_Id, String email, String google_id
-                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name , id, mail,"null" ,"facebook" ) ;
+
+                    RegisterWithSocial(first_name + " " + last_name, first_name + " " + last_name, id, mail, "null", "facebook");
 
                     Log.d("TAG", "onCompleted: " + first_name + " " + last_name + " " + mail);
                 } catch (JSONException e) {
@@ -179,42 +188,39 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void register() {
 
-        String name, userName, email, password;
+        String name, email, password;
 
-        if (!TextUtils.isEmpty(mUserName.getText().toString().trim()) && !TextUtils.isEmpty(mEmail.getText().toString().trim()) && !TextUtils.isEmpty(mPassword.getText().toString().trim())) {
+        if (!TextUtils.isEmpty(mEmail.getText().toString().trim()) && !TextUtils.isEmpty(mPassword.getText().toString().trim())) {
 
-            userName = mUserName.getText().toString().trim();
             name = mName.getText().toString().trim();
             email = mEmail.getText().toString().trim();
             password = mPassword.getText().toString().trim();
 
             NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-            Call<RegistrationResponse> call = api.registration(name, userName, email, password);
+            Call<RegistrationResp> call = api.registration(name, email, gender, password, password);
 
-            call.enqueue(new Callback<RegistrationResponse>() {
+            call.enqueue(new Callback<RegistrationResp>() {
                 @Override
-                public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
-                    if (response.isSuccessful()) {
-                        if (!response.body().getError()) {
-                            Toast.makeText(RegistrationActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                            Log.d(Constants.TAG, "onResponse: register" + response.body().toString());
+                public void onResponse(Call<RegistrationResp> call, Response<RegistrationResp> response) {
+                    if (response.isSuccessful() && response.code() == 200 && response.body().getMessage().contains("successfull")) {
 
-                            Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
+                        Toast.makeText(RegistrationActivity.this, response.body().getMessage() + " Please Login ", Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+
 
                     } else {
 
-                        Toast.makeText(RegistrationActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegistrationActivity.this, "Error :  " + response.code(), Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<RegistrationResponse> call, Throwable t) {
-                    Log.d(Constants.TAG, "onResponse: register" + t.toString());
-                    Toast.makeText(RegistrationActivity.this, "" + t.toString(), Toast.LENGTH_LONG).show();
+                public void onFailure(Call<RegistrationResp> call, Throwable t) {
+                    Toast.makeText(RegistrationActivity.this, "Please Check Your Entered Data!!!", Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -222,14 +228,33 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void initializations() {
         mName = (TextInputEditText) findViewById(R.id.regi_name);
-        mUserName = (TextInputEditText) findViewById(R.id.regi_user_name);
         mEmail = (TextInputEditText) findViewById(R.id.regi_email);
         mPassword = (TextInputEditText) findViewById(R.id.regi_pass);
         mSignUpBtn = (Button) findViewById(R.id.signUPBtn);
-
+        genderSpinner = findViewById(R.id.genderList);
         vk = findViewById(R.id.vkIcon2);
         googleBtn = findViewById(R.id.gButton);
         fbBtn = findViewById(R.id.fbBtn);
+
+
+        ArrayAdapter<String> catgoery_adapter = new ArrayAdapter<String>(RegistrationActivity.this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender));
+        catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genderSpinner.setAdapter(catgoery_adapter);
+
+
+        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                gender = parent.getSelectedItem().toString();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
     }
@@ -244,8 +269,7 @@ public class RegistrationActivity extends AppCompatActivity {
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        }
-        else {
+        } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
 
@@ -262,17 +286,17 @@ public class RegistrationActivity extends AppCompatActivity {
             Log.d("TAG", "handleSignInResult: " + account.getDisplayName()
                     + account.getId() + " " + account.getIdToken());
 //            String name, String userName, String fb_Id, String email, String google_id
-            RegisterWithSocial(account.getDisplayName(), account.getDisplayName() , "null" , account.getEmail(),account.getId() , "google" ) ;
+            RegisterWithSocial(account.getDisplayName(), account.getDisplayName(), "null", account.getEmail(), account.getId(), "google");
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Toast.makeText(getApplicationContext(), "Failed : Try Again " , Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Failed : Try Again ", Toast.LENGTH_LONG).show();
             Log.w("TAG", "signInResult:failed code=" + e.getStatusCode());
 
         }
     }
 
-    public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id , String type) {
+    public void RegisterWithSocial(String name, String userName, String fb_Id, String email, String google_id, String type) {
         Call<LoginResponse> call = RetrofitClient.getInstance()
                 .getApi()
                 .socialReg(
@@ -325,8 +349,6 @@ public class RegistrationActivity extends AppCompatActivity {
 //        });
 
     }
-
-
 
 
 }
