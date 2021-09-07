@@ -104,7 +104,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                 share.setType("text/plain");
                 share.putExtra(Intent.EXTRA_SUBJECT, "Check This From NewsRme");
-                share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(post.getSlug()  , post.getLang()));
+                share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(post.getSlug(), post.getLang()));
                 startActivity(Intent.createChooser(share, "Share link!"));
 
             }
