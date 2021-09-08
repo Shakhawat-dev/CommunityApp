@@ -57,7 +57,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     TextView userNameOnSide;
     Dialog dialog;
     CountryCodePicker countryCodePicker;
-
+    boolean isGo = true;
     TextView logOut;
     List<String> idlist = new ArrayList<>();
     CardView myActonSide, jobSide, ShopSide, profileSide, logOUtCard, notificationSide, contact_us;
@@ -108,6 +108,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         viewPager2_adapter viewPager2Adapter;
+
+
 
         getSupportActionBar().hide();
         RequestPermission();
@@ -248,19 +250,22 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         });
 
 
+        countryCodePicker.overrideClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //your code here.....
 
-        countryCodePicker.setOnCountryChangeListener(() -> {
-             SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
-                    countryCodePicker.getSelectedCountryCode() + "",
-                    countryCodePicker.getSelectedCountryNameCode());
-             Toast.makeText(getApplicationContext() ,countryCodePicker.getSelectedCountryCode() +"" , Toast.LENGTH_LONG).show();
+                //using following code you can launch
+                //ccp country selection dialog manually (if required)
+                // ccp.launchCountrySelectionDialog();
 
-             Intent  p = new Intent(getApplicationContext() , CountryList.class);
-             p.putExtra("countryCode" ,  countryCodePicker.getSelectedCountryCode() ) ;
-            p.putExtra("ph" ,  countryCodePicker.getSelectedCountryNameCode() ) ;
-             startActivity(p);
-
+                Intent p = new Intent(getApplicationContext(), CountryList.class);
+                p.putExtra("countryCode", countryCodePicker.getSelectedCountryCode());
+                p.putExtra("ph", countryCodePicker.getSelectedCountryNameCode());
+                startActivity(p);
+            }
         });
+
 
 
         lang.setOnClickListener(v -> {
@@ -394,10 +399,10 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         String[] arr = SharedPrefManager.getInstance(getApplicationContext()).getLangPref();
         // load the array  arr[0] = id arr[1] = name
 
-        try{
+        try {
             //countryCodePicker.setCountryForNameCode(arr[1]);
-        }catch (Exception e){
-          //  countryCodePicker.setCountryForNameCode("GB");
+        } catch (Exception e) {
+            //  countryCodePicker.setCountryForNameCode("GB");
         }
 
     }
@@ -437,11 +442,20 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     protected void onResume() {
         super.onResume();
+
+        countryCodePicker.setDefaultCountryUsingNameCode("GB");
         SharedPrefManager pref = new SharedPrefManager(getApplicationContext());
         if (pref.isUserLoggedIn()) {
             logOut.setText("Log Out");
         } else {
             logOut.setText("Log In");
         }
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
     }
 }

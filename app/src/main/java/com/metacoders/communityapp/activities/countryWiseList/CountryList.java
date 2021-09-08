@@ -79,6 +79,9 @@ public class CountryList extends AppCompatActivity implements ProductListDifferA
         recyclerView.setAdapter(mAdapter);
 
 
+        countryCodePicker.launchCountrySelectionDialog();
+
+
         countryCodePicker.setOnCountryChangeListener(() -> {
             SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
                     countryCodePicker.getSelectedCountryCode() + "",
@@ -93,7 +96,7 @@ public class CountryList extends AppCompatActivity implements ProductListDifferA
         });
         initScrollListener();
 
-        loadList(code + "", currentPage);
+        //loadList(code + "", currentPage);
     }
 
 
