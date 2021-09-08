@@ -71,12 +71,15 @@
                 android:textStyle="bold" />
 
             <com.hbb20.CountryCodePicker
-                android:id="@+id/ccp"
+                android:id="@+id/ccp11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:ccp_showFullName="false"
                 app:ccp_showPhoneCode="false"
+                app:ccp_selectionMemoryTag="signupCCP"
+                app:ccp_rememberLastSelection="false"
                 android:layout_gravity="end"
+                app:ccp_defaultNameCode="GB"
                 app:ccp_showNameCode="false"/>
 
             <ImageView

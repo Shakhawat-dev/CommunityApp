@@ -40,6 +40,7 @@ import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,7 +97,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
         manager = new LinearLayoutManager(getContext());
-
+        sharedPrefManager = new SharedPrefManager(getContext()) ;
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
@@ -209,7 +210,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
         Log.d("TAG", "loadCommonPost: page loading --> " + page);
         emptyLayout.setVisibility(View.GONE);
 
-        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, sharedPrefManager.getUserToken());
         Call<PostResponse> NetworkCall = api.getCommonNewsList(page);
         NetworkCall.enqueue(new Callback<PostResponse>() {
             @Override

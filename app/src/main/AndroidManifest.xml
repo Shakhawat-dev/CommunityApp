@@ -28,11 +28,14 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".activities.countryWiseList.CountryList"
+            android:exported="true" />
+        <activity
             android:name=".activities.contactPage.ContactPage"
             android:exported="true" />
         <activity
             android:name=".activities.auther.AuthorPageActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity android:name=".activities.comments.CommentsActivity" />
         <activity android:name=".activities.ShopPage" />
         <activity android:name=".activities.EditProfile" />

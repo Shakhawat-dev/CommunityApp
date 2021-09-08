@@ -37,6 +37,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.contactPage.ContactPage;
+import com.metacoders.communityapp.activities.countryWiseList.CountryList;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
 import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.models.newModels.UserModel;
@@ -117,7 +118,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         searchBtn = findViewById(R.id.searchBtn);
         lang = findViewById(R.id.langId);
 
-        countryCodePicker = findViewById(R.id.ccp);
+        countryCodePicker = findViewById(R.id.ccp11);
 
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -252,69 +253,75 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
              SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
                     countryCodePicker.getSelectedCountryCode() + "",
                     countryCodePicker.getSelectedCountryNameCode());
+             Toast.makeText(getApplicationContext() ,countryCodePicker.getSelectedCountryCode() +"" , Toast.LENGTH_LONG).show();
+
+             Intent  p = new Intent(getApplicationContext() , CountryList.class);
+             p.putExtra("countryCode" ,  countryCodePicker.getSelectedCountryCode() ) ;
+            p.putExtra("ph" ,  countryCodePicker.getSelectedCountryNameCode() ) ;
+             startActivity(p);
+
         });
-        lang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                langList.add(Constants.ENGLISH_CODE + " English");
-                langList.add(Constants.BD_CODE + " Bangla");
-                // create a dialouge
-
-                dialog = new Dialog(HomePage.this);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.language_dialouge);
-
-                ListView list = dialog.findViewById(R.id.langlist);
 
 
-                ArrayAdapter adapter = new ArrayAdapter<String>(HomePage.this,
-                        android.R.layout.simple_list_item_1, langList);
+        lang.setOnClickListener(v -> {
 
-                list.setAdapter(adapter);
+            langList.add(Constants.ENGLISH_CODE + " English");
+            langList.add(Constants.BD_CODE + " Bangla");
+            // create a dialouge
 
-                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            dialog = new Dialog(HomePage.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.language_dialouge);
 
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, final View view,
-                                            int position, long id) {
-                        // have to save this setting
-                        if (position == 0) {
-                            SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
-                                    position + "",
-                                    "EN");
-                            lang.setText(Constants.ENGLISH_CODE);
-                        } else {
-                            SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
-                                    position + "",
-                                    "BD");
-
-                            lang.setText(Constants.BD_CODE);
-                        }
+            ListView list = dialog.findViewById(R.id.langlist);
 
 
-                        // now save the past
-                        int oldid = viewPager.getCurrentItem();
+            ArrayAdapter adapter = new ArrayAdapter<String>(HomePage.this,
+                    android.R.layout.simple_list_item_1, langList);
 
-                        dialog.dismiss();
-                        // reload the view pager
-                        viewPager.setAdapter(viewPager2Adapter);
-                        // get back to the past
-                        viewPager.setCurrentItem(oldid);
+            list.setAdapter(adapter);
 
+            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, final View view,
+                                        int position, long id) {
+                    // have to save this setting
+                    if (position == 0) {
+                        SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
+                                position + "",
+                                "EN");
+                        lang.setText(Constants.ENGLISH_CODE);
+                    } else {
+                        SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
+                                position + "",
+                                "BD");
+
+                        lang.setText(Constants.BD_CODE);
                     }
 
-                });
 
-                dialog.setCancelable(true);
-                dialog.show();
+                    // now save the past
+                    int oldid = viewPager.getCurrentItem();
+
+                    dialog.dismiss();
+                    // reload the view pager
+                    viewPager.setAdapter(viewPager2Adapter);
+                    // get back to the past
+                    viewPager.setCurrentItem(oldid);
+
+                }
+
+            });
+
+            dialog.setCancelable(true);
+            dialog.show();
 
 
-            }
         });
 
         setUpSideBar();
-        countryCodePicker.setDefaultCountryUsingNameCode("GB");
+
         loadMiscData();
 
     }
@@ -388,9 +395,9 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         // load the array  arr[0] = id arr[1] = name
 
         try{
-            countryCodePicker.setCountryForNameCode(arr[1]);
+            //countryCodePicker.setCountryForNameCode(arr[1]);
         }catch (Exception e){
-            countryCodePicker.setCountryForNameCode("GB");
+          //  countryCodePicker.setCountryForNameCode("GB");
         }
 
     }

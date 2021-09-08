@@ -2,6 +2,7 @@ package com.metacoders.communityapp.api;
 
 import com.metacoders.communityapp.models.Audio_List_Model;
 import com.metacoders.communityapp.models.CommentModel;
+import com.metacoders.communityapp.models.CountryPostRespose;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.Profile_Model;
 import com.metacoders.communityapp.models.RegistrationResponse;
@@ -14,6 +15,7 @@ import com.metacoders.communityapp.models.newModels.PostResponse;
 import com.metacoders.communityapp.models.newModels.RegistrationResp;
 import com.metacoders.communityapp.models.newModels.SettingsModel;
 import com.metacoders.communityapp.models.newModels.SignInResponse;
+import com.metacoders.communityapp.models.newModels.SinglePostResponse;
 
 import org.json.JSONObject;
 
@@ -31,8 +33,20 @@ import retrofit2.http.Query;
 
 public interface NewsRmeApi {
 
-///:2
+    ///:2
 //:42
+    //search country list
+    @GET("country-wise-post/{code}")
+    Call<CountryPostRespose> getCountry(
+            @Path("code") String code,
+            @Query("page") int p
+    );
+
+    // single p/ost details
+    @GET("single-post/{slug}")
+    Call<SinglePostResponse> getSinglePost(
+            @Path("slug") String slug
+    );
 
     // name, email, phone,
     @FormUrlEncoded
@@ -86,11 +100,12 @@ public interface NewsRmeApi {
     Call<SettingsModel> getCategories_Countries(
     );
 
+
     //categorical post
 
     @GET("category-wise-post/{category}")
     Call<CategoryResponse> getCategoricalPost(
-            @Path("category") String path ,
+            @Path("category") String path,
             @Query("page") int page
     );
 

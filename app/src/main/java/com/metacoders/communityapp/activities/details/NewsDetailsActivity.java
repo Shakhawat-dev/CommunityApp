@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,9 +23,11 @@ import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.newModels.Post;
+import com.metacoders.communityapp.models.newModels.SinglePostResponse;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.ConvertTime;
+import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
 
@@ -199,5 +202,41 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 .load(imageLink + "")
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(playerView);
+    }
+
+    private void loadPostDetails(String slug) {
+
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+
+        Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug);
+
+        NetworkCall.enqueue(new Callback<SinglePostResponse>() {
+            @Override
+            public void onResponse(Call<SinglePostResponse> call, Response<SinglePostResponse> response) {
+
+                if (response.isSuccessful()) {
+                    SinglePostResponse res = response.body();
+
+                    Toast.makeText(getApplicationContext() , "R -> " + res.getPostLikesCheck() , Toast.LENGTH_LONG).show();
+                    Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+
+                } else {
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<SinglePostResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadPostDetails(post.getSlug());
     }
 }
