@@ -50,6 +50,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     ImageView fullscreenButton;
     Dialog mFullScreenDialog;
     Post.PostModel post;
+    Boolean isFollowed = false;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
     private Button mMediaAllComments;
@@ -97,6 +98,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
             Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
             p.putExtra("author_id", post.getUser_id());
+            p.putExtra("is_followed" , isFollowed);
             startActivity(p);
         });
 
@@ -217,8 +219,10 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     SinglePostResponse res = response.body();
 
-                    Toast.makeText(getApplicationContext() , "R -> " + res.getPostLikesCheck() , Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "R -> " + res.getPostLikesCheck(), Toast.LENGTH_LONG).show();
                     Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+
+                    isFollowed = res.followerCheck != null;
 
                 } else {
 

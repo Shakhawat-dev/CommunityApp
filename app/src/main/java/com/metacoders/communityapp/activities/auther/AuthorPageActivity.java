@@ -64,7 +64,17 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
 
         user_id = getIntent().getIntExtra("author_id", 0);
 
+        boolean isFollow = getIntent().getBooleanExtra("is_followed", false);
+
         setView();
+
+        if (isFollow) {
+            followButton.setText("Un-Follow");
+        } else {
+            followButton.setText("Follow");
+        }
+
+
 
 
         //  loadUrPost();

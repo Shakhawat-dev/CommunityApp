@@ -18,7 +18,6 @@ import com.metacoders.communityapp.BuildConfig;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
-import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.models.newModels.SettingsModel;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
@@ -53,7 +52,7 @@ public class SplashScreen extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean fstart = prefs.getBoolean("firstStart", true);
         if (fstart) {
-          //  show_Dialog_after_Install();
+            //  show_Dialog_after_Install();
 
         }
         Handler handler = new Handler();
@@ -73,7 +72,6 @@ public class SplashScreen extends AppCompatActivity {
 
 
     }
-
 
 
     private void printKeyHash() {
@@ -133,13 +131,13 @@ public class SplashScreen extends AppCompatActivity {
                     }
                     // send it to adaper
 
-                    if(SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()){
+                    if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
                         // to the activity
                         Intent p = new Intent(getApplicationContext(), HomePage.class);
                         // p.putExtra("MISC", dataResponse);
                         startActivity(p);
                         finish();
-                    }else {
+                    } else {
                         // to the activity
                         Intent p = new Intent(getApplicationContext(), LoginActivity.class);
                         // p.putExtra("MISC", dataResponse);
