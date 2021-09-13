@@ -86,8 +86,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(NewsDetailsActivity.this, CommentsActivity.class);
-                intent.putExtra("POST_ID", post.getId());
-                intent.putExtra("slug", post.getSlug());
+                intent.putExtra("POST_ID", post.getId()+"");
+                intent.putExtra("slug", post.getSlug()+"");
                 startActivity(intent);
             }
         });

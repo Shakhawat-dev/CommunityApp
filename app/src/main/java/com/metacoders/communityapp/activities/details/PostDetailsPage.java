@@ -92,8 +92,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         findViewById(R.id.msgIcon).setOnClickListener(
                 v -> {
                     Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
-                    intent.putExtra("POST_ID", post.getId());
-                    intent.putExtra("slug", post.getSlug());
+                    intent.putExtra("POST_ID", post.getId()+"");
+                    intent.putExtra("slug", post.getSlug()+"");
                     startActivity(intent);
                 });
 
