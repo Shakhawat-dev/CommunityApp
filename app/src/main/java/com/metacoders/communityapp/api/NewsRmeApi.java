@@ -261,12 +261,12 @@ public interface NewsRmeApi {
     );
 
     @FormUrlEncoded
-    @POST("Reply")
+    @POST("reply")
     Call<LoginResponse.forgetPassResponse> post_reply(
             @Field("post_id") String post_id,
             @Field("user_id") String user_id,
             @Field("comment_id") String comment_id,
-            @Field("Reply") String comment
+            @Field("reply") String comment
     );
 }
 

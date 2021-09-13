@@ -64,6 +64,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentAdapte
 
         slug = getIntent().getStringExtra("slug");
         post_id = getIntent().getStringExtra("POST_ID");
+        Toast.makeText(getApplicationContext(), "POS "+ post_id , Toast.LENGTH_LONG).show();
 
         try {
             AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "Comments");

@@ -92,6 +92,14 @@ public class NewsDetailsActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.msgIcon).setOnClickListener(
+                v -> {
+                    Intent intent = new Intent(NewsDetailsActivity.this, CommentsActivity.class);
+                    intent.putExtra("POST_ID", post.getId()+"");
+                    intent.putExtra("slug", post.getSlug()+"");
+                    startActivity(intent);
+                });
+
         post = (Post.PostModel) o.getSerializableExtra("POST");
 
         authorTv.setOnClickListener(v -> {
