@@ -65,7 +65,6 @@
                     android:id="@+id/media_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="2"
                     android:minLines="1"
                     android:padding="8dp"
                     android:text="hat a reader wed by the readable content of a page"

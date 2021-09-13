@@ -1,6 +1,7 @@
 package com.metacoders.communityapp.activities.countryWiseList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hbb20.CountryCodePicker;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.activities.details.NewsDetailsActivity;
+import com.metacoders.communityapp.activities.details.PostDetailsPage;
 import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -120,7 +123,14 @@ public class CountryList extends AppCompatActivity implements ProductListDifferA
 
     @Override
     public void onItemClick(Post.PostModel model) {
-
+        Intent p;
+        if (model.getType().equals("audio") || model.getType().equals("video")) {
+            p = new Intent(context, PostDetailsPage.class);
+        } else {
+            p = new Intent(context, NewsDetailsActivity.class);
+        }
+        p.putExtra("POST", model);
+        startActivity(p);
     }
 
     private void initScrollListener() {

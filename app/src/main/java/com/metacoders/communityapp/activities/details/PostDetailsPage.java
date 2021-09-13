@@ -2,6 +2,7 @@ package com.metacoders.communityapp.activities.details;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -102,7 +103,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                 share.setType("text/plain");
                 share.putExtra(Intent.EXTRA_SUBJECT, "Check This From NewsRme");
-                share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(post.getSlug()  , post.getLang()));
+                share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(post.getSlug(), post.getLang()));
                 startActivity(Intent.createChooser(share, "Share link!"));
 
 
@@ -232,7 +233,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     private void closeFullScreenDialog() {
 
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         ((ViewGroup) playerView.getParent()).removeView(playerView); // removes the player screen
 
 
@@ -251,6 +252,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     private void openFullScreenDialog() {
         // opening the dialgoue
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ((ViewGroup) playerView.getParent()).removeView(playerView); // removes the player screen
 
         mFullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

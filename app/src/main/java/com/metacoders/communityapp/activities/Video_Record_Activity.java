@@ -392,13 +392,20 @@ public class Video_Record_Activity extends AppCompatActivity {
 //        });
 
 
-        circleImageView.setImageResource(R.drawable.placeholder);
 
+        Glide.with(context)
+                .load(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .into(circleImageView);
         try {
             setTheLastImage();
         } catch (Exception e) {
 
-            circleImageView.setImageResource(R.drawable.placeholder);
+
+            Glide.with(context)
+                    .load(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
+                    .into(circleImageView);
 
         }
 
@@ -445,6 +452,8 @@ public class Video_Record_Activity extends AppCompatActivity {
                 Bitmap bm = BitmapFactory.decodeFile(imageLocation);
                 Glide.with(context)
                         .load(bm)
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder)
                         .error(R.drawable.placeholder)
                         .into(circleImageView);
 

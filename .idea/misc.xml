@@ -45,10 +45,14 @@
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/menu/nav_menu.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3567708333333333" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/activity_media_page.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/activity_news_details.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/row_video_home.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/row_video_mini.xml" value="0.34375" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
