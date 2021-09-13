@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -44,7 +43,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     SimpleExoPlayer player;
     boolean isPLaying = false;
     ImageView reportBtn;
-
+    SparkButton sparkButton;
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
     ImageView fullscreenButton;
@@ -69,7 +68,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
         mMediaComments = (TextView) findViewById(R.id.media_comments);
         mMediaDetails = (TextView) findViewById(R.id.media_details);
         authorTv = findViewById(R.id.author);
-
+        sparkButton = findViewById(R.id.spark_button);
         reportBtn = findViewById(R.id.reportImage);
         playerView = findViewById(R.id.player_view);
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
@@ -106,7 +105,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
             Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
             p.putExtra("author_id", post.getUser_id());
-            p.putExtra("is_followed" , isFollowed);
+            p.putExtra("is_followed", isFollowed);
             startActivity(p);
         });
 
@@ -128,10 +127,10 @@ public class NewsDetailsActivity extends AppCompatActivity {
     }
 
     private void setUpIcon() {
-        SparkButton button = findViewById(R.id.spark_button);
 
 
-        button.setEventListener(new SparkEventListener() {
+
+        sparkButton.setEventListener(new SparkEventListener() {
             @Override
             public void onEvent(ImageView button, boolean buttonState) {
 
@@ -216,6 +215,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
     private void loadPostDetails(String slug) {
 
+        findViewById(R.id.loadingPanel).findViewById(View.VISIBLE) ;
+
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
         Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug);
@@ -223,23 +224,28 @@ public class NewsDetailsActivity extends AppCompatActivity {
         NetworkCall.enqueue(new Callback<SinglePostResponse>() {
             @Override
             public void onResponse(Call<SinglePostResponse> call, Response<SinglePostResponse> response) {
-
+                findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
                 if (response.isSuccessful()) {
                     SinglePostResponse res = response.body();
-
-                    Toast.makeText(getApplicationContext(), "R -> " + res.getPostLikesCheck(), Toast.LENGTH_LONG).show();
-                    Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
-
                     isFollowed = res.followerCheck != null;
+                    if(res.postLikesCheck != null){
+                        sparkButton.setChecked(true);
+                    }else {
+                        sparkButton.setChecked(false);
+                    }
+
 
                 } else {
 
                 }
 
+
+
             }
 
             @Override
             public void onFailure(Call<SinglePostResponse> call, Throwable t) {
+                findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
                 Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

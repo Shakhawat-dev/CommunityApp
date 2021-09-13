@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -27,11 +28,13 @@ import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.models.newModels.Post;
+import com.metacoders.communityapp.models.newModels.SinglePostResponse;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.CallBacks;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.ConvertTime;
 import com.metacoders.communityapp.utils.PlayerManager;
+import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
 
@@ -46,7 +49,7 @@ import retrofit2.Response;
 
 
 public class PostDetailsPage extends AppCompatActivity implements CallBacks.playerCallBack {
-
+    Boolean isFollowed = false;
     PlayerView playerView;
     SimpleExoPlayer player;
     boolean isPLaying = false;
@@ -55,6 +58,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     boolean fullscreen = false;
     ImageView fullscreenButton;
     Dialog mFullScreenDialog;
+    SparkButton sparkButton ;
     Post.PostModel post;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
@@ -65,8 +69,9 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_media_page);
+        findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
         Intent o = getIntent();
-
+        sparkButton = findViewById(R.id.spark_button);
         TextView textView = findViewById(R.id.titleTV);
         mMediaTitle = (TextView) findViewById(R.id.media_title);
         authorTv = findViewById(R.id.author);
@@ -159,10 +164,13 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
             Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
             p.putExtra("author_id", post.getUser_id());
+            p.putExtra("is_followed" , isFollowed);
             startActivity(p);
 
 
         });
+
+        loadPostDetails(post.getSlug());
 
     }
 
@@ -355,9 +363,9 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     }
 
     private void setUpIcon() {
-        SparkButton button = findViewById(R.id.spark_button);
 
-        button.setEventListener(new SparkEventListener() {
+
+        sparkButton.setEventListener(new SparkEventListener() {
             @Override
             public void onEvent(ImageView button, boolean buttonState) {
 
@@ -408,4 +416,45 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
 
     }
+
+    private void loadPostDetails(String slug) {
+        findViewById(R.id.loadingPanel).findViewById(View.VISIBLE) ;
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+
+        Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug);
+
+        NetworkCall.enqueue(new Callback<SinglePostResponse>() {
+            @Override
+            public void onResponse(Call<SinglePostResponse> call, Response<SinglePostResponse> response) {
+                findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
+                if (response.isSuccessful()) {
+                    SinglePostResponse res = response.body();
+
+                  //  Toast.makeText(getApplicationContext(), "R -> " + res.getPostLikesCheck(), Toast.LENGTH_LONG).show();
+                    Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+
+                    isFollowed = res.followerCheck != null;
+
+                    if(res.postLikesCheck != null){
+                        sparkButton.setChecked(true);
+                    }else {
+                        sparkButton.setChecked(false);
+                    }
+
+                } else {
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<SinglePostResponse> call, Throwable t) {
+                findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
+                Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+
 }

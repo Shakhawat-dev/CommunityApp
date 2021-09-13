@@ -259,8 +259,15 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
 
                 try {
                     if (response.isSuccessful() && response.code() == 200) {
+
                         LoginResponse.forgetPassResponse model = response.body();
                         Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
+                        if(followButton.getText().toString().contains("Un-Follow")){
+                            followButton.setText("Follow");
+                        }else {
+                            followButton.setText("Un-Follow");
+                        }
+
                     } else {
                         Toast.makeText(getApplicationContext(), "Error : Code :" + response.code(), Toast.LENGTH_LONG).show();
                     }
