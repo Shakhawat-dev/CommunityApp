@@ -30,6 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.hbb20.CountryCodePicker;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.RetrofitClient;
@@ -59,6 +60,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private TextInputEditText mName, mEmail, mPassword;
     private Button mSignUpBtn;
     private String gender = "";
+    CountryCodePicker countryCodePicker ;
 
 
     @Override
@@ -66,6 +68,7 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         isCehcked = findViewById(R.id.termsCheck);
+        countryCodePicker = findViewById(R.id.ccp) ;
 // google sign in builder
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestServerAuthCode("377780946002-5p5rvr3l34iroj52k02o2i1956ljgb76.apps.googleusercontent.com")
@@ -198,7 +201,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-            Call<RegistrationResp> call = api.registration(name, email, gender, password, password);
+            Call<RegistrationResp> call = api.registration(name, email, gender, password, password , countryCodePicker.getSelectedCountryEnglishName().toLowerCase());
 
             call.enqueue(new Callback<RegistrationResp>() {
                 @Override

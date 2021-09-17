@@ -96,16 +96,13 @@ public class CategoryFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
         progressBar = (ProgressBar) view.findViewById(R.id.pbar);
         progressBar.setVisibility(View.GONE);
-        itemClickListenter = new CategoryAdapter.ItemClickListenter() {
-            @Override
-            public void onItemClick(View view, int pos) {
+        itemClickListenter = (view, pos) -> {
 
-                Intent o = new Intent(getContext(), singleList.class);
-                o.putExtra("cat_name", categoryList.get(pos).getCategory_name());
-                o.putExtra("type", "cat");
-                startActivity(o);
+            Intent o = new Intent(getContext(), singleList.class);
+            o.putExtra("cat_name", categoryList.get(pos).getCategory_name());
+            o.putExtra("type", "cat");
+            startActivity(o);
 
-            }
         };
 
         LoadData();
@@ -120,7 +117,6 @@ public class CategoryFragment extends Fragment {
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
         String accessTokens = sharedPrefManager.getUserToken();
         Log.d("TAG", "loadList: activity " + accessTokens);
-
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 

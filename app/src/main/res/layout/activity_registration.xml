@@ -173,6 +173,29 @@ sadipscing elitr, sed diam nonumy eirmod tempo"
                     </com.google.android.material.textfield.TextInputLayout>
 
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:text="Select Your Country"
+                        android:textSize="14sp"
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/sf"
+                        android:layout_height="wrap_content"/>
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/ccp"
+                        android:layout_marginVertical="4dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        app:ccp_showFullName="true"
+                        android:gravity="center_vertical"
+                        app:ccp_autoDetectCountry="true"
+                        app:ccp_selectionMemoryTag="hgg"
+                        app:ccpDialog_showTitle="true"
+                        android:background="@drawable/spinner_background"
+                        app:ccp_showPhoneCode="false"
+                        app:ccp_showNameCode="false"/>
+
+
                 </LinearLayout>
 
                 <LinearLayout

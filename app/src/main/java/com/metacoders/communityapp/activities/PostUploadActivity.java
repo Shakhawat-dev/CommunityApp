@@ -79,7 +79,6 @@ import retrofit2.Response;
 
 public class PostUploadActivity extends AppCompatActivity implements CallBacks.playerCallBack,
         ProgressRequestBody.UploadCallbacks {
-
     private static final int PICK_IMAGE = 100;
     Uri mediaUri = null;
     String uriPath = null;

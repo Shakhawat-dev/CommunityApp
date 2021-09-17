@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,21 +60,24 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     boolean fullscreen = false;
     ImageView fullscreenButton;
     Dialog mFullScreenDialog;
-    SparkButton sparkButton ;
+    SparkButton sparkButton;
     Post.PostModel post;
+    TextView like_count;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
     private Button mMediaAllComments;
+    RelativeLayout loadingPanel ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_media_page);
-        findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
+        loadingPanel  = findViewById(R.id.loadingPanel);
         Intent o = getIntent();
         sparkButton = findViewById(R.id.spark_button);
         TextView textView = findViewById(R.id.titleTV);
+        like_count = findViewById(R.id.like_count);
         mMediaTitle = (TextView) findViewById(R.id.media_title);
         authorTv = findViewById(R.id.author);
         mMediaDate = (TextView) findViewById(R.id.media_date);
@@ -97,8 +102,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         findViewById(R.id.msgIcon).setOnClickListener(
                 v -> {
                     Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
-                    intent.putExtra("POST_ID", post.getId()+"");
-                    intent.putExtra("slug", post.getSlug()+"");
+                    intent.putExtra("POST_ID", post.getId() + "");
+                    intent.putExtra("slug", post.getSlug() + "");
                     startActivity(intent);
                 });
 
@@ -119,8 +124,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         mMediaAllComments.setOnClickListener(view -> {
 
             Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
-            intent.putExtra("POST_ID", post.getId()+"");
-            intent.putExtra("slug", post.getSlug()+"");
+            intent.putExtra("POST_ID", post.getId() + "");
+            intent.putExtra("slug", post.getSlug() + "");
 
             startActivity(intent);
         });
@@ -164,7 +169,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
             Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
             p.putExtra("author_id", post.getUser_id());
-            p.putExtra("is_followed" , isFollowed);
+            p.putExtra("is_followed", isFollowed);
             startActivity(p);
 
 
@@ -193,6 +198,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         }
 
         authorTv.setText(post.getName() + "");
+        String userID = post.getUser_id() + "";
+        if (userID.equals(SharedPrefManager.getInstance(getApplicationContext()).getUser_ID())) {
+            authorTv.setText(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getName() + "");
+        }
 
     }
 
@@ -368,13 +377,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         sparkButton.setEventListener(new SparkEventListener() {
             @Override
             public void onEvent(ImageView button, boolean buttonState) {
-
-                if (buttonState) {
-                    // Button is active
-                } else {
-                    // Button is inactive
-                }
-                createLike();
+                createLike(buttonState);
             }
 
             @Override
@@ -389,7 +392,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         });
     }
 
-    private void createLike() {
+    private void createLike(boolean buttonState) {
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
         Call<LoginResponse.forgetPassResponse> callwd = api.likePost(
@@ -403,6 +406,16 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
                     Toast.makeText(getApplicationContext(), "Message : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                    if(response.body().getMessage().toLowerCase().contains("added")){
+                        like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + "");
+                    }else {
+                        if ((Integer.parseInt(like_count.getText().toString()) > 0)){
+                            like_count.setText((Integer.parseInt(like_count.getText().toString()) - 1) + "");
+                        } else {
+                            like_count.setText("0");
+                        }
+                    }
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Error : " + response.code(), Toast.LENGTH_LONG).show();
                 }
@@ -418,7 +431,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     }
 
     private void loadPostDetails(String slug) {
-        findViewById(R.id.loadingPanel).findViewById(View.VISIBLE) ;
+        loadingPanel.setVisibility(View.VISIBLE);
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
         Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug);
@@ -426,30 +439,39 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         NetworkCall.enqueue(new Callback<SinglePostResponse>() {
             @Override
             public void onResponse(Call<SinglePostResponse> call, Response<SinglePostResponse> response) {
-                findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
+
                 if (response.isSuccessful()) {
                     SinglePostResponse res = response.body();
 
-                  //  Toast.makeText(getApplicationContext(), "R -> " + res.getPostLikesCheck(), Toast.LENGTH_LONG).show();
+                    //  Toast.makeText(getApplicationContext(), "R -> " + res.getPostLikesCheck(), Toast.LENGTH_LONG).show();
                     Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
                     isFollowed = res.followerCheck != null;
+                    like_count.setText(res.getPostLikesCount() + "");
 
-                    if(res.postLikesCheck != null){
+                    try {
+                        authorTv.setText(response.body().getData().getAuther().getName());
+                    }catch (Exception e ){
+
+                    }
+
+
+                    if (res.postLikesCheck != null) {
                         sparkButton.setChecked(true);
-                    }else {
+                    } else {
                         sparkButton.setChecked(false);
+
                     }
 
                 } else {
 
                 }
-
+                loadingPanel.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<SinglePostResponse> call, Throwable t) {
-                findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
+                loadingPanel.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

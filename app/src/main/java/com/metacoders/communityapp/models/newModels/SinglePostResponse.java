@@ -11,7 +11,10 @@ import java.util.List;
 public class SinglePostResponse {
     @Expose
     @SerializedName("post")
-    public Post.PostModel data ;
+    public Post.PostModel data;
+
+
+
 
     @Expose
     @SerializedName("relatedPost")
@@ -19,16 +22,16 @@ public class SinglePostResponse {
 
     @Expose
     @SerializedName("postLikesCount")
-    public String postLikesCount ;
+    public int postLikesCount = 0 ;
     @Expose
     @SerializedName("postLikesCheck")
-    public JSONObject postLikesCheck = null ;
+    public JSONObject postLikesCheck = null;
     @Expose
     @SerializedName("followerCount")
-    public String followerCount ;
+    public int followerCount;
     @Expose
     @SerializedName("followerCheck")
-    public JSONObject followerCheck ;
+    public JSONObject followerCheck;
 
 
     public Post.PostModel getData() {
@@ -47,11 +50,12 @@ public class SinglePostResponse {
         this.relatedPosts = relatedPosts;
     }
 
-    public String getPostLikesCount() {
+    public int getPostLikesCount() {
+
         return postLikesCount;
     }
 
-    public void setPostLikesCount(String postLikesCount) {
+    public void setPostLikesCount(int postLikesCount) {
         this.postLikesCount = postLikesCount;
     }
 
@@ -63,11 +67,12 @@ public class SinglePostResponse {
         this.postLikesCheck = postLikesCheck;
     }
 
-    public String getFollowerCount() {
+
+    public int getFollowerCount() {
         return followerCount;
     }
 
-    public void setFollowerCount(String followerCount) {
+    public void setFollowerCount(int followerCount) {
         this.followerCount = followerCount;
     }
 

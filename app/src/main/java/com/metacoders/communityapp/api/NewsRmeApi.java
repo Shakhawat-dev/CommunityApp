@@ -137,7 +137,8 @@ public interface NewsRmeApi {
             @Field("email") String email,
             @Field("gender") String gender,
             @Field("password") String password,
-            @Field("password_confirmation") String password_confirmation
+            @Field("password_confirmation") String password_confirmation,
+             @Field("country") String country
 
     );
 

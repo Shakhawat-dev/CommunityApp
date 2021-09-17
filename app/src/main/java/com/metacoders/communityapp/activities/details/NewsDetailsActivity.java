@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ import retrofit2.Response;
 public class NewsDetailsActivity extends AppCompatActivity {
     ImageView playerView;
     SimpleExoPlayer player;
+    TextView like_count;
     boolean isPLaying = false;
     ImageView reportBtn;
     SparkButton sparkButton;
@@ -49,6 +51,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     ImageView fullscreenButton;
     Dialog mFullScreenDialog;
     Post.PostModel post;
+    RelativeLayout loadingPanel ;
     Boolean isFollowed = false;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
@@ -60,7 +63,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_news_details);
 
         Intent o = getIntent();
-
+        loadingPanel  = findViewById(R.id.loadingPanel);
         TextView textView = findViewById(R.id.titleTV);
         mMediaTitle = (TextView) findViewById(R.id.media_title);
         mMediaDate = (TextView) findViewById(R.id.media_date);
@@ -68,6 +71,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
         mMediaComments = (TextView) findViewById(R.id.media_comments);
         mMediaDetails = (TextView) findViewById(R.id.media_details);
         authorTv = findViewById(R.id.author);
+        like_count = findViewById(R.id.like_count);
         sparkButton = findViewById(R.id.spark_button);
         reportBtn = findViewById(R.id.reportImage);
         playerView = findViewById(R.id.player_view);
@@ -85,8 +89,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(NewsDetailsActivity.this, CommentsActivity.class);
-                intent.putExtra("POST_ID", post.getId()+"");
-                intent.putExtra("slug", post.getSlug()+"");
+                intent.putExtra("POST_ID", post.getId() + "");
+                intent.putExtra("slug", post.getSlug() + "");
                 startActivity(intent);
             }
         });
@@ -94,8 +98,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
         findViewById(R.id.msgIcon).setOnClickListener(
                 v -> {
                     Intent intent = new Intent(NewsDetailsActivity.this, CommentsActivity.class);
-                    intent.putExtra("POST_ID", post.getId()+"");
-                    intent.putExtra("slug", post.getSlug()+"");
+                    intent.putExtra("POST_ID", post.getId() + "");
+                    intent.putExtra("slug", post.getSlug() + "");
                     startActivity(intent);
                 });
 
@@ -129,17 +133,12 @@ public class NewsDetailsActivity extends AppCompatActivity {
     private void setUpIcon() {
 
 
-
         sparkButton.setEventListener(new SparkEventListener() {
             @Override
             public void onEvent(ImageView button, boolean buttonState) {
 
-//                if (buttonState) {
-//                    // Button is active
-//                } else {
-//                    // Button is inactive
-//                }
-                createLike();
+
+                createLike(buttonState);
             }
 
             @Override
@@ -155,7 +154,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     }
 
 
-    private void createLike() {
+    private void createLike(boolean buttonState) {
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
         Call<LoginResponse.forgetPassResponse> callwd = api.likePost(
@@ -168,7 +167,18 @@ public class NewsDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
-                    Toast.makeText(getApplicationContext(), "Message : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Msg : " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    if (response.body().getMessage().toLowerCase().contains("added")) {
+                        like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + "");
+                    } else {
+                        if ((Integer.parseInt(like_count.getText().toString()) > 0)) {
+                            like_count.setText((Integer.parseInt(like_count.getText().toString()) - 1) + "");
+                        } else {
+                            like_count.setText("0");
+                        }
+                    }
+
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Error : " + response.code(), Toast.LENGTH_LONG).show();
                 }
@@ -201,7 +211,14 @@ public class NewsDetailsActivity extends AppCompatActivity {
         } else {
             mMediaDetails.setText(post.getDescription() + "");
         }
+
+
         authorTv.setText(post.getName() + "");
+        String userID = post.getUser_id() + "";
+        if (userID.equals(SharedPrefManager.getInstance(getApplicationContext()).getUser_ID())) {
+            authorTv.setText(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getName() + "");
+        }
+
 
         String imageLink = "";
         if (post.getImage() == null || post.getImage().isEmpty()) {
@@ -215,7 +232,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
     private void loadPostDetails(String slug) {
 
-        findViewById(R.id.loadingPanel).findViewById(View.VISIBLE) ;
+        loadingPanel.setVisibility(View.VISIBLE);
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
@@ -224,13 +241,22 @@ public class NewsDetailsActivity extends AppCompatActivity {
         NetworkCall.enqueue(new Callback<SinglePostResponse>() {
             @Override
             public void onResponse(Call<SinglePostResponse> call, Response<SinglePostResponse> response) {
-                findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
+
                 if (response.isSuccessful()) {
                     SinglePostResponse res = response.body();
                     isFollowed = res.followerCheck != null;
-                    if(res.postLikesCheck != null){
+
+                    try {
+                        authorTv.setText(response.body().getData().getAuther().getName());
+                    }catch (Exception e ){
+
+                    }
+
+                    like_count.setText(res.getPostLikesCount() + "");
+
+                    if (res.postLikesCheck != null) {
                         sparkButton.setChecked(true);
-                    }else {
+                    } else {
                         sparkButton.setChecked(false);
                     }
 
@@ -239,13 +265,12 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
                 }
 
-
-
+                loadingPanel.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<SinglePostResponse> call, Throwable t) {
-                findViewById(R.id.loadingPanel).findViewById(View.GONE) ;
+                loadingPanel.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

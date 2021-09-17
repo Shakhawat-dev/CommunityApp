@@ -192,11 +192,6 @@ public class singleList extends AppCompatActivity implements ProductListDifferAd
         p.putExtra("POST", model);
         startActivity(p);
 
-        try {
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } catch (Exception e) {
-            Log.e("TAG", "onItemClick: " + e.getMessage());
-        }
 
     }
 

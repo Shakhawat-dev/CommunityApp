@@ -443,7 +443,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     protected void onResume() {
         super.onResume();
 
-        countryCodePicker.setDefaultCountryUsingNameCode("GB");
+
+        countryCodePicker.setAutoDetectedCountry(true);
         SharedPrefManager pref = new SharedPrefManager(getApplicationContext());
         if (pref.isUserLoggedIn()) {
             logOut.setText("Log Out");

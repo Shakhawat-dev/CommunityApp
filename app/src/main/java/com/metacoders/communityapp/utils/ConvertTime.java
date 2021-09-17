@@ -55,12 +55,13 @@ public class ConvertTime {
     }
 
     public static String getTimeAgo(Date date) {
-        long time = date.getTime()  + ((2)*HOUR_MILLIS) + 0*MINUTE_MILLIS ;
+        long time = date.getTime()  ;
+        // + ((2)*HOUR_MILLIS) + 0*MINUTE_MILLIS
         Log.d("NOW_RECIVED " , ""+ time);
 
-        if (time < 1000000000000L) {
-            time *= 1000 ;
-        }
+//        if (time < 1000000000000L) {
+//            time *= 1000 ;
+//        }
 
         long now = currentDate().getTime();
         if (time > now || time <= 0) {

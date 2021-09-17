@@ -2,13 +2,17 @@ package com.metacoders.communityapp.activities.countryWiseList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -16,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.hbb20.CountryCodePicker;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.details.NewsDetailsActivity;
@@ -28,6 +33,7 @@ import com.metacoders.communityapp.models.newModels.CountryModel;
 import com.metacoders.communityapp.models.newModels.Post;
 import com.metacoders.communityapp.models.newModels.SettingsModel;
 import com.metacoders.communityapp.utils.SharedPrefManager;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,14 +50,20 @@ public class CountryList extends AppCompatActivity implements ProductListDifferA
     RecyclerView recyclerView;
     SearchView searchView;
     boolean isScrolling = false;
+    boolean flag = false ;
+
     LinearLayoutManager manager;
+    String countyID = "22";
     ShimmerFrameLayout shimmerFrameLayout;
     ConstraintLayout emptyLayout;
+    SearchableSpinner searchableCountySpinner;
     ProgressBar centerProgressBar, bottomProgressBar;
     int currentItems = 0, totalItems = 0, scrollOutItems = 0;
     int currentPage = 1, endPage = 0;
     String code = "0";
+    BottomSheetDialog dialog;
     CountryCodePicker countryCodePicker;
+    SettingsModel settingsModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +72,14 @@ public class CountryList extends AppCompatActivity implements ProductListDifferA
 
         getSupportActionBar().hide();
 
+
         code = getIntent().getStringExtra("countryCode");
 
-
-
+        dialog = new BottomSheetDialog(CountryList.this);
+        dialog.setContentView(R.layout.country_choose);
         countryCodePicker = findViewById(R.id.ccp);
-        countryCodePicker.setCountryForNameCode(getIntent().getStringExtra("ph")); ;
+        countryCodePicker.setCountryForNameCode(getIntent().getStringExtra("ph"));
+        searchableCountySpinner = dialog.findViewById(R.id.countrySpinner);
         searchView = findViewById(R.id.search_bar);
         recyclerView = findViewById(R.id.newsfeed);
         shimmerFrameLayout = findViewById(R.id.shimmer_view_container);
@@ -82,24 +96,74 @@ public class CountryList extends AppCompatActivity implements ProductListDifferA
         recyclerView.setAdapter(mAdapter);
 
 
-        countryCodePicker.launchCountrySelectionDialog();
+     //   countryCodePicker.launchCountrySelectionDialog();
 
+        countryCodePicker.overrideClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        countryCodePicker.setOnCountryChangeListener(() -> {
-            SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
-                    countryCodePicker.getSelectedCountryCode() + "",
-                    countryCodePicker.getSelectedCountryNameCode());
-
-            currentPage = 1;
-            code = countryCodePicker.getSelectedCountryCode();
-            postsList.clear();
-            mAdapter.submitlist(postsList);
-            loadList(code, currentPage);
-
+                triggerBottom();
+            }
         });
+        settingsModel = SharedPrefManager.getInstance(getApplicationContext()).getAppSettingsModel();
+        searchableCountySpinner.setTitle("Select Country");
+
+
+        ArrayAdapter<CountryModel> country_adapter = new ArrayAdapter<CountryModel>(CountryList.this,
+                android.R.layout.simple_spinner_item, settingsModel.getCountries());
+        country_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        searchableCountySpinner.setAdapter(country_adapter);
+
+
+        searchableCountySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                CountryModel countryModel = (CountryModel) parent.getSelectedItem();
+                countyID = countryModel.getId() + "";
+                currentPage = 1;
+                code = countyID;
+                if(dialog != null && dialog.isShowing() && !flag){
+                    dialog.dismiss();
+                }
+
+                postsList.clear();
+                mAdapter.submitlist(postsList);
+                loadList(code, currentPage);
+                flag = false;
+                countryCodePicker.setCountryForNameCode(countryModel.getIso2());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                countyID = "22";
+            }
+        });
+
+
+//        countryCodePicker.setOnCountryChangeListener(() -> {
+//            SharedPrefManager.getInstance(getApplicationContext()).saveLangPref(
+//                    countryCodePicker.getSelectedCountryCode() + "",
+//                    countryCodePicker.getSelectedCountryNameCode());
+//
+//            currentPage = 1;
+//            code = countryCodePicker.getSelectedCountryCode();
+//            postsList.clear();
+//            mAdapter.submitlist(postsList);
+//            loadList(code, currentPage);
+//
+//        });
+
         initScrollListener();
 
         //loadList(code + "", currentPage);
+    }
+
+    private void triggerBottom() {
+
+        dialog.show();
+
     }
 
 
@@ -109,9 +173,13 @@ public class CountryList extends AppCompatActivity implements ProductListDifferA
         super.onStart();
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onResume() {
         super.onResume();
+        flag = true ;
+        triggerBottom();
         // shimmerFrameLayout.stopShimmer();
     }
 
@@ -195,22 +263,8 @@ public class CountryList extends AppCompatActivity implements ProductListDifferA
 
     private void loadList(String searchTerm, int page) {
         Boolean isFound = false;
-
-        SettingsModel model = SharedPrefManager.getInstance(getApplicationContext()).getAppSettingsModel();
-        List<CountryModel> countryModelList = model.getCountries();
-
-
         if (page == 1) {
             centerProgressBar.setVisibility(View.VISIBLE);
-            for (CountryModel model1 : countryModelList) {
-                if (model1.getPhonecode().equals(code)) {
-                    isFound = true;
-                    Log.d("TAG", "loadList: " + model1.getPhonecode() + " " + code);
-                    code = model1.getId() + "";
-                    Log.d("TAG", "loadList: " + " " + code);
-                    break;
-                }
-            }
         } else {
             bottomProgressBar.setVisibility(View.VISIBLE);
         }
@@ -241,7 +295,6 @@ public class CountryList extends AppCompatActivity implements ProductListDifferA
                     Post posts = response.body().getCountryPosts();
                     currentPage = posts.getCurrentPage();
                     endPage = posts.getLastPage();
-
 
                     postsList.addAll(posts.getData());
 
