@@ -3,6 +3,7 @@ package com.metacoders.communityapp.utils;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -25,9 +26,11 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.metacoders.communityapp.activities.MainActivity;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -40,16 +43,21 @@ public class PlayerManager {
     /**
      * declare some usable variable
      */
+    DefaultTrackSelector trackSelector;
+    DefaultTrackSelector defaultTrackSelector ;
+
     private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
     private static final String TAG = "ExoPlayerManager";
     private static PlayerManager mInstance = null;
     PlayerView mPlayerView;
+
     DefaultDataSourceFactory dataSourceFactory;
     String uriString = "";
     ArrayList<String> mPlayList = null;
     Integer playlistIndex = 0;
     CallBacks.playerCallBack listner;
     private SimpleExoPlayer mPlayer;
+
 
     /**
      * private constructor
@@ -59,14 +67,18 @@ public class PlayerManager {
     private PlayerManager(final Context mContext) {
 
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
-        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+
+
+        trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
         mPlayer = ExoPlayerFactory.newSimpleInstance(mContext, trackSelector);
+
 
 
         mPlayerView = new PlayerView(mContext);
         mPlayerView.setUseController(true);
         mPlayerView.requestFocus();
         mPlayerView.setPlayer(mPlayer);
+
 
         Uri mp4VideoUri = Uri.parse(uriString);
 
@@ -99,8 +111,16 @@ public class PlayerManager {
 //        playerNotificationManager.setBadgeIconType(NotificationCompat.BADGE_ICON_NONE);
 //        playerNotificationManager.setSmallIcon(R.drawable.ic_action_play);
 
-
-
+        Handler handler = new Handler();
+       // BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter.Builder(MainActivity.this).build();
+        BANDWIDTH_METER.addEventListener(handler, new BandwidthMeter.EventListener() {
+            @Override
+            public void onBandwidthSample(int elapsedMs, long bytesTransferred, long bitrateEstimate) {
+                Log.d(TAG, "elapsedMs: " + elapsedMs);
+                Log.d(TAG, "bytes transferred: " + bytesTransferred);
+                Log.d(TAG, "Average bitrate (bps) = " + (double) (bytesTransferred * 8) / (elapsedMs / 1000));
+            }
+        });
         mPlayer.addListener(new Player.EventListener() {
             @Override
             public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
@@ -109,7 +129,7 @@ public class PlayerManager {
 
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                Log.i(TAG, "onTracksChanged: ");
+                Log.i(TAG, "onTracksChanged: " );
             }
 
             @Override
@@ -121,7 +141,7 @@ public class PlayerManager {
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 Log.i(TAG, "onPlayerStateChanged: ");
                 if (playbackState == 4 && mPlayList != null && playlistIndex + 1 < mPlayList.size()) {
-                //    Log.e(TAG, "Song Changed...");
+                    //    Log.e(TAG, "Song Changed...");
 
                     playlistIndex++;
                     listner.onItemClickOnItem(playlistIndex);
@@ -196,9 +216,9 @@ public class PlayerManager {
 
         MediaSource videoSource;
         // String filenameArray[] = urlToPlay.split("\\.");
-        if (uriString.toUpperCase().contains("M3U8")) {
+        if (uriString.toUpperCase().contains("M3U")) {
             videoSource = new HlsMediaSource.Factory(dataSourceFactory)
-                    .setAllowChunklessPreparation(true)
+                   .setAllowChunklessPreparation(true)
                     .createMediaSource(mp4VideoUri, null, null);
         } else {
             mp4VideoUri = Uri.parse(urlToPlay);
@@ -214,6 +234,17 @@ public class PlayerManager {
 
     }
 
+    public void setStreamBitrate(int bitrate) {
+        DefaultTrackSelector.Parameters parameters = trackSelector.buildUponParameters()
+                .setMaxVideoBitrate(bitrate)
+                .setForceHighestSupportedBitrate(true)
+                .build();
+        trackSelector.setParameters(parameters);
+
+
+    }
+
+
     public void pausePlayer() {
         if (mPlayer != null) {
             mPlayer.setPlayWhenReady(false);
@@ -228,12 +259,13 @@ public class PlayerManager {
         }
     }
 
-    public void stopPlayer(){
+    public void stopPlayer() {
         if (mPlayer != null) {
             mPlayer.stop();
         }
     }
-    public void releasePlayer(){
+
+    public void releasePlayer() {
         if (mPlayer != null) {
             mPlayer.stop();
         }

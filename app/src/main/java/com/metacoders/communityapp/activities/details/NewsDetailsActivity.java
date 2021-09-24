@@ -42,6 +42,7 @@ import retrofit2.Response;
 public class NewsDetailsActivity extends AppCompatActivity {
     ImageView playerView;
     SimpleExoPlayer player;
+    public  static  String LIVETIVELINK  = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8" ;
     TextView like_count;
     boolean isPLaying = false;
     ImageView reportBtn;

@@ -56,6 +56,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     SimpleExoPlayer player;
     boolean isPLaying = false;
     ImageView reportBtn;
+    public  static  String LIVETIVELINK  = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8" ;
+
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
     ImageView fullscreenButton;
@@ -141,9 +143,21 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
             //Toast.makeText(getApplicationContext() , post.getPostType() + "" , Toast.LENGTH_LONG).show();
             // loadAudioDetails(post.getId());
-            playMedia(post.getPath());
+           playMedia(post.getPath());
+          //  playHlsVideo();
         } else if (post.getType().equals("video")) {
-            playMedia(post.getPath());
+            playMedia(LIVETIVELINK);
+            /*
+            #EXTM3U
+#EXT-X-STREAM-INF:BANDWIDTH=580800,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2",FRAME-RATE=30000.000
+7xtvXeoDsBi42AH1631677319_0_400.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=910800,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2",FRAME-RATE=30000.000
+7xtvXeoDsBi42AH1631677319_1_700.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=2890800,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2",FRAME-RATE=30000.000
+7xtvXeoDsBi42AH1631677319_2_2500.m3u8
+#EXT-X-ENDLIST
+             */
+      //      PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(580800);
 
         }
         // play the media
@@ -176,6 +190,15 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         });
 
         loadPostDetails(post.getSlug());
+
+    }
+
+    private void playHlsVideo() {
+        /*
+        play the HLS video here
+         */
+
+
 
     }
 
@@ -215,6 +238,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         try {
 
             PlayerManager.getSharedInstance(PostDetailsPage.this).playStream(Path);
+
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Something Wen Wrong !!!", Toast.LENGTH_LONG).show();
         }
