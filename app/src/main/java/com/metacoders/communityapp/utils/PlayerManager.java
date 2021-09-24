@@ -44,7 +44,7 @@ public class PlayerManager {
      * declare some usable variable
      */
     DefaultTrackSelector trackSelector;
-    DefaultTrackSelector defaultTrackSelector ;
+
 
     private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
     private static final String TAG = "ExoPlayerManager";
@@ -135,11 +135,12 @@ public class PlayerManager {
             @Override
             public void onLoadingChanged(boolean isLoading) {
                 Log.i(TAG, "onLoadingChanged: ");
+
             }
 
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                Log.i(TAG, "onPlayerStateChanged: ");
+                Log.i(TAG, "onPlayerStateChanged: "    );
                 if (playbackState == 4 && mPlayList != null && playlistIndex + 1 < mPlayList.size()) {
                     //    Log.e(TAG, "Song Changed...");
 
@@ -176,12 +177,12 @@ public class PlayerManager {
 
             @Override
             public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-                Log.i(TAG, "onPlaybackParametersChanged: ");
+                Log.i(TAG, "onPlaybackParametersChanged: " );
             }
 
             @Override
             public void onSeekProcessed() {
-                Log.i(TAG, "onSeekProcessed: ");
+                Log.i(TAG, "onSeekProcessed: " + mPlayer.getVideoFormat().bitrate);
             }
         });
     }
@@ -218,7 +219,7 @@ public class PlayerManager {
         // String filenameArray[] = urlToPlay.split("\\.");
         if (uriString.toUpperCase().contains("M3U")) {
             videoSource = new HlsMediaSource.Factory(dataSourceFactory)
-                   .setAllowChunklessPreparation(true)
+                   //.setAllowChunklessPreparation(true)
                     .createMediaSource(mp4VideoUri, null, null);
         } else {
             mp4VideoUri = Uri.parse(urlToPlay);
