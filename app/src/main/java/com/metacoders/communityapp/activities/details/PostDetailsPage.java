@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.gson.Gson;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.auther.AuthorPageActivity;
 import com.metacoders.communityapp.activities.comments.CommentsActivity;
@@ -39,6 +40,8 @@ import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
 
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -56,7 +59,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     SimpleExoPlayer player;
     boolean isPLaying = false;
     ImageView reportBtn;
-    public  static  String LIVETIVELINK  = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8" ;
+    public static String LIVETIVELINK = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8";
 
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
@@ -68,14 +71,14 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
     private Button mMediaAllComments;
-    RelativeLayout loadingPanel ;
+    RelativeLayout loadingPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_media_page);
-        loadingPanel  = findViewById(R.id.loadingPanel);
+        loadingPanel = findViewById(R.id.loadingPanel);
         Intent o = getIntent();
         sparkButton = findViewById(R.id.spark_button);
         TextView textView = findViewById(R.id.titleTV);
@@ -137,14 +140,13 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         PlayerManager.getSharedInstance(this).setPlayerListener(this);
 
-        setDetails();
-
+        callForGift() ;
         if (post.getType().equals("audio")) {
 
             //Toast.makeText(getApplicationContext() , post.getPostType() + "" , Toast.LENGTH_LONG).show();
             // loadAudioDetails(post.getId());
-           playMedia(post.getPath());
-          //  playHlsVideo();
+            playMedia(post.getPath());
+            //  playHlsVideo();
         } else if (post.getType().equals("video")) {
             playMedia(LIVETIVELINK);
             /*
@@ -157,7 +159,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 7xtvXeoDsBi42AH1631677319_2_2500.m3u8
 #EXT-X-ENDLIST
              */
-      //      PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(580800);
+            //      PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(580800);
 
         }
         // play the media
@@ -193,10 +195,34 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     }
 
-    private void playHlsVideo() {
-        /*
-        play the HLS video here
-         */
+    private void callForGift() {
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+        Call<JSONObject> NetworkCall = api.givePoint(
+                AppPreferences.getUSerID(getApplicationContext()) + "", post.getId(),  1000
+        );
+
+
+        NetworkCall.enqueue(new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                if(response.isSuccessful()){
+                    Log.d("TAG", "onResponse: " + response.code());
+
+                    Gson gson  = new Gson() ;
+                   String str =  gson.toJson(response.body()) ;
+                    Log.d("TAG", "onResponse: " + str);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+
+            }
+        });
+
+
 
 
 
@@ -290,6 +316,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
 
     }
+
 
     private void openFullScreenDialog() {
         // opening the dialgoue
@@ -430,10 +457,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
                     Toast.makeText(getApplicationContext(), "Message : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
-                    if(response.body().getMessage().toLowerCase().contains("added")){
+                    if (response.body().getMessage().toLowerCase().contains("added")) {
                         like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + "");
-                    }else {
-                        if ((Integer.parseInt(like_count.getText().toString()) > 0)){
+                    } else {
+                        if ((Integer.parseInt(like_count.getText().toString()) > 0)) {
                             like_count.setText((Integer.parseInt(like_count.getText().toString()) - 1) + "");
                         } else {
                             like_count.setText("0");
@@ -475,7 +502,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
                     try {
                         authorTv.setText(response.body().getData().getAuther().getName());
-                    }catch (Exception e ){
+                    } catch (Exception e) {
 
                     }
 

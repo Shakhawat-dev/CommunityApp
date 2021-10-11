@@ -42,6 +42,16 @@ public interface NewsRmeApi {
             @Query("page") int p
     );
 
+
+
+    @FormUrlEncoded
+    @POST("user-watch-time")
+    Call<JSONObject> givePoint(
+            @Field("user_id") String user_id,
+            @Field("post_id") int post_id,
+            @Field("watch_time") int watch_time
+    );
+
     // single p/ost details
     @GET("single-post/{slug}")
     Call<SinglePostResponse> getSinglePost(
