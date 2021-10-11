@@ -55,6 +55,18 @@
             android:includeFontPadding="false"
             android:textColor="#FFBEBEBE"/>
 
+        <TextView
+            android:id="@+id/qualitu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingLeft="4dp"
+            android:text="Auto"
+            android:paddingRight="4dp"
+            android:includeFontPadding="false"
+            android:textColor="#FFFFFF"/>
+
         <!--  there is the change   -->
         <FrameLayout
             android:id="@+id/exo_fullscreen_button"

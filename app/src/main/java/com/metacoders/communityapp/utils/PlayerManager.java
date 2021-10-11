@@ -244,6 +244,13 @@ public class PlayerManager {
 
 
     }
+    public void setStreamAutoBitrate() {
+        DefaultTrackSelector.Parameters parameters = trackSelector.buildUponParameters()
+                .build();
+        trackSelector.setParameters(parameters);
+
+
+    }
 
 
     public void pausePlayer() {

@@ -169,6 +169,9 @@ public class Post implements Serializable {
         @SerializedName("image")
         private String image;
         @Expose
+        @SerializedName("hls")
+        private String hls;
+        @Expose
         @SerializedName("type")
         private String type;
         @Expose
@@ -228,6 +231,14 @@ public class Post implements Serializable {
             this.lang = lang;
             this.user_id = user_id;
             this.id = id;
+        }
+
+        public String getHls() {
+            return hls;
+        }
+
+        public void setHls(String hls) {
+            this.hls = hls;
         }
 
         public String getName() {

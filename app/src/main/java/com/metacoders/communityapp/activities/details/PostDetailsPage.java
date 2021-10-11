@@ -4,10 +4,12 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -46,7 +48,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,13 +55,17 @@ import retrofit2.Response;
 
 
 public class PostDetailsPage extends AppCompatActivity implements CallBacks.playerCallBack {
+    public static String LIVETIVELINK = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8";
     Boolean isFollowed = false;
     PlayerView playerView;
     SimpleExoPlayer player;
     boolean isPLaying = false;
     ImageView reportBtn;
+<<<<<<< Updated upstream
     public static String LIVETIVELINK = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8";
 
+=======
+>>>>>>> Stashed changes
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
     ImageView fullscreenButton;
@@ -68,10 +73,15 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     SparkButton sparkButton;
     Post.PostModel post;
     TextView like_count;
+    RelativeLayout loadingPanel;
+    TextView qualityBtn;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
     private Button mMediaAllComments;
+<<<<<<< Updated upstream
     RelativeLayout loadingPanel;
+=======
+>>>>>>> Stashed changes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +89,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_media_page);
         loadingPanel = findViewById(R.id.loadingPanel);
+<<<<<<< Updated upstream
+=======
+        qualityBtn = findViewById(R.id.qualitu);
+>>>>>>> Stashed changes
         Intent o = getIntent();
         sparkButton = findViewById(R.id.spark_button);
         TextView textView = findViewById(R.id.titleTV);
@@ -145,6 +159,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
             //Toast.makeText(getApplicationContext() , post.getPostType() + "" , Toast.LENGTH_LONG).show();
             // loadAudioDetails(post.getId());
+<<<<<<< Updated upstream
             playMedia(post.getPath());
             //  playHlsVideo();
         } else if (post.getType().equals("video")) {
@@ -160,6 +175,25 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 #EXT-X-ENDLIST
              */
             //      PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(580800);
+=======
+            qualityBtn.setVisibility(View.GONE);
+            playMedia(post.getPath());
+            //  playHlsVideo();
+        } else if (post.getType().equals("video")) {
+            try {
+                if (post.getHls().toString().isEmpty() || post.getHls().toString().length() < 5) {
+                    qualityBtn.setVisibility(View.GONE);
+                    playMedia(post.getPath());
+                } else {
+                    qualityBtn.setVisibility(View.VISIBLE);
+                    playMedia(post.getHls());
+                }
+            } catch (Exception e) {
+                qualityBtn.setVisibility(View.GONE);
+                playMedia(post.getPath());
+            }
+
+>>>>>>> Stashed changes
 
         }
         // play the media
@@ -221,7 +255,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
             }
         });
-
 
 
 
@@ -424,6 +457,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     private void setUpIcon() {
 
+        qualityBtn.setOnClickListener(v -> TriggerDialogue());
+
 
         sparkButton.setEventListener(new SparkEventListener() {
             @Override
@@ -526,6 +561,48 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                 Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+
+    }
+
+    public void TriggerDialogue() {
+        Dialog dialog = new Dialog(PostDetailsPage.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.quality_dialogue);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView autoBtn = dialog.findViewById(R.id.auto);
+        TextView highBtn = dialog.findViewById(R.id.high);
+        TextView mediumBtn = dialog.findViewById(R.id.medium);
+        TextView lowBtn = dialog.findViewById(R.id.low);
+
+        highBtn.setOnClickListener(v -> {
+            PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.HIGH);
+            qualityBtn.setText("High");
+            dialog.dismiss();
+        });
+        mediumBtn.setOnClickListener(v -> {
+            PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.MEDIUM);
+            qualityBtn.setText("Med");
+            dialog.dismiss();
+        });
+        lowBtn.setOnClickListener(v -> {
+            PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.LOW);
+            qualityBtn.setText("Low");
+            dialog.dismiss();
+        });
+
+
+        autoBtn.setOnClickListener(v -> {
+                    PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamAutoBitrate();
+                    qualityBtn.setText("Auto");
+                    dialog.dismiss();
+                }
+
+        );
+
+
+        dialog.show();
 
     }
 
