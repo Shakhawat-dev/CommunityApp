@@ -5,31 +5,26 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 import com.hbb20.CountryCodePicker;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
@@ -40,8 +35,6 @@ import com.metacoders.communityapp.models.newModels.RegistrationResp;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,18 +50,17 @@ public class RegistrationActivity extends AppCompatActivity {
     Spinner genderSpinner;
     GoogleSignInClient mGoogleSignInClient;
     CallbackManager callbackManager;
-    private TextInputEditText mName, mEmail, mPassword;
-    private Button mSignUpBtn;
+    CountryCodePicker countryCodePicker;
+    private EditText mName, mEmail, mPassword, mConfirmationPass;
+    private AppCompatButton mSignUpBtn;
     private String gender = "";
-    CountryCodePicker countryCodePicker ;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
+        setContentView(R.layout.new_signup_layout);
         isCehcked = findViewById(R.id.termsCheck);
-        countryCodePicker = findViewById(R.id.ccp) ;
+        countryCodePicker = findViewById(R.id.ccp);
 // google sign in builder
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestServerAuthCode("377780946002-5p5rvr3l34iroj52k02o2i1956ljgb76.apps.googleusercontent.com")
@@ -94,7 +86,12 @@ public class RegistrationActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Please Select Your Gender", Toast.LENGTH_SHORT).show();
 
                     } else {
-                        register();
+                        if (mPassword.getText().toString().equals(mConfirmationPass.getText().toString())) {
+                            register();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Password Don't Match !!", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
 
                 } else {
@@ -103,43 +100,43 @@ public class RegistrationActivity extends AppCompatActivity {
 
             }
         });
-        googleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                googleSignIn();
-            }
-        });
-
-
-        fbBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(RegistrationActivity.this, Arrays.asList("email", "public_profile"));
-                callbackManager = CallbackManager.Factory.create();
-
-                LoginManager.getInstance().registerCallback(callbackManager,
-                        new FacebookCallback<LoginResult>() {
-                            @Override
-                            public void onSuccess(LoginResult loginResult) {
-                                // App code
-                                Log.d("TAG", "onSuccess: " + loginResult.getAccessToken());
-                            }
-
-                            @Override
-                            public void onCancel() {
-                                // App code
-                                Log.d("TAG", "onCancel: Fb Cancel ");
-                            }
-
-                            @Override
-                            public void onError(FacebookException exception) {
-                                // App code
-                                Log.d("TAG", "Error:  " + exception.getMessage());
-                            }
-
-                        });
-            }
-        });
+//        googleBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                googleSignIn();
+//            }
+//        });
+//
+//
+//        fbBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                LoginManager.getInstance().logInWithReadPermissions(RegistrationActivity.this, Arrays.asList("email", "public_profile"));
+//                callbackManager = CallbackManager.Factory.create();
+//
+//                LoginManager.getInstance().registerCallback(callbackManager,
+//                        new FacebookCallback<LoginResult>() {
+//                            @Override
+//                            public void onSuccess(LoginResult loginResult) {
+//                                // App code
+//                                Log.d("TAG", "onSuccess: " + loginResult.getAccessToken());
+//                            }
+//
+//                            @Override
+//                            public void onCancel() {
+//                                // App code
+//                                Log.d("TAG", "onCancel: Fb Cancel ");
+//                            }
+//
+//                            @Override
+//                            public void onError(FacebookException exception) {
+//                                // App code
+//                                Log.d("TAG", "Error:  " + exception.getMessage());
+//                            }
+//
+//                        });
+//            }
+//        });
 
 
 // token traker
@@ -201,7 +198,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-            Call<RegistrationResp> call = api.registration(name, email, gender, password, password , countryCodePicker.getSelectedCountryEnglishName().toLowerCase());
+            Call<RegistrationResp> call = api.registration(name, email, gender, password, password, countryCodePicker.getSelectedCountryEnglishName().toLowerCase());
 
             call.enqueue(new Callback<RegistrationResp>() {
                 @Override
@@ -230,34 +227,36 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void initializations() {
-        mName = (TextInputEditText) findViewById(R.id.regi_name);
-        mEmail = (TextInputEditText) findViewById(R.id.regi_email);
-        mPassword = (TextInputEditText) findViewById(R.id.regi_pass);
-        mSignUpBtn = (Button) findViewById(R.id.signUPBtn);
+        gender = "male";
+        mName = findViewById(R.id.regi_name);
+        mEmail = findViewById(R.id.regi_email);
+        mPassword = findViewById(R.id.regi_pass);
+        mSignUpBtn = findViewById(R.id.signUPBtn);
+        mConfirmationPass = findViewById(R.id.login_confirm_password_et);
         genderSpinner = findViewById(R.id.genderList);
         vk = findViewById(R.id.vkIcon2);
         googleBtn = findViewById(R.id.gButton);
         fbBtn = findViewById(R.id.fbBtn);
 
 
-        ArrayAdapter<String> catgoery_adapter = new ArrayAdapter<String>(RegistrationActivity.this,
-                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender));
-        catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        genderSpinner.setAdapter(catgoery_adapter);
-
-
-        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                gender = parent.getSelectedItem().toString();
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+//        ArrayAdapter<String> catgoery_adapter = new ArrayAdapter<String>(RegistrationActivity.this,
+//                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender));
+//        catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        genderSpinner.setAdapter(catgoery_adapter);
+//
+//
+//        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                gender = parent.getSelectedItem().toString();
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
 
 
     }

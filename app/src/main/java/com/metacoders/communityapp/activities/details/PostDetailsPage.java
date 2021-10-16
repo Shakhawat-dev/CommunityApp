@@ -61,11 +61,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     SimpleExoPlayer player;
     boolean isPLaying = false;
     ImageView reportBtn;
-<<<<<<< Updated upstream
-    public static String LIVETIVELINK = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8";
-
-=======
->>>>>>> Stashed changes
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
     ImageView fullscreenButton;
@@ -78,10 +73,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
     private Button mMediaAllComments;
-<<<<<<< Updated upstream
-    RelativeLayout loadingPanel;
-=======
->>>>>>> Stashed changes
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +81,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_media_page);
         loadingPanel = findViewById(R.id.loadingPanel);
-<<<<<<< Updated upstream
-=======
         qualityBtn = findViewById(R.id.qualitu);
->>>>>>> Stashed changes
         Intent o = getIntent();
         sparkButton = findViewById(R.id.spark_button);
         TextView textView = findViewById(R.id.titleTV);
@@ -154,29 +143,11 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         PlayerManager.getSharedInstance(this).setPlayerListener(this);
 
-        callForGift() ;
+        callForGift();
         if (post.getType().equals("audio")) {
 
             //Toast.makeText(getApplicationContext() , post.getPostType() + "" , Toast.LENGTH_LONG).show();
             // loadAudioDetails(post.getId());
-<<<<<<< Updated upstream
-            playMedia(post.getPath());
-            //  playHlsVideo();
-        } else if (post.getType().equals("video")) {
-            playMedia(LIVETIVELINK);
-            /*
-            #EXTM3U
-#EXT-X-STREAM-INF:BANDWIDTH=580800,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2",FRAME-RATE=30000.000
-7xtvXeoDsBi42AH1631677319_0_400.m3u8
-#EXT-X-STREAM-INF:BANDWIDTH=910800,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2",FRAME-RATE=30000.000
-7xtvXeoDsBi42AH1631677319_1_700.m3u8
-#EXT-X-STREAM-INF:BANDWIDTH=2890800,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2",FRAME-RATE=30000.000
-7xtvXeoDsBi42AH1631677319_2_2500.m3u8
-#EXT-X-ENDLIST
-             */
-            //      PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(580800);
-=======
-            qualityBtn.setVisibility(View.GONE);
             playMedia(post.getPath());
             //  playHlsVideo();
         } else if (post.getType().equals("video")) {
@@ -193,7 +164,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                 playMedia(post.getPath());
             }
 
->>>>>>> Stashed changes
 
         }
         // play the media
@@ -225,6 +195,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         });
 
+        setDetails();
         loadPostDetails(post.getSlug());
 
     }
@@ -233,18 +204,18 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
         Call<JSONObject> NetworkCall = api.givePoint(
-                AppPreferences.getUSerID(getApplicationContext()) + "", post.getId(),  1000
+                AppPreferences.getUSerID(getApplicationContext()) + "", post.getId(), 1000
         );
 
 
         NetworkCall.enqueue(new Callback<JSONObject>() {
             @Override
             public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Log.d("TAG", "onResponse: " + response.code());
 
-                    Gson gson  = new Gson() ;
-                   String str =  gson.toJson(response.body()) ;
+                    Gson gson = new Gson();
+                    String str = gson.toJson(response.body());
                     Log.d("TAG", "onResponse: " + str);
 
                 }
@@ -255,8 +226,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
             }
         });
-
-
 
 
     }

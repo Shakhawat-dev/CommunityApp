@@ -35,6 +35,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,21 +55,24 @@ public class NewsDetailsActivity extends AppCompatActivity {
     Post.PostModel post;
     RelativeLayout loadingPanel ;
     Boolean isFollowed = false;
+    CircleImageView autherImage ;
+
     private boolean mExoPlayerFullscreen = false;
-    private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
+    private TextView mMediaTitle, mMediaDate, mMediaComments, mMediaDetails, authorTv;
     private Button mMediaAllComments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_details);
+        setContentView(R.layout.activity_article_page_new);
 
         Intent o = getIntent();
         loadingPanel  = findViewById(R.id.loadingPanel);
+        autherImage = findViewById(R.id.profile_image) ;
         TextView textView = findViewById(R.id.titleTV);
         mMediaTitle = (TextView) findViewById(R.id.media_title);
         mMediaDate = (TextView) findViewById(R.id.media_date);
-        mMediaViews = (TextView) findViewById(R.id.media_views);
+       // mMediaViews = (TextView) findViewById(R.id.media_views);
         mMediaComments = (TextView) findViewById(R.id.media_comments);
         mMediaDetails = (TextView) findViewById(R.id.media_details);
         authorTv = findViewById(R.id.author);
@@ -105,6 +109,11 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 });
 
         post = (Post.PostModel) o.getSerializableExtra("POST");
+
+//       Glide.with(getApplicationContext())
+//               .load(post.getAuther().getImage())
+//               .into(autherImage);
+
 
         authorTv.setOnClickListener(v -> {
 
@@ -205,7 +214,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
             mMediaDate.setText(post.getCreated_at() + "");
         }
 
-        mMediaViews.setText(post.getHit() + "");
+        //mMediaViews.setText(post.getHit() + "");
         mMediaComments.setText("0");
         if (post.getDescription() == null || post.getDescription().isEmpty()) {
             mMediaDetails.setText("No Description");

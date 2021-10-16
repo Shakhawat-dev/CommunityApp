@@ -10,7 +10,10 @@
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/drawable/ic_like.xml" value="0.3567708333333333" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/drawable/ic_message.xml" value="0.3567708333333333" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/drawable/ic_no_data.xml" value="0.3567708333333333" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/drawable/rounded_background_blue.xml" value="0.3567708333333333" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/drawable/spinner_background.xml" value="0.35128205128205126" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_article_page_new.xml" value="0.5" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_audio_play_new.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_author_page.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_change_password.xml" value="0.3353846153846154" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_comments.xml" value="0.3353846153846154" />
@@ -29,6 +32,7 @@
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_single_list.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_splash_screen.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_video__record_.xml" value="0.3353846153846154" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_video_play_new.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/activity_voice__recoder_.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/countryChoose.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/custom_drawer_layout.xml" value="0.340625" />
@@ -38,8 +42,13 @@
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/fragment_dashboard.xml" value="0.3353846153846154" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/fragment_news.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/layout_empty_response.xml" value="0.340625" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/new_big_row_audio.xml" value="0.340625" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/new_big_row_news.xml" value="0.340625" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/new_big_row_video.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/new_follower_row.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/new_login_layout.xml" value="0.340625" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/new_signup_layout.xml" value="0.340625" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/new_splash_layout.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/quality_dialogue.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/row_category.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/row_comment.xml" value="0.3353846153846154" />
@@ -47,6 +56,8 @@
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/row_reply.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/row_video_home.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/row_video_mini.xml" value="0.25" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/row_video_mini_next_new.xml" value="0.340625" />
+        <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/layout/video_option_bottom_sheet.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/menu/nav_menu.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3567708333333333" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2" />

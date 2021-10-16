@@ -90,48 +90,48 @@ public class LoginActivity extends AppCompatActivity {
         initializations();
 
 
-        googleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                googleSignIn();
-            }
-        });
-
-
-        fbBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile"));
-                callbackManager = CallbackManager.Factory.create();
-
-                LoginManager.getInstance().registerCallback(callbackManager,
-                        new FacebookCallback<LoginResult>() {
-                            @Override
-                            public void onSuccess(LoginResult loginResult) {
-                                // App code
-                                Log.d("TAG", "onSuccess: " + loginResult.getAccessToken());
-                            }
-
-                            @Override
-                            public void onCancel() {
-                                // App code
-                                Log.d("TAG", "onCancel: Fb Cancel ");
-                            }
-
-                            @Override
-                            public void onError(FacebookException exception) {
-                                // App code
-                                Log.d("TAG", "Error:  " + exception.getMessage());
-                                try {
-                                    LoginManager.getInstance().logOut();
-                                } catch (Exception e) {
-
-                                }
-                            }
-
-                        });
-            }
-        });
+//        googleBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                googleSignIn();
+//            }
+//        });
+//
+//
+//        fbBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile"));
+//                callbackManager = CallbackManager.Factory.create();
+//
+//                LoginManager.getInstance().registerCallback(callbackManager,
+//                        new FacebookCallback<LoginResult>() {
+//                            @Override
+//                            public void onSuccess(LoginResult loginResult) {
+//                                // App code
+//                                Log.d("TAG", "onSuccess: " + loginResult.getAccessToken());
+//                            }
+//
+//                            @Override
+//                            public void onCancel() {
+//                                // App code
+//                                Log.d("TAG", "onCancel: Fb Cancel ");
+//                            }
+//
+//                            @Override
+//                            public void onError(FacebookException exception) {
+//                                // App code
+//                                Log.d("TAG", "Error:  " + exception.getMessage());
+//                                try {
+//                                    LoginManager.getInstance().logOut();
+//                                } catch (Exception e) {
+//
+//                                }
+//                            }
+//
+//                        });
+//            }
+//        });
 
 
 // token traker
@@ -226,8 +226,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initializations() {
         registerTV = (TextView) findViewById(R.id.register_tv);
-        mUsername = (TextInputEditText) findViewById(R.id.login_username);
-        mPassword = (TextInputEditText) findViewById(R.id.login_password);
+        mUsername =  findViewById(R.id.login_username);
+        mPassword =  findViewById(R.id.login_password);
         mLoginBtn = (Button) findViewById(R.id.login_btn);
         forget_pass_tv = findViewById(R.id.forget_passwordBtn);
     }

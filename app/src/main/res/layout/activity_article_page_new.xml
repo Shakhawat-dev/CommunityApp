@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -15,6 +15,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/player_view"
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
                 android:src="@drawable/placeholder"
@@ -57,7 +58,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/button2"
+                            app:layout_constraintEnd_toStartOf="@+id/shareIcon"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toEndOf="@id/profile_image"
                             app:layout_constraintTop_toTopOf="parent">
@@ -69,6 +70,7 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/author"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Robin Sharma"
@@ -102,7 +104,7 @@
                         </LinearLayout>
 
                         <ImageView
-                            android:id="@+id/button2"
+                            android:id="@+id/shareIcon"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/share"
@@ -129,7 +131,98 @@
                 </LinearLayout>
 
             </LinearLayout>
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
 
+
+                <com.varunest.sparkbutton.SparkButton
+                    android:id="@+id/spark_button"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="2dp"
+                    app:sparkbutton_activeImage="@drawable/ic_like"
+                    app:sparkbutton_iconSize="24dp"
+                    app:sparkbutton_inActiveImage="@drawable/ic_unlike"
+                    app:sparkbutton_primaryColor="@color/colorBlue"
+                    app:sparkbutton_secondaryColor="@color/pdlg_color_yellow" />
+                <TextView
+                    android:id="@+id/like_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/black"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+                <ImageView
+                    android:id="@+id/msgIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:background="@drawable/ic_message" />
+
+                <ImageView
+
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:background="@drawable/ic_baseline_share_24"
+                    android:backgroundTint="@color/black" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:gravity="end"
+                    android:paddingRight="8dp">
+
+                    <TextView
+                        android:id="@+id/media_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_baseline_date_range_10"
+                        android:drawablePadding="4dp"
+                        android:drawableTint="@color/black"
+                        android:gravity="center"
+                        android:text="05/21/2020"
+                        android:textColor="@color/black" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:drawableStart="@drawable/ic_baseline_account_circle_24"
+                        android:drawablePadding="4dp"
+                        android:drawableTint="@color/black"
+                        android:fontFamily="@font/nunito_semi_bold"
+
+                        android:textColor="@color/colorGreen" />
+
+                    <TextView
+                        android:id="@+id/media_comments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:drawableStart="@drawable/ic_baseline_comment_24"
+                        android:drawablePadding="4dp"
+                        android:drawableTint="@color/colorWhite"
+                        android:text="0"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -156,6 +249,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/media_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Audio Title Goes Here. Video Title Should be Display here.."
@@ -164,9 +258,12 @@
                     android:textColor="@color/black" />
 
                 <TextView
+                    android:id="@+id/media_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:textAllCaps="false"
+                    android:textAlignment="center"
                     android:text="Video Description preview show here. video preview description show more"
                     android:textSize="16dp" />
 
@@ -181,11 +278,41 @@
                     android:layout_marginBottom="2dp"
                     android:background="@drawable/rounded_boarder_stroke_gray"
                     android:hint="Your Comment" />
+                <Button
+                    android:id="@+id/media_see_all_comments"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:visibility="gone"
+                    android:text="See all comments" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.8"
+            android:background="#000000" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+
+
+    </RelativeLayout>
+</FrameLayout>

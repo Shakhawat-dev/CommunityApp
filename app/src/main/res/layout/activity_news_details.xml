@@ -111,7 +111,7 @@
                         android:background="@drawable/ic_message" />
 
                     <ImageView
-                        android:id="@+id/shareIcon"
+
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginStart="@dimen/_6sdp"

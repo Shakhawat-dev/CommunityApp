@@ -5,8 +5,6 @@ import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOption
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.media.ThumbnailUtils;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.models.newModels.Post;
@@ -39,8 +36,10 @@ import java.util.List;
 
 public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDifferAdapter.DiffferViewholder> {
     //callBack
-    private static final int BIG_ROW = 1;
-    private static final int SMALL_ROW = 0;
+
+    private static final int VIDEO_ROW = 1;
+    private static final int AUDIO_ROW = 0;
+    private static final int NEWS_ROW = 2;
     Context context;
     private Boolean will_show_big_row = false;
     private AsyncListDiffer<Post.PostModel> mDiffer;
@@ -62,6 +61,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
     };
 
     public ProductListDifferAdapter(Context context, ItemClickListener itemClickListener, Boolean will_show_big_row) {
+
         this.mInflater = LayoutInflater.from(context);
         // this.mData = productList;
         this.context = context;
@@ -74,13 +74,20 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
     @Override
     public int getItemViewType(int position) {
 
+        int viewType = 2;
 
-        if (position == 0 && will_show_big_row) {
 
-            return BIG_ROW;
+        if (mDiffer.getCurrentList().size() > 0) {
 
+            if (mDiffer.getCurrentList().get(position).getType().toString().contains("audio")) {
+                return AUDIO_ROW;
+            } else if (mDiffer.getCurrentList().get(position).getType().toString().contains("video")) {
+                return VIDEO_ROW;
+            } else {
+                return NEWS_ROW;
+            }
         } else {
-            return SMALL_ROW;
+            return 2;
         }
 
 
@@ -102,6 +109,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         return mDiffer.getCurrentList();
     }
 
+
     @Override
     public int getItemCount() {
         return mDiffer.getCurrentList().size();
@@ -114,14 +122,18 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
     public DiffferViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = null;
 
-        if (viewType == BIG_ROW) {
+        if (viewType == VIDEO_ROW) {
             view = LayoutInflater
                     .from(parent.getContext())
-                    .inflate(R.layout.row_video_home, parent, false);
-        } else if (viewType == SMALL_ROW) {
+                    .inflate(R.layout.new_big_row_video, parent, false);
+        } else if (viewType == AUDIO_ROW) {
             view = LayoutInflater
                     .from(parent.getContext())
-                    .inflate(R.layout.row_video_mini, parent, false);
+                    .inflate(R.layout.new_big_row_audio, parent, false);
+        } else {
+            view = LayoutInflater
+                    .from(parent.getContext())
+                    .inflate(R.layout.new_big_row_news, parent, false);
         }
 
         return new DiffferViewholder(view, itemClickListener);
@@ -138,7 +150,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         holder.author.setText(newsFeed.getName());
         holder.title.setText(newsFeed.getTitle());
         holder.viewCount.setText(newsFeed.getHit() + "");
-        holder.commentCount.setText("0");
+
         //  Log.d("TAGE", "onBindViewHolder: "+ newsFeed.getStatus() + " Vis" + newsFeed.getVisibility());
         // convert time
         SimpleDateFormat df = new SimpleDateFormat(Constants.CREATED_AT_FORMAT);
@@ -150,19 +162,19 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
             holder.date.setText(newsFeed.getCreated_at());
         }
         String imageLink = "";
-        boolean isVideo = false ;
+        boolean isVideo = false;
 
         if (newsFeed.getType().equals("video")) {
             if ((newsFeed.getThumb() == null || newsFeed.getThumb().isEmpty())) {
                 imageLink = newsFeed.getPath() + "";
-                isVideo = true ;
+                isVideo = true;
             } else {
-                isVideo = false ;
+                isVideo = false;
                 imageLink = newsFeed.getThumb() + "";
             }
 
         } else {
-            isVideo = false ;
+            isVideo = false;
             if ((newsFeed.getThumb() == null || newsFeed.getThumb().isEmpty())) {
                 imageLink = newsFeed.getImage() + "";
             } else imageLink = newsFeed.getThumb() + "";
@@ -176,16 +188,13 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
                 new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
 
 
-            Glide.with(context)
-                    .load(imageLink)
-                    .centerCrop()
-                    .transition(withCrossFade(factory))
-                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .placeholder(R.drawable.placeholder)
-                    .into(holder.image);
-
-
-
+        Glide.with(context)
+                .load(imageLink)
+                .centerCrop()
+                .transition(withCrossFade(factory))
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .placeholder(R.drawable.placeholder)
+                .into(holder.image);
 
 
         // setting details
@@ -212,7 +221,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
 
     }
 
-    public  void  loadImage(String url ){
+    public void loadImage(String url) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         //give YourVideoUrl below
         retriever.setDataSource("YourVideoUrl", new HashMap<String, String>());
@@ -220,6 +229,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         Bitmap image = retriever.getFrameAtTime(2000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
 //use this bitmap image
     }
+
     public interface ItemClickListener {
         void onItemClick(Post.PostModel model);
     }
@@ -228,22 +238,22 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         public TextView title, desc;
         public ImageView image, playBtn;
         public TextView author, viewCount, date;
-        public TextView commentCount;
-        public CardView container;
+      //  public TextView commentCount;
+      //  public CardView container;
         ItemClickListener itemClickListener;
 
         public DiffferViewholder(View itemView, ItemClickListener itemClickListener) {
             super(itemView);
 
-            desc = itemView.findViewById(R.id.title_short_details);
+            desc = itemView.findViewById(R.id.singleLineDesc);
             title = itemView.findViewById(R.id.title_view);
             image = itemView.findViewById(R.id.video_thumb);
             playBtn = itemView.findViewById(R.id.play_btn);
             author = itemView.findViewById(R.id.video_author);
             viewCount = itemView.findViewById(R.id.video_view);
             date = itemView.findViewById(R.id.video_date);
-            container = itemView.findViewById(R.id.container);
-            commentCount = itemView.findViewById(R.id.video_comment);
+//            container = itemView.findViewById(R.id.container);
+         //   commentCount = itemView.findViewById(R.id.video_comment);
 
 
         }
