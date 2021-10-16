@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,14 +55,15 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
     CallbackManager callbackManager;
-    private TextView registerTV, forget_pass_tv;
-    private TextInputEditText mUsername, mPassword;
+    private TextView forget_pass_tv;
+    private TextView registerTV;
+    private EditText mUsername, mPassword;
     private Button mLoginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.new_login_layout);
         googleBtn = findViewById(R.id.gButton);
         fbBtn = findViewById(R.id.fbBtn);
         pbar = findViewById(R.id.progress_bar);
@@ -201,7 +203,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         UserModel userModel = new UserModel();
                         userModel = response.body().getUser();
-                        manager.saveUser_ID_access_token(response.body().getUser_id()+"" , res.getAccess_token());
+                        manager.saveUser_ID_access_token(response.body().getUser_id() + "", res.getAccess_token());
 
                         manager.saveUserModel(userModel);
                         Intent intent = new Intent(LoginActivity.this, HomePage.class);
