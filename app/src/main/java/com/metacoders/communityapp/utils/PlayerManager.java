@@ -1,12 +1,9 @@
 package com.metacoders.communityapp.utils;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -23,14 +20,11 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.metacoders.communityapp.activities.MainActivity;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -272,6 +266,20 @@ public class PlayerManager {
             mPlayer.stop();
         }
     }
+    public SimpleExoPlayer getPlayer(){
+
+        return mPlayer ;
+    }
+
+    public  long getDuration() {
+        long duration = -11;
+        if (mPlayer != null) {
+
+            duration =  mPlayer.getDuration();
+        }
+        return duration;
+    }
+
 
     public void releasePlayer() {
         if (mPlayer != null) {

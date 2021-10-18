@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.gson.Gson;
 import com.metacoders.communityapp.R;
@@ -36,17 +37,15 @@ import com.metacoders.communityapp.models.newModels.SinglePostResponse;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.CallBacks;
 import com.metacoders.communityapp.utils.Constants;
-import com.metacoders.communityapp.utils.ConvertTime;
 import com.metacoders.communityapp.utils.PlayerManager;
 import com.metacoders.communityapp.utils.SharedPrefManager;
+import com.skyhope.showmoretextview.ShowMoreTextView;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
 
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -70,8 +69,9 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     TextView like_count;
     RelativeLayout loadingPanel;
     TextView qualityBtn;
+    ShowMoreTextView mMediaDetails;
     private boolean mExoPlayerFullscreen = false;
-    private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, mMediaDetails, authorTv;
+    private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
     private Button mMediaAllComments;
 
 
@@ -79,7 +79,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_media_page);
+        setContentView(R.layout.activity_video_play_new);
+        getSupportActionBar().hide();
         loadingPanel = findViewById(R.id.loadingPanel);
         qualityBtn = findViewById(R.id.qualitu);
         Intent o = getIntent();
@@ -88,10 +89,12 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         like_count = findViewById(R.id.like_count);
         mMediaTitle = (TextView) findViewById(R.id.media_title);
         authorTv = findViewById(R.id.author);
-        mMediaDate = (TextView) findViewById(R.id.media_date);
+
+
+        //   mMediaDate = (TextView) findViewById(R.id.media_date);
         mMediaViews = (TextView) findViewById(R.id.media_views);
         mMediaComments = (TextView) findViewById(R.id.media_comments);
-        mMediaDetails = (TextView) findViewById(R.id.media_details);
+        mMediaDetails = findViewById(R.id.media_details);
         mMediaAllComments = (Button) findViewById(R.id.media_see_all_comments);
         reportBtn = findViewById(R.id.reportImage);
         playerView = findViewById(R.id.player_view);
@@ -99,6 +102,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         playerView.setUseArtwork(true);
         post = (Post.PostModel) o.getSerializableExtra("POST");
         //Toast.makeText(getApplicationContext() , "p" + post.getId()  , Toast.LENGTH_LONG).show(); ;
+        mMediaDetails.setShowingLine(2);
+        mMediaDetails.setShowMoreColor(Color.parseColor("#4169E2"));
+        mMediaDetails.addShowMoreText("Continue");
+
 
         setUpIcon();
         try {
@@ -115,35 +122,54 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     startActivity(intent);
                 });
 
-        findViewById(R.id.shareIcon).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                share.setType("text/plain");
-                share.putExtra(Intent.EXTRA_SUBJECT, "Check This From NewsRme");
-                share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(post.getSlug(), post.getLang()));
-                startActivity(Intent.createChooser(share, "Share link!"));
+        findViewById(R.id.backBtn).setOnClickListener(v -> finish());
+
+        findViewById(R.id.shareIcon).setOnClickListener(v -> {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_SUBJECT, "Check This From NewsRme");
+            share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(post.getSlug(), post.getLang()));
+            startActivity(Intent.createChooser(share, "Share link!"));
 
 
-            }
         });
 
 
-        mMediaAllComments.setOnClickListener(view -> {
-
-            Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
-            intent.putExtra("POST_ID", post.getId() + "");
-            intent.putExtra("slug", post.getSlug() + "");
-
-            startActivity(intent);
-        });
+//        mMediaAllComments.setOnClickListener(view -> {
+//
+//            Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
+//            intent.putExtra("POST_ID", post.getId() + "");
+//            intent.putExtra("slug", post.getSlug() + "");
+//
+//            startActivity(intent);
+//        });
 
 
         playerView.setPlayer(PlayerManager.getSharedInstance(PostDetailsPage.this).getPlayerView().getPlayer());
 
-        PlayerManager.getSharedInstance(this).setPlayerListener(this);
 
-        callForGift();
+        PlayerManager manager = PlayerManager.getSharedInstance(this);
+        manager.setPlayerListener(this);
+
+        PlayerControlView playerControlView = findViewById(R.id.CreateHousePlayerView);
+        //ProgressBar audioProgressBar = miniPlayerCardView.findViewById(R.id.audioProgressBar);
+        playerControlView.setPlayer(PlayerManager.getSharedInstance(this).getPlayerView().getPlayer());
+
+        playerControlView.setProgressUpdateListener((position, bufferedPosition) -> {
+
+            int  currentDuration = (int) position/1000 ;
+
+            if( currentDuration > 0 && currentDuration%6==0){
+                callForGift(currentDuration);
+            }
+
+            //   int bufferedProgressBarPosition = (int) ((bufferedPosition * 100) / manager.getDuration());
+            //  audioProgressBar.setProgress(progressBarPosition);
+            //  audioProgressBar.setSecondaryProgress(bufferedProgressBarPosition);
+
+        });
+
+
         if (post.getType().equals("audio")) {
 
             //Toast.makeText(getApplicationContext() , post.getPostType() + "" , Toast.LENGTH_LONG).show();
@@ -200,13 +226,13 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     }
 
-    private void callForGift() {
+    private void callForGift(int currentSec) {
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
+        Log.d("TAG", "callForGift: calling "  + currentSec);
         Call<JSONObject> NetworkCall = api.givePoint(
-                AppPreferences.getUSerID(getApplicationContext()) + "", post.getId(), 1000
+                AppPreferences.getUSerID(getApplicationContext()) + "", post.getId(), currentSec
         );
-
 
         NetworkCall.enqueue(new Callback<JSONObject>() {
             @Override
@@ -233,13 +259,13 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     private void setDetails() {
         mMediaTitle.setText(post.getTitle() + "");
         SimpleDateFormat df = new SimpleDateFormat(Constants.CREATED_AT_FORMAT);
-        try {
-            Date date = df.parse(post.getCreated_at());
-            mMediaDate.setText(ConvertTime.getTimeAgo(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            mMediaDate.setText(post.getCreated_at() + "");
-        }
+//        try {
+//            Date date = df.parse(post.getCreated_at());
+//            mMediaDate.setText(ConvertTime.getTimeAgo(date));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//            mMediaDate.setText(post.getCreated_at() + "");
+//        }
 
         mMediaViews.setText(post.getHit() + " Views");
         if (post.getDescription() == null || post.getDescription().isEmpty()) {
@@ -462,12 +488,12 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                 if (response.isSuccessful() && response.code() == 200) {
                     Toast.makeText(getApplicationContext(), "Message : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                     if (response.body().getMessage().toLowerCase().contains("added")) {
-                        like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + "");
+                        like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + " likes");
                     } else {
                         if ((Integer.parseInt(like_count.getText().toString()) > 0)) {
-                            like_count.setText((Integer.parseInt(like_count.getText().toString()) - 1) + "");
+                            like_count.setText((Integer.parseInt(like_count.getText().toString()) - 1) + " likes");
                         } else {
-                            like_count.setText("0");
+                            like_count.setText("0 likes");
                         }
                     }
 
@@ -502,7 +528,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
                     isFollowed = res.followerCheck != null;
-                    like_count.setText(res.getPostLikesCount() + "");
+                    like_count.setText(res.getPostLikesCount() + " likes");
 
                     try {
                         authorTv.setText(response.body().getData().getAuther().getName());
