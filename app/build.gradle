@@ -8,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "com.metacoders.communityapp"
-        minSdkVersion 21
+        minSdkVersion 22
         targetSdkVersion 30
-        versionCode 5
-        versionName "2.6"
+        versionCode 6
+        versionName "3.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

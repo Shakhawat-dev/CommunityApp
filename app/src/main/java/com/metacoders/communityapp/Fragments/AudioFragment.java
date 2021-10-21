@@ -90,6 +90,7 @@ public class AudioFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_audio, container, false);
         mShimmerViewContainer1 = view.findViewById(R.id.shimmer_view_container_audio);
+        mShimmerViewContainer1.setVisibility(View.GONE);
         recyclerView = view.findViewById(R.id.audioList);
         emptyLayout = view.findViewById(R.id.emptyLayout);
         emptyLayout.setVisibility(View.GONE);

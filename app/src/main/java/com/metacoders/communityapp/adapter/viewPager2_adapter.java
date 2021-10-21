@@ -5,13 +5,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.metacoders.communityapp.Fragments.AudioFragment;
 import com.metacoders.communityapp.Fragments.DashboardFragment;
 import com.metacoders.communityapp.Fragments.NewsFragment;
 import com.metacoders.communityapp.Fragments.CategoryFragment;
-import com.metacoders.communityapp.Fragments.VideoFragment;
-
-import static androidx.viewpager.widget.PagerAdapter.POSITION_NONE;
+import com.metacoders.communityapp.Fragments.SearchFragment;
 
 public class viewPager2_adapter extends FragmentStateAdapter {
 
@@ -29,11 +26,11 @@ public class viewPager2_adapter extends FragmentStateAdapter {
             case 0:
                 return new NewsFragment();
 //            case 1:
-//                return new VideoFragment();
+//                return new PostFragment();
 //            case 2:
 //                return new AudioFragment();
             case 1:
-                return new CategoryFragment();
+                return new SearchFragment();
             case 2:
                 return new DashboardFragment();
 

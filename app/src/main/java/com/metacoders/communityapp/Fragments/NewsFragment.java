@@ -66,7 +66,6 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
     List<Post_Model> filteredList = new ArrayList<>();
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
-    Button audioBtn, imageBtn;
     AlertDialog alertDialog;
     CardView insertContainer;
     ConstraintLayout emptyLayout;
@@ -89,10 +88,8 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
         context = view.getContext();
         linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
-        audioBtn = view.findViewById(R.id.audioBtn);
-        imageBtn = view.findViewById(R.id.photoBtn);
-        insertContainer = view.findViewById(R.id.insertContainer);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
+        mShimmerViewContainer.setVisibility(View.GONE);
         emptyLayout = view.findViewById(R.id.emptyLayout);
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
@@ -114,30 +111,6 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(newAdapter);
 
-
-        audioBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (SharedPrefManager.getInstance(context).isUserLoggedIn()) {
-                    Intent o = new Intent(getContext(), Voice_Recoder_Activity.class);
-                    startActivity(o);
-                } else {
-                    createTheAlertDialogue();
-                }
-            }
-        });
-
-        imageBtn.setOnClickListener(v -> {
-
-            if (SharedPrefManager.getInstance(context).isUserLoggedIn()) {
-                Intent o = new Intent(getContext(), PostUploadActivity.class);
-                o.putExtra("media", "post");
-                startActivity(o);
-            } else {
-                createTheAlertDialogue();
-            }
-
-        });
 
         view.findViewById(R.id.videoBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -477,13 +450,13 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
 
     public void DecideToLoad() {
         if (SharedPrefManager.getInstance(context).isUserLoggedIn()) {
-            insertContainer.setVisibility(View.VISIBLE);
+           // insertContainer.setVisibility(View.VISIBLE);
             isFollowerLoaded = true;
             loadFollowerPost(followerCurrentPage);
 
 
         } else {
-            insertContainer.setVisibility(View.GONE);
+         //   insertContainer.setVisibility(View.GONE);
             loadCommonPost(commonCurrentPage);
             isFollowerLoaded = false;
         }

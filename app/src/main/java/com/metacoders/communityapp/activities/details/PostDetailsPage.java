@@ -144,9 +144,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 //            startActivity(intent);
 //        });
 
-
         playerView.setPlayer(PlayerManager.getSharedInstance(PostDetailsPage.this).getPlayerView().getPlayer());
-
 
         PlayerManager manager = PlayerManager.getSharedInstance(this);
         manager.setPlayerListener(this);

@@ -4,25 +4,27 @@
         android:id="@+id/newsfeed"
         android:title="Home"
         app:showAsAction="always"
-        android:icon="@drawable/ic_baseline_home_24"
+        android:icon="@drawable/home"
         />
-<!--    <item-->
-<!--        android:id="@+id/video"-->
-<!--        android:title="Video"-->
-<!--        app:showAsAction="ifRoom"-->
-<!--        android:icon="@drawable/ic_baseline_video_library_24"/>-->
-
-<!--    <item-->
-<!--        android:id="@+id/audio"-->
-<!--        android:title="Audio"-->
-<!--        app:showAsAction="ifRoom"-->
-<!--        android:icon="@drawable/ic_baseline_audiotrack_64"/>-->
+    <item
+        android:id="@+id/search"
+        android:title="Video"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/searchinterfacesymbol"/>
 
     <item
-        android:id="@+id/profile"
-        android:title="Category"
+        android:id="@+id/audio"
+        android:title="Audio"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_baseline_category_24"/>
+        android:icon="@drawable/upload"/>
+
+
+
+<!--    <item-->
+<!--        android:id="@+id/profile"-->
+<!--        android:title="Category"-->
+<!--        app:showAsAction="ifRoom"-->
+<!--        android:icon="@drawable/ic_baseline_category_24"/>-->
     <item
         android:id="@+id/dashboard"
         android:title="Dashboard"

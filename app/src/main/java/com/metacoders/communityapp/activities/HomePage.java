@@ -81,7 +81,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 //                        case R.id.video:
 //                            viewPager.setCurrentItem(1, false);
 //                            break;
-                        case R.id.profile:
+                        case R.id.search:
                             viewPager.setCurrentItem(1, false);
                             break;
                         case R.id.dashboard:
@@ -109,8 +109,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         setContentView(R.layout.activity_home_page);
         viewPager2_adapter viewPager2Adapter;
 
-
-
         getSupportActionBar().hide();
         RequestPermission();
         final BottomNavigationView navigationBar = findViewById(R.id.bottom_navigation_);
@@ -119,10 +117,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         profileBtn = findViewById(R.id.profileBtn);
         searchBtn = findViewById(R.id.searchBtn);
         lang = findViewById(R.id.langId);
-
         countryCodePicker = findViewById(R.id.ccp11);
-
-
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         userImage = navigationView.findViewById(R.id.proImg);
         contact_us = navigationView.findViewById(R.id.contact_us);
@@ -160,7 +155,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 //                        navigationBar.getMenu().findItem(R.id.audio).setChecked(true);
 //                        break;
                     case 1:
-                        navigationBar.getMenu().findItem(R.id.profile).setChecked(true);
+                        navigationBar.getMenu().findItem(R.id.search).setChecked(true);
                         break;
                     case 2:
                         navigationBar.getMenu().findItem(R.id.dashboard).setChecked(true);

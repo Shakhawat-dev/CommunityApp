@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/profile_info_container"
@@ -24,38 +24,43 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
             <TextView
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sarah Crisp"
+                android:textColor="@color/black"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/mail_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="120 character bio goes here."
-                android:textSize="11sp"
-                android:textColor="#777777" />
+                android:textColor="#777777"
+                android:textSize="11sp" />
 
             <TextView
+                android:id="@+id/country_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Country: England"
+                android:textColor="@color/black"
                 android:textSize="10sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/link"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="www.website Link.com"
-                android:textSize="10sp"
-                android:textColor="@color/colorBlue" />
+                android:textColor="@color/colorBlue"
+                android:textSize="10sp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -64,53 +69,56 @@
         android:id="@+id/follow_post_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/profile_info_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_info_container">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_boarder_stroke_gray"
-            android:padding="8dp"
-            android:gravity="center"
-            android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:background="@drawable/rounded_boarder_stroke_gray"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10sp"
-                android:text="Followers:"/>
+                android:text="Followers:"
+                android:textSize="10sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:layout_marginStart="4dp"
+                android:text="102K"
+                android:textColor="@color/black"
                 android:textSize="10sp"
-                android:textStyle="bold"
-                android:text="102K"/>
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_boarder_stroke_gray"
-            android:padding="8dp"
-            android:gravity="center"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:background="@drawable/rounded_boarder_stroke_gray"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10sp"
-                android:text="Posts:"/>
+                android:text="Posts:"
+                android:textSize="10sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -125,21 +133,21 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_boarder_stroke_gray"
-            android:padding="8dp"
-            android:gravity="center"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:background="@drawable/rounded_boarder_stroke_gray"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:layout_marginStart="4dp"
+                android:text="Following"
+                android:textColor="@color/black"
                 android:textSize="9sp"
-                android:textStyle="bold"
-                android:text="Following"/>
+                android:textStyle="bold" />
 
             <ImageView
                 android:layout_width="12dp"

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+
+    tools:context=".activities.SerachActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:textColor="@color/black"
+        android:text="Discover"
+        android:textSize="27sp"
+        android:layout_margin="@dimen/_8sdp"
+        android:fontFamily="@font/nunito_semi_bold"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+
+        android:background="@drawable/editext_background"
+        android:backgroundTint="@color/gray"
+        app:backgroundTint="@color/gray"
+        app:iconifiedByDefault="false"
+        app:queryHint="Search Here!!" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:fitsSystemWindows="true">
+        <include layout="@layout/layout_empty_response" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/newsfeed"
+            android:layout_margin="@dimen/_4sdp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/_60sdp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <ProgressBar
+            android:id="@+id/center_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/bottom_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+
+</LinearLayout>
