@@ -9,6 +9,7 @@ import com.metacoders.communityapp.Fragments.DashboardFragment;
 import com.metacoders.communityapp.Fragments.NewsFragment;
 import com.metacoders.communityapp.Fragments.CategoryFragment;
 import com.metacoders.communityapp.Fragments.SearchFragment;
+import com.metacoders.communityapp.Fragments.ShopFragment;
 
 public class viewPager2_adapter extends FragmentStateAdapter {
 
@@ -25,13 +26,14 @@ public class viewPager2_adapter extends FragmentStateAdapter {
         switch (position) {
             case 0:
                 return new NewsFragment();
-//            case 1:
-//                return new PostFragment();
-//            case 2:
-//                return new AudioFragment();
+
             case 1:
                 return new SearchFragment();
             case 2:
+                return new SearchFragment();
+            case 3:
+                return new ShopFragment();
+            case 4:
                 return new DashboardFragment();
 
         }
@@ -45,7 +47,7 @@ public class viewPager2_adapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 5;
     }
 
 }

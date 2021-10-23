@@ -13,18 +13,18 @@
         android:icon="@drawable/searchinterfacesymbol"/>
 
     <item
-        android:id="@+id/audio"
+        android:id="@+id/update_bottom"
         android:title="Audio"
         app:showAsAction="ifRoom"
         android:icon="@drawable/upload"/>
 
 
 
-<!--    <item-->
-<!--        android:id="@+id/profile"-->
-<!--        android:title="Category"-->
-<!--        app:showAsAction="ifRoom"-->
-<!--        android:icon="@drawable/ic_baseline_category_24"/>-->
+    <item
+        android:id="@+id/shop"
+        android:title="Category"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/bag"/>
     <item
         android:id="@+id/dashboard"
         android:title="Dashboard"

@@ -36,7 +36,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
-import com.metacoders.communityapp.activities.contactPage.ContactPage;
 import com.metacoders.communityapp.activities.countryWiseList.CountryList;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
 import com.metacoders.communityapp.models.allDataResponse;
@@ -58,9 +57,9 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     Dialog dialog;
     CountryCodePicker countryCodePicker;
     boolean isGo = true;
-    TextView logOut;
+
     List<String> idlist = new ArrayList<>();
-    CardView myActonSide, jobSide, ShopSide, profileSide, logOUtCard, notificationSide, contact_us;
+    CardView jobSide, profileSide, notificationSide;
     List<String> langList = new ArrayList<>();
     private DrawerLayout drawerLayout;
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
@@ -75,19 +74,21 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                         case R.id.newsfeed:
                             viewPager.setCurrentItem(0, false);
                             break;
-//                        case R.id.audio:
-//                            viewPager.setCurrentItem(2, false);
-//                            break;
-//                        case R.id.video:
-//                            viewPager.setCurrentItem(1, false);
-//                            break;
+
                         case R.id.search:
                             viewPager.setCurrentItem(1, false);
                             break;
+                        case R.id.update_bottom:
+                            viewPager.setCurrentItem(2, false);
+                            break;
+                        case R.id.shop:
+                            viewPager.setCurrentItem(3, false);
+                            break;
+
                         case R.id.dashboard:
                             if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
 
-                                viewPager.setCurrentItem(2, false);
+                                viewPager.setCurrentItem(4, false);
                             } else {
 
                                 createTheAlertDialogue();
@@ -120,13 +121,21 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         countryCodePicker = findViewById(R.id.ccp11);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         userImage = navigationView.findViewById(R.id.proImg);
-        contact_us = navigationView.findViewById(R.id.contact_us);
+
         userNameOnSide = navigationView.findViewById(R.id.user_name);
         hamburger = findViewById(R.id.menu);
-        logOUtCard = navigationView.findViewById(R.id.LogOut);
-        myActonSide = navigationView.findViewById(R.id.myAcnt);
-        ShopSide = navigationView.findViewById(R.id.shop);
-        logOut = navigationView.findViewById(R.id.LogOutTV);
+
+
+        findViewById(R.id.closeBtn).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                            drawerLayout.closeDrawer(GravityCompat.START);
+                        } else drawerLayout.openDrawer(GravityCompat.START);
+                    }
+                }
+        );
 
         dataResponse = (allDataResponse) getIntent().getSerializableExtra("MISC");
         viewPager2Adapter = new viewPager2_adapter(HomePage.this);
@@ -148,16 +157,16 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     case 0:
                         navigationBar.getMenu().findItem(R.id.newsfeed).setChecked(true);
                         break;
-//                    case 1:
-//                        navigationBar.getMenu().findItem(R.id.video).setChecked(true);
-//                        break;
-//                    case 2:
-//                        navigationBar.getMenu().findItem(R.id.audio).setChecked(true);
-//                        break;
                     case 1:
                         navigationBar.getMenu().findItem(R.id.search).setChecked(true);
                         break;
                     case 2:
+                        navigationBar.getMenu().findItem(R.id.update_bottom).setChecked(true);
+                        break;
+                    case 3:
+                        navigationBar.getMenu().findItem(R.id.shop).setChecked(true);
+                        break;
+                    case 4:
                         navigationBar.getMenu().findItem(R.id.dashboard).setChecked(true);
                         break;
 
@@ -172,13 +181,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             }
         });
 
-        ShopSide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent p = new Intent(getApplicationContext(), ShopPage.class);
-                startActivity(p);
-            }
-        });
 
         hamburger.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,52 +194,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             }
         });
 
-
-        logOUtCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                SharedPrefManager pref = new SharedPrefManager(getApplicationContext());
-
-                if (pref.isUserLoggedIn()) {
-                    try {
-                        LoginManager.getInstance().logOut();
-                    } catch (Exception e) {
-                        Log.d("TAG", "onCreate: " + e.getMessage());
-                    }
-                    Intent o = new Intent(getApplicationContext(), LoginActivity.class);
-                    SharedPrefManager manager = new SharedPrefManager(getApplicationContext());
-                    manager.logout();
-                    o.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(o);
-                    finish();
-                } else {
-                    Intent p = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(p);
-                }
-
-
-            }
-        });
-
-        contact_us.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ContactPage.class));
-            }
-        });
-
-        myActonSide.setOnClickListener(v -> {
-
-            if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
-                Intent p = new Intent(getApplicationContext(), ProfileActivity.class);
-                startActivity(p);
-            } else {
-                createTheAlertDialogue();
-            }
-
-
-        });
 
         searchBtn.setOnClickListener(v -> {
             Intent p = new Intent(getApplicationContext(), SerachActivity.class);
@@ -260,7 +216,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 startActivity(p);
             }
         });
-
 
 
         lang.setOnClickListener(v -> {
@@ -441,11 +396,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         countryCodePicker.setAutoDetectedCountry(true);
         SharedPrefManager pref = new SharedPrefManager(getApplicationContext());
-        if (pref.isUserLoggedIn()) {
-            logOut.setText("Log Out");
-        } else {
-            logOut.setText("Log In");
-        }
+
     }
 
     @Override
@@ -453,5 +404,26 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         super.onStart();
 
+    }
+
+    public void logout() {
+        SharedPrefManager pref = new SharedPrefManager(getApplicationContext());
+
+        if (pref.isUserLoggedIn()) {
+            try {
+                LoginManager.getInstance().logOut();
+            } catch (Exception e) {
+                Log.d("TAG", "onCreate: " + e.getMessage());
+            }
+            Intent o = new Intent(getApplicationContext(), LoginActivity.class);
+            SharedPrefManager manager = new SharedPrefManager(getApplicationContext());
+            manager.logout();
+            o.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(o);
+            finish();
+        } else {
+            Intent p = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(p);
+        }
     }
 }
