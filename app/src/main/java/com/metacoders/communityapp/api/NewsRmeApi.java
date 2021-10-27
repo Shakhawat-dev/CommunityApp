@@ -33,15 +33,35 @@ import retrofit2.http.Query;
 
 public interface NewsRmeApi {
 
-    ///:2
-//:42
+
+    //withdraw to bank
+    @FormUrlEncoded
+    @POST("withdraw-to-bank")
+    Call<LoginResponse.forgetPassResponse> withdrawToBank(
+            @Field("bank_type") String bank_type,
+            @Field("bank_name") String bank_name,
+            @Field("branch_name") String branch_name,
+            @Field("account_number") String account_number,
+            @Field("account_name") String account_name,
+            @Field("transfer_amount") String transfer_amount
+    );
+//withdraw to card
+    @FormUrlEncoded
+    @POST("withdraw-to-card")
+    Call<LoginResponse.forgetPassResponse> withdrawToBank(
+            @Field("card_type") String card_type,
+            @Field("card_number") String card_number,
+            @Field("card_on_name") String card_on_name,
+            @Field("card_transfer_amount") String card_transfer_amount
+    );
+
+
     //search country list
     @GET("country-wise-post/{code}")
     Call<CountryPostRespose> getCountry(
             @Path("code") String code,
             @Query("page") int p
     );
-
 
 
     @FormUrlEncoded
@@ -148,7 +168,7 @@ public interface NewsRmeApi {
             @Field("gender") String gender,
             @Field("password") String password,
             @Field("password_confirmation") String password_confirmation,
-             @Field("country") String country
+            @Field("country") String country
 
     );
 

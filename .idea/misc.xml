@@ -66,6 +66,21 @@
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/menu/nav_menu.xml" value="0.340625" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3567708333333333" />
         <entry key="..\:/Projects/Running Projects/community app/CommunityApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/drawable/bg_roundrect_ripple_light_border.xml" value="0.35435897435897434" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/drawable/rounded_edittext.xml" value="0.35435897435897434" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/activity_account_new.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/activity_category_list.xml" value="0.3296875" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/activity_home_page.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/activity_notification_new.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/activity_points_withdraw_options.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/activity_settings_new.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/activity_withdraw_payment.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/custom_drawer_layout.xml" value="0.25" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/fragment_category.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/fragment_profile_own_new.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/language_dialouge.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/new_login_layout.xml" value="0.34375" />
+        <entry key="..\:/Users/SIMEC/Documents/GitHub/CommunityApp/app/src/main/res/layout/new_splash_layout.xml" value="0.34375" />
         <entry key="app/src/main/res/drawable/black_half_transparent_top_clear_background.xml" value="0.25885416666666666" />
         <entry key="app/src/main/res/drawable/boarder_stroke_gray.xml" value="0.25885416666666666" />
         <entry key="app/src/main/res/drawable/new_back.xml" value="0.25885416666666666" />

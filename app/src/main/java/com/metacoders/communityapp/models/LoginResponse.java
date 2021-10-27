@@ -67,7 +67,7 @@ public class LoginResponse {
 
         @SerializedName("error")
         @Expose
-        private Boolean error;
+        private Boolean error = false;
         @SerializedName("message")
         @Expose
         private String message;

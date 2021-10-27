@@ -138,8 +138,8 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
         newsList.clear();
         newsList = new ArrayList<>();
         recyclerView.setVisibility(View.GONE);
-        mShimmerViewContainer.setVisibility(View.VISIBLE);
-        mShimmerViewContainer.startShimmer();
+     //   mShimmerViewContainer.setVisibility(View.VISIBLE);
+      //  mShimmerViewContainer.startShimmer();
         swipeContainer.setRefreshing(false);
         DecideToLoad();
 
@@ -331,7 +331,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
     @Override
     public void onResume() {
         super.onResume();
-        mShimmerViewContainer.startShimmer();
+    //    mShimmerViewContainer.startShimmer();
     }
 
     @Override

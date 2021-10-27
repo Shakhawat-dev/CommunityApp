@@ -29,7 +29,8 @@
             <ImageView
                 android:id="@+id/menu"
                 android:layout_width="30dp"
-                android:layout_height="35dp"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:layout_height="30dp"
                 android:layout_gravity="start"
                 android:background="@drawable/ic_baseline_menu_24"
                 android:backgroundTint="#000000" />
@@ -58,7 +59,6 @@
 
             <TextView
                 android:id="@+id/langId"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -68,19 +68,20 @@
                 android:textAllCaps="true"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <com.hbb20.CountryCodePicker
                 android:id="@+id/ccp11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:ccp_showFullName="false"
-                app:ccp_showPhoneCode="false"
-                app:ccp_selectionMemoryTag="signupCCP"
-                app:ccp_rememberLastSelection="false"
                 android:layout_gravity="end"
                 app:ccp_defaultNameCode="GB"
-                app:ccp_showNameCode="false"/>
+                app:ccp_rememberLastSelection="false"
+                app:ccp_selectionMemoryTag="signupCCP"
+                app:ccp_showFullName="false"
+                app:ccp_showNameCode="false"
+                app:ccp_showPhoneCode="false" />
 
             <ImageView
                 android:id="@+id/profileBtn"

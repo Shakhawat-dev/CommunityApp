@@ -27,6 +27,16 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".activities.points.Points_withdraw_options"
+            android:exported="false" />
+        <activity
+            android:name=".activities.payments.WithdrawPayment"
+            android:exported="false"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".activities.CategoryList"
+            android:exported="false" />
+        <activity
             android:name=".activities.countryWiseList.CountryList"
             android:exported="true" />
         <activity

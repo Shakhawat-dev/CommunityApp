@@ -84,6 +84,7 @@
             android:paddingVertical="@dimen/_4sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_gravity="center|left"
             android:drawablePadding="@dimen/_10sdp"
             android:fontFamily="@font/nunito_regular"

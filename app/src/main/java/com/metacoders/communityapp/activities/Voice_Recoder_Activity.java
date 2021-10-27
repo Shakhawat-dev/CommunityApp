@@ -45,7 +45,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class Voice_Recoder_Activity extends AppCompatActivity implements AudioPickerCallback {
+public class
+Voice_Recoder_Activity extends AppCompatActivity implements AudioPickerCallback {
     String mFileName = null;
     private  static  int  AUDIO_DURATION = 420000 ;
     private static final int IMAGE_PICKER_SELECT = 99;

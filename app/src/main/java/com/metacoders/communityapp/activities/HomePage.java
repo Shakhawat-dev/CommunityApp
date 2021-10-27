@@ -37,6 +37,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.countryWiseList.CountryList;
+import com.metacoders.communityapp.activities.payments.WithdrawPayment;
+import com.metacoders.communityapp.activities.points.Points_withdraw_options;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
 import com.metacoders.communityapp.models.allDataResponse;
 import com.metacoders.communityapp.models.newModels.UserModel;
@@ -195,6 +197,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         });
 
 
+
         searchBtn.setOnClickListener(v -> {
             Intent p = new Intent(getApplicationContext(), SerachActivity.class);
             startActivity(p);
@@ -276,7 +279,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         });
 
         setUpSideBar();
-
+        SideBarClick();
         loadMiscData();
 
     }
@@ -425,5 +428,28 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             Intent p = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(p);
         }
+    }
+
+    public  void SideBarClick(){
+        findViewById(R.id.homeSide).setOnClickListener(v->{
+            drawerLayout.closeDrawer(GravityCompat.START);
+            viewPager.setCurrentItem(0);
+        });
+
+        findViewById(R.id.shoppingSide).setOnClickListener(v->{
+            startActivity(new Intent( getApplicationContext() , ShopPage.class));
+        });
+
+        findViewById(R.id.profileSide).setOnClickListener(v->{
+            startActivity(new Intent( getApplicationContext() , ProfileActivity.class));
+        });
+
+        findViewById(R.id.categoriesSide).setOnClickListener(v->{
+            startActivity(new Intent(getApplicationContext() , CategoryList.class));
+        });
+        findViewById(R.id.pointShopping).setOnClickListener(v->{
+            startActivity(new Intent(getApplicationContext() , Points_withdraw_options.class));
+        });
+
     }
 }
