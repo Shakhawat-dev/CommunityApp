@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.payments.WithdrawPayment;
 import com.metacoders.communityapp.utils.SharedPrefManager;
@@ -19,8 +20,9 @@ public class Points_withdraw_options extends AppCompatActivity {
 
 
         getSupportActionBar().hide();
+        MaterialButton button = findViewById(R.id.pointView) ;
 
-        SharedPrefManager.getInstance(getApplicationContext())
+        button.setText(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getTotal_point()+"");
 
         findViewById(R.id.withdraw_money).setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), WithdrawPayment.class));
