@@ -10,6 +10,7 @@ import com.metacoders.communityapp.Fragments.NewsFragment;
 import com.metacoders.communityapp.Fragments.CategoryFragment;
 import com.metacoders.communityapp.Fragments.SearchFragment;
 import com.metacoders.communityapp.Fragments.ShopFragment;
+import com.metacoders.communityapp.Fragments.UploadFragment;
 
 public class viewPager2_adapter extends FragmentStateAdapter {
 
@@ -30,7 +31,7 @@ public class viewPager2_adapter extends FragmentStateAdapter {
             case 1:
                 return new SearchFragment();
             case 2:
-                return new SearchFragment();
+                return new UploadFragment();
             case 3:
                 return new ShopFragment();
             case 4:

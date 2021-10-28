@@ -33,7 +33,13 @@ import retrofit2.http.Query;
 
 public interface NewsRmeApi {
 
-
+//send point
+    @FormUrlEncoded
+    @POST("gift-point")
+    Call<LoginResponse.forgetPassResponse> sharePoint(
+            @Field("account_number") String account_number,
+            @Field("point_amount") String point_amount
+    );
     //withdraw to bank
     @FormUrlEncoded
     @POST("withdraw-to-bank")

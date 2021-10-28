@@ -45,7 +45,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     View view;
     Context context;
     TextView tpost, tvideo, taudio, name, mail, totalArticle;
-    RecyclerView recyclerView;
+//    RecyclerView recyclerView;
     CircleImageView circleImageView;
     ShimmerFrameLayout shimmer_view_container_dash;
     List<Post.PostModel> post_modelList = new ArrayList<>();
@@ -75,8 +75,6 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
         }
 
 
-
-
         //  loadUrPost();
 
         followButton.setOnClickListener(new View.OnClickListener() {
@@ -96,21 +94,19 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
 
     private void setView() {
         mAdapter = new ProductListDifferAdapter(this, this, false);
-        recyclerView = findViewById(R.id.rlist);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(mAdapter);
+
         context = getApplicationContext();
         tpost = findViewById(R.id.tpost);
         totalArticle = findViewById(R.id.totalAritcle);
         tvideo = findViewById(R.id.tvideos);
         taudio = findViewById(R.id.taudios);
-        recyclerView = findViewById(R.id.rlist);
+        //recyclerView = findViewById(R.id.rlist);
         name = findViewById(R.id.nameTv);
         mail = findViewById(R.id.mailTv);
         shimmer_view_container_dash = findViewById(R.id.shimmer_view_container_dash);
         emptyLayout = findViewById(R.id.emptyLayout);
         emptyLayout.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+       // recyclerView.setVisibility(View.VISIBLE);
         circleImageView = findViewById(R.id.profile_pic);
         followButton = findViewById(R.id.followBtn);
 
@@ -133,7 +129,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     public void loadUrPost() {
         //setting up layout
         emptyLayout.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+      //  recyclerView.setVisibility(View.VISIBLE);
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(context));
         Call<AuthorPostResponse> catCall = api.getAuthorPost(user_id + "");
@@ -168,7 +164,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
                         if (post_modelList.size() == 0) {
 
                             emptyLayout.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
+                          //  recyclerView.setVisibility(View.GONE);
                         } else {
                             /*
                                 loop the whole list for counting post type
@@ -180,10 +176,10 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
 
                             // checking if the list is empty or not
                             emptyLayout.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
+                            //recyclerView.setVisibility(View.VISIBLE);
                         }
 
-                        recyclerView.getViewTreeObserver().addOnPreDrawListener(
+                        /*recyclerView.getViewTreeObserver().addOnPreDrawListener(
 
                                 new ViewTreeObserver.OnPreDrawListener() {
                                     @Override
@@ -202,11 +198,11 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
                                         return true;
                                     }
                                 }
-                        );
+                        );*/
                     } catch (Exception e) {
 
                         emptyLayout.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
+                      //  recyclerView.setVisibility(View.GONE);
                     }
 
 
@@ -262,9 +258,9 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
 
                         LoginResponse.forgetPassResponse model = response.body();
                         Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
-                        if(followButton.getText().toString().contains("Un-Follow")){
+                        if (followButton.getText().toString().contains("Un-Follow")) {
                             followButton.setText("Follow");
-                        }else {
+                        } else {
                             followButton.setText("Un-Follow");
                         }
 
@@ -289,6 +285,6 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     @Override
     protected void onResume() {
         super.onResume();
-        loadUrPost();
+        //     loadUrPost();
     }
 }
