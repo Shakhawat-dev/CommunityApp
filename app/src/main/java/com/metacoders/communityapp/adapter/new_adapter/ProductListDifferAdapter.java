@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -148,6 +147,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         //viewHolder.itemView.animation = AnimationUtils.loadAnimation(context,R.anim.item_animation_fall_down)
 
         holder.author.setText(newsFeed.getName());
+        holder.country_name.setText(newsFeed.getCountry());
         holder.title.setText(newsFeed.getTitle());
         holder.viewCount.setText(newsFeed.getHit() + "");
 
@@ -237,9 +237,9 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
     public class DiffferViewholder extends RecyclerView.ViewHolder {
         public TextView title, desc;
         public ImageView image, playBtn;
-        public TextView author, viewCount, date;
-      //  public TextView commentCount;
-      //  public CardView container;
+        public TextView author, viewCount, date, country_name;
+        //  public TextView commentCount;
+        //  public CardView container;
         ItemClickListener itemClickListener;
 
         public DiffferViewholder(View itemView, ItemClickListener itemClickListener) {
@@ -252,8 +252,10 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
             author = itemView.findViewById(R.id.video_author);
             viewCount = itemView.findViewById(R.id.video_view);
             date = itemView.findViewById(R.id.video_date);
+            country_name = itemView.findViewById(R.id.country_name);
+
 //            container = itemView.findViewById(R.id.container);
-         //   commentCount = itemView.findViewById(R.id.video_comment);
+            //   commentCount = itemView.findViewById(R.id.video_comment);
 
 
         }

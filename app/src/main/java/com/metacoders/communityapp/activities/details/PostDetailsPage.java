@@ -1,6 +1,7 @@
 package com.metacoders.communityapp.activities.details;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -19,8 +21,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -34,6 +39,7 @@ import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.models.newModels.Post;
 import com.metacoders.communityapp.models.newModels.SinglePostResponse;
+import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.CallBacks;
 import com.metacoders.communityapp.utils.Constants;
@@ -42,8 +48,6 @@ import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.skyhope.showmoretextview.ShowMoreTextView;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
-
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -58,11 +62,14 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     Boolean isFollowed = false;
     PlayerView playerView;
     SimpleExoPlayer player;
+    int allReadySentTime = 0;
+    EditText commentEt;
     boolean isPLaying = false;
+    UserModel authermodel;
     ImageView reportBtn;
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
-    ImageView fullscreenButton;
+    ImageView fullscreenButton, profile_image;
     Dialog mFullScreenDialog;
     SparkButton sparkButton;
     Post.PostModel post;
@@ -70,6 +77,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     RelativeLayout loadingPanel;
     TextView qualityBtn;
     ShowMoreTextView mMediaDetails;
+    AppCompatButton followBtn;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
     private Button mMediaAllComments;
@@ -84,13 +92,14 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         loadingPanel = findViewById(R.id.loadingPanel);
         qualityBtn = findViewById(R.id.qualitu);
         Intent o = getIntent();
+        profile_image = findViewById(R.id.profile_image);
         sparkButton = findViewById(R.id.spark_button);
         TextView textView = findViewById(R.id.titleTV);
         like_count = findViewById(R.id.like_count);
         mMediaTitle = (TextView) findViewById(R.id.media_title);
         authorTv = findViewById(R.id.author);
-
-
+        followBtn = findViewById(R.id.followBtn);
+        commentEt = findViewById(R.id.commnetET);
         //   mMediaDate = (TextView) findViewById(R.id.media_date);
         mMediaViews = (TextView) findViewById(R.id.media_views);
         mMediaComments = (TextView) findViewById(R.id.media_comments);
@@ -106,6 +115,20 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         mMediaDetails.setShowMoreColor(Color.parseColor("#4169E2"));
         mMediaDetails.addShowMoreText("Continue");
 
+        if (SharedPrefManager.getInstance(getApplicationContext()).getUser_ID().equals(post.getUser_id() + "")) {
+            followBtn.setVisibility(View.GONE);
+        }
+
+
+        findViewById(R.id.add_comment).setOnClickListener(v -> {
+            String commnet = commentEt.getText().toString();
+            if (!commnet.isEmpty()) {
+                sendTheCommnet(commnet);
+            }
+        });
+
+
+        followBtn.setOnClickListener(v -> TriggerAuthorFollow(post.getUser_id() + ""));
 
         setUpIcon();
         try {
@@ -155,9 +178,12 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         playerControlView.setProgressUpdateListener((position, bufferedPosition) -> {
 
-            int  currentDuration = (int) position/1000 ;
+            int currentDuration = (int) position / 1000;
+            Log.d("TAG", "callForGift: calling " + currentDuration
+                    + " " + allReadySentTime);
 
-            if( currentDuration > 0 && currentDuration%6==0){
+            if (currentDuration > 0 && currentDuration % 16 == 0 && allReadySentTime != currentDuration) {
+                allReadySentTime = currentDuration;
                 callForGift(currentDuration);
             }
 
@@ -176,7 +202,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             //  playHlsVideo();
         } else if (post.getType().equals("video")) {
             try {
-                if (post.getHls().toString().isEmpty() || post.getHls().toString().length() < 5) {
+                if (post.getHls().isEmpty() || post.getHls().toString().length() < 5) {
                     qualityBtn.setVisibility(View.GONE);
                     playMedia(post.getPath());
                 } else {
@@ -214,30 +240,38 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
             p.putExtra("author_id", post.getUser_id());
             p.putExtra("is_followed", isFollowed);
+            p.putExtra("auther", authermodel);
             startActivity(p);
 
 
         });
 
         setDetails();
-        loadPostDetails(post.getSlug());
 
+
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        loadPostDetails(post.getSlug());
+        super.onResumeFragments();
     }
 
     private void callForGift(int currentSec) {
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
-        Log.d("TAG", "callForGift: calling "  + currentSec);
-        Call<JSONObject> NetworkCall = api.givePoint(
-                AppPreferences.getUSerID(getApplicationContext()) + "", post.getId(), currentSec
+        Log.d("TAG", "call " + currentSec
+                + " " + allReadySentTime);
+        Call<LoginResponse.forgetPassResponse> NetworkCall = api.givePoint(
+                post.getUser_id() + "", post.getId(), currentSec
         );
 
-        NetworkCall.enqueue(new Callback<JSONObject>() {
+        NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
                 if (response.isSuccessful()) {
                     Log.d("TAG", "onResponse: " + response.code());
-
+                    allReadySentTime = currentSec;
                     Gson gson = new Gson();
                     String str = gson.toJson(response.body());
                     Log.d("TAG", "onResponse: " + str);
@@ -246,7 +280,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable t) {
+            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
 
             }
         });
@@ -448,6 +482,47 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     }
 
+    public void TriggerAuthorFollow(String auhter_id) {
+
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+        Call<LoginResponse.forgetPassResponse> call = api.followAuthor(auhter_id, AppPreferences.getUSerID(getApplicationContext()));
+
+        call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+
+                try {
+                    if (response.isSuccessful() && response.code() == 200) {
+
+                        LoginResponse.forgetPassResponse model = response.body();
+                        Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (followBtn.getText().toString().contains("Un-Follow")) {
+                            followBtn.setText("Follow");
+                            isFollowed = false;
+                        } else {
+                            followBtn.setText("Un-Follow");
+                            isFollowed = true;
+                        }
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error : Code :" + response.code(), Toast.LENGTH_LONG).show();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Error : Code :" + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Error : Code :" + t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
     private void setUpIcon() {
 
         qualityBtn.setOnClickListener(v -> TriggerDialogue());
@@ -486,12 +561,12 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                 if (response.isSuccessful() && response.code() == 200) {
                     Toast.makeText(getApplicationContext(), "Message : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                     if (response.body().getMessage().toLowerCase().contains("added")) {
-                        like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + " likes");
+                        like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + "");
                     } else {
                         if ((Integer.parseInt(like_count.getText().toString()) > 0)) {
-                            like_count.setText((Integer.parseInt(like_count.getText().toString()) - 1) + " likes");
+                            like_count.setText((Integer.parseInt(like_count.getText().toString()) - 1) + "");
                         } else {
-                            like_count.setText("0 likes");
+                            like_count.setText("0");
                         }
                     }
 
@@ -510,6 +585,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     }
 
     private void loadPostDetails(String slug) {
+
         loadingPanel.setVisibility(View.VISIBLE);
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
@@ -526,8 +602,18 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
                     isFollowed = res.followerCheck != null;
-                    like_count.setText(res.getPostLikesCount() + " likes");
 
+                    if (isFollowed) {
+                        followBtn.setText("Un-Follow");
+                    } else {
+                        followBtn.setText("Follow");
+                    }
+                    like_count.setText(res.getPostLikesCount() + "");
+                    authermodel = res.data.getAuther();
+                    Glide.with(getApplicationContext())
+                            .load(res.getData().getAuther().getImage() + "")
+                            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                            .into(profile_image);
                     try {
                         authorTv.setText(response.body().getData().getAuther().getName());
                     } catch (Exception e) {
@@ -597,6 +683,49 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         dialog.show();
 
+    }
+
+    private void sendTheCommnet(String commnet) {
+        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
+        ProgressDialog dialog = new ProgressDialog(PostDetailsPage.this);
+        dialog.setMessage("Adding Your Comment ...");
+        dialog.show();
+        dialog.setCancelable(false);
+
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+        Call<LoginResponse.forgetPassResponse> NetworkCall = api.post_comments(
+                post.getId() + "", AppPreferences.getUSerID(getApplicationContext()) + "", commnet
+
+        );
+
+        NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+                if (response.code() == 200) {
+                    try {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        commentEt.setText("");
+
+
+                    } catch (Exception er) {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Error Code : " + er.getMessage(), Toast.LENGTH_LONG).show();
+
+                    }
+                } else {
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Error Code : " + response.code(), Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                dialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 

@@ -70,7 +70,16 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
+            <TextView
+                android:id="@+id/country_name"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_baseline_account_circle_24"
+                android:drawablePadding="4dp"
+                android:text="Johnms Doe"
+                android:textSize="10sp"
+                android:layout_marginEnd="4dp" />
             <TextView
                 android:id="@+id/video_author"
                 style="@style/TextAppearance.MaterialComponents.Headline6"

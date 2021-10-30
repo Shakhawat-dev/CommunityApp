@@ -86,6 +86,7 @@
                                     android:textSize="12sp" />
 
                                 <TextView
+                                    android:id="@+id/followBtn"
                                     android:layout_width="48dp"
                                     android:layout_height="18dp"
                                     android:layout_marginTop="4dp"
@@ -93,6 +94,7 @@
                                     android:background="@drawable/rounded_background_blue"
                                     android:gravity="center"
                                     android:text="Follow"
+                                    android:clickable="true"
                                     android:textColor="@color/white"
                                     android:textSize="7sp"
                                     app:layout_constraintBottom_toBottomOf="parent"
@@ -268,6 +270,7 @@
                     android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/commnetET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="12dp"
@@ -278,6 +281,18 @@
                     android:layout_marginBottom="2dp"
                     android:background="@drawable/rounded_boarder_stroke_gray"
                     android:hint="Your Comment" />
+                <Button
+                    android:id="@+id/add_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_28sdp"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/rounded_boarder_tint_blue"
+                    android:text="Add Comment"
+                    android:textAllCaps="false" />
+
+
                 <Button
                     android:id="@+id/media_see_all_comments"
                     style="?attr/materialButtonOutlinedStyle"

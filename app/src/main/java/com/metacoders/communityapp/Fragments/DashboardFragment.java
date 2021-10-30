@@ -17,6 +17,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.activities.EditProfile;
+import com.metacoders.communityapp.activities.ProfileActivity;
 import com.metacoders.communityapp.activities.details.NewsDetailsActivity;
 import com.metacoders.communityapp.activities.details.PostDetailsPage;
 import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
@@ -41,7 +43,7 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
     private static final String ARG_PARAM2 = "param2";
     View view;
     Context context;
-    TextView name, mail, totalCount, followerCount, followingCount, country_name;
+    TextView name, mail, totalCount, link, followerCount, followingCount, country_name;
     String[] tabTitle = {"Video", "Audio", "Post"};
     CircleImageView circleImageView;
     ProductListDifferAdapter mAdapter;
@@ -68,8 +70,9 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         tabLayout = view.findViewById(R.id.tabMode);
         country_name = view.findViewById(R.id.country_name);
         viewPager2 = view.findViewById(R.id.viewpager2);
+        link = view.findViewById(R.id.link);
         circleImageView = view.findViewById(R.id.dashboard_profile_pic);
-        viewPager2.setAdapter(new profile_viewpager_adapter(getActivity()));
+        viewPager2.setAdapter(new profile_viewpager_adapter(getActivity(), SharedPrefManager.getInstance(getContext()).getUser_ID()));
         viewPager2.setUserInputEnabled(true);
 
         new TabLayoutMediator(tabLayout, viewPager2,
@@ -80,6 +83,12 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         setDetails();
         loadUrPost();
 
+        view.findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext() , ProfileActivity.class));
+            }
+        });
         return view;
     }
 
@@ -108,7 +117,7 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
                     ownListModelList = response.body();
 
                     //   followerCount.setText(ownListModelList.);
-
+                    link.setText(ownListModelList.getAuthor().getAccount_number() + "");
                     country_name.setText("Country: " + ownListModelList.getAuthor().getCountry());
 
                 } else {

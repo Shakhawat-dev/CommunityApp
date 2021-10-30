@@ -1,11 +1,13 @@
 package com.metacoders.communityapp.activities.details;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.newModels.Post;
 import com.metacoders.communityapp.models.newModels.SinglePostResponse;
+import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.ConvertTime;
@@ -41,9 +44,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NewsDetailsActivity extends AppCompatActivity {
+    public static String LIVETIVELINK = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8";
     ImageView playerView;
     SimpleExoPlayer player;
-    public  static  String LIVETIVELINK  = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8" ;
     TextView like_count;
     boolean isPLaying = false;
     ImageView reportBtn;
@@ -53,12 +56,15 @@ public class NewsDetailsActivity extends AppCompatActivity {
     ImageView fullscreenButton;
     Dialog mFullScreenDialog;
     Post.PostModel post;
-    RelativeLayout loadingPanel ;
+    RelativeLayout loadingPanel;
     Boolean isFollowed = false;
-    CircleImageView autherImage ;
+    CircleImageView autherImage;
+    UserModel authermodel;
+    ImageView profile_image;
+    EditText commentEt;
 
     private boolean mExoPlayerFullscreen = false;
-    private TextView mMediaTitle, mMediaDate, mMediaComments, mMediaDetails, authorTv;
+    private TextView mMediaTitle, mMediaDate, followBtn, mMediaComments, mMediaDetails, authorTv;
     private Button mMediaAllComments;
 
     @Override
@@ -67,12 +73,14 @@ public class NewsDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_article_page_new);
 
         Intent o = getIntent();
-        loadingPanel  = findViewById(R.id.loadingPanel);
-        autherImage = findViewById(R.id.profile_image) ;
+        loadingPanel = findViewById(R.id.loadingPanel);
+        autherImage = findViewById(R.id.profile_image);
         TextView textView = findViewById(R.id.titleTV);
         mMediaTitle = (TextView) findViewById(R.id.media_title);
         mMediaDate = (TextView) findViewById(R.id.media_date);
-       // mMediaViews = (TextView) findViewById(R.id.media_views);
+        followBtn = findViewById(R.id.followBtn);
+        commentEt = findViewById(R.id.commnetET);
+        // mMediaViews = (TextView) findViewById(R.id.media_views);
         mMediaComments = (TextView) findViewById(R.id.media_comments);
         mMediaDetails = (TextView) findViewById(R.id.media_details);
         authorTv = findViewById(R.id.author);
@@ -89,6 +97,13 @@ public class NewsDetailsActivity extends AppCompatActivity {
         }
 
         setUpIcon();
+
+        findViewById(R.id.add_comment).setOnClickListener(v -> {
+            String commnet = commentEt.getText().toString();
+            if (!commnet.isEmpty()) {
+                sendTheCommnet(commnet);
+            }
+        });
 
         findViewById(R.id.media_see_all_comments).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +135,19 @@ public class NewsDetailsActivity extends AppCompatActivity {
             Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
             p.putExtra("author_id", post.getUser_id());
             p.putExtra("is_followed", isFollowed);
+            p.putExtra("auther", authermodel);
             startActivity(p);
+        });
+
+        if (SharedPrefManager.getInstance(getApplicationContext()).getUser_ID().equals(post.getUser_id() + "")) {
+            followBtn.setVisibility(View.GONE);
+        }
+
+        followBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TriggerAuthorFollow(post.getUser_id() + "");
+            }
         });
 
 
@@ -256,9 +283,21 @@ public class NewsDetailsActivity extends AppCompatActivity {
                     SinglePostResponse res = response.body();
                     isFollowed = res.followerCheck != null;
 
+                    if (isFollowed) {
+                        followBtn.setText("Un-Follow");
+                    } else {
+                        followBtn.setText("Follow");
+                    }
+
+                    Glide.with(getApplicationContext())
+                            .load(res.getData().getAuther().getImage() + "")
+                            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                            .into(autherImage);
+
                     try {
                         authorTv.setText(response.body().getData().getAuther().getName());
-                    }catch (Exception e ){
+                        authermodel = res.data.getAuther();
+                    } catch (Exception e) {
 
                     }
 
@@ -287,9 +326,91 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
     }
 
+    public void TriggerAuthorFollow(String auhter_id) {
+
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+        Call<LoginResponse.forgetPassResponse> call = api.followAuthor(auhter_id, AppPreferences.getUSerID(getApplicationContext()));
+
+        call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+
+                try {
+                    if (response.isSuccessful() && response.code() == 200) {
+
+                        LoginResponse.forgetPassResponse model = response.body();
+                        Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (followBtn.getText().toString().contains("Un-Follow")) {
+                            followBtn.setText("Follow");
+                        } else {
+                            followBtn.setText("Un-Follow");
+                        }
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error : Code :" + response.code(), Toast.LENGTH_LONG).show();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Error : Code :" + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Error : Code :" + t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         loadPostDetails(post.getSlug());
     }
+
+    private void sendTheCommnet(String commnet) {
+        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
+        ProgressDialog dialog = new ProgressDialog(NewsDetailsActivity.this);
+        dialog.setMessage("Adding Your Comment ...");
+        dialog.show();
+        dialog.setCancelable(false);
+
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+        Call<LoginResponse.forgetPassResponse> NetworkCall = api.post_comments(
+                post.getId() + "", AppPreferences.getUSerID(getApplicationContext()) + "", commnet
+
+        );
+
+        NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+                if (response.code() == 200) {
+                    try {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        commentEt.setText("");
+
+                    } catch (Exception er) {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Error Code : " + er.getMessage(), Toast.LENGTH_LONG).show();
+
+                    }
+                } else {
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Error Code : " + response.code(), Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                dialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 }

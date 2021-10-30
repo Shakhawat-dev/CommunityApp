@@ -72,8 +72,8 @@ public interface NewsRmeApi {
 
     @FormUrlEncoded
     @POST("user-watch-time")
-    Call<JSONObject> givePoint(
-            @Field("user_id") String user_id,
+    Call<LoginResponse.forgetPassResponse> givePoint(
+            @Field("reporter_id") String reporter_id,
             @Field("post_id") int post_id,
             @Field("watch_time") int watch_time
     );

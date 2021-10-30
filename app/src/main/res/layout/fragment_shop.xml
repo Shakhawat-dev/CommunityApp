@@ -5,9 +5,11 @@
     android:layout_height="match_parent"
 
     tools:context=".Fragments.ShopFragment">
-    <androidx.recyclerview.widget.RecyclerView
+
+    <im.delight.android.webview.AdvancedWebView
+        android:id="@+id/webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>

@@ -13,9 +13,11 @@ import com.metacoders.communityapp.Fragments.PostFragment;
 public class profile_viewpager_adapter extends FragmentStateAdapter {
 
   //  private String[] titles = new String[]{"Home", "Products", "Cart", "Profile"};
+    String auther_id = "0"  ;
 
-    public profile_viewpager_adapter(@NonNull FragmentActivity fragmentActivity) {
+    public profile_viewpager_adapter(@NonNull FragmentActivity fragmentActivity , String id ) {
         super(fragmentActivity);
+        auther_id = id ;
     }
 
     @NonNull
@@ -24,19 +26,19 @@ public class profile_viewpager_adapter extends FragmentStateAdapter {
 
         switch (position) {
             case 0:
-                return new PostFragment("video");
+                return new PostFragment("video" , auther_id);
 //            case 1:
 //                return new PostFragment();
 //            case 2:
 //                return new AudioFragment();
             case 1:
-                return new PostFragment("audio");
+                return new PostFragment("audio" , auther_id);
             case 2:
-                return new PostFragment("post");
+                return new PostFragment("post" , auther_id);
 
         }
 
-        return new PostFragment("news");
+        return new PostFragment("news" , auther_id);
     }
 
 

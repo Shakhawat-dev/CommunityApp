@@ -14,8 +14,6 @@ public class SinglePostResponse {
     public Post.PostModel data;
 
 
-
-
     @Expose
     @SerializedName("relatedPost")
     public List<Post.PostModel> relatedPosts = new ArrayList<>();

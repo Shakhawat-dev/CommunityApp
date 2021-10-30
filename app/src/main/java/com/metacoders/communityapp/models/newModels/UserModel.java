@@ -9,7 +9,7 @@ public  class UserModel implements Serializable {
 
     @Expose
     @SerializedName("social_link")
-    private String social_link;
+    private String social_link;  //account_number
     @Expose
     @SerializedName("social_name")
     private String social_name;
@@ -58,6 +58,17 @@ public  class UserModel implements Serializable {
     @Expose
     @SerializedName("name")
     private String name;
+    @Expose
+    @SerializedName("account_number")
+    private String account_number;
+
+    public String getAccount_number() {
+        return account_number;
+    }
+
+    public void setAccount_number(String account_number) {
+        this.account_number = account_number;
+    }
 
     public String getSocial_link() {
         return social_link;

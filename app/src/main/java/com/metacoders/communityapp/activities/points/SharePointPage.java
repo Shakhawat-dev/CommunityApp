@@ -13,6 +13,7 @@ import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
+import com.metacoders.communityapp.models.newModels.AuthorPostResponse;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
@@ -23,7 +24,7 @@ import retrofit2.Response;
 public class SharePointPage extends AppCompatActivity {
     EditText accountNum, pointAmt;
     Button shareBtn;
-
+    MaterialButton button ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +35,8 @@ public class SharePointPage extends AppCompatActivity {
         pointAmt = findViewById(R.id.point_amt);
         shareBtn = findViewById(R.id.send);
 
+        button = findViewById(R.id.pointView);
 
-        MaterialButton button = findViewById(R.id.pointView);
         button.setText(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getTotal_point() + "");
 
 
@@ -65,16 +66,22 @@ public class SharePointPage extends AppCompatActivity {
         NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
             @Override
             public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
-                findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                if (response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
 
+                if (response.isSuccessful()) {
+
+                    accountNum.setText("");
+                    pointAmt.setText("");
+                    Toast.makeText(getApplicationContext(), "Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                    loadUrPost();
                     if (response.body().getMessage().contains("successful")) {
-                        finish();
+
+                        //finish();
                     }
+
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Error : Try Again " + response.code(), Toast.LENGTH_LONG).show();
-
+                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 }
             }
 
@@ -84,5 +91,42 @@ public class SharePointPage extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Error : Try Again " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void loadUrPost() {
+        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+        Call<AuthorPostResponse> catCall = api.getAuthorPost(SharedPrefManager.getInstance(getApplicationContext()).getUser_ID() + "");
+
+        catCall.enqueue(new Callback<AuthorPostResponse>() {
+            @Override
+            public void onResponse(Call<AuthorPostResponse> call, Response<AuthorPostResponse> response) {
+                AuthorPostResponse ownListModelList = response.body();
+                findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                if (response.code() == 200) {
+                    ownListModelList = response.body();
+
+                    //   followerCount.setText(ownListModelList.);
+                    button.setText(ownListModelList.getAuthor().getTotal_point());
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AuthorPostResponse> call, Throwable t) {
+                findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        loadUrPost();
+        super.onResume();
     }
 }

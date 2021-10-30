@@ -46,11 +46,13 @@ public class PostFragment extends Fragment implements ProductListDifferAdapter.I
     ConstraintLayout emptyLayout;
     SwipeRefreshLayout swipeContainer;
     String type = "";
+    String auther_id = "" ;
     private ShimmerFrameLayout mShimmerViewContainer2;
 
-    public PostFragment(String type) {
+    public PostFragment(String type, String auther_id) {
         // Required empty public constructor
         this.type = type;
+        this.auther_id = auther_id ;
     }
 
 
@@ -83,7 +85,7 @@ public class PostFragment extends Fragment implements ProductListDifferAdapter.I
 
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getContext()));
-        Call<AuthorPostResponse> catCall = api.getAuthorPost(SharedPrefManager.getInstance(getContext()).getUser_ID() + "");
+        Call<AuthorPostResponse> catCall = api.getAuthorPost(auther_id + "");
 
         catCall.enqueue(new Callback<AuthorPostResponse>() {
             @Override
