@@ -29,5 +29,5 @@
         android:id="@+id/dashboard"
         android:title="Dashboard"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_baseline_dashboard_24"/>
+        android:icon="@drawable/user"/>
 </menu>

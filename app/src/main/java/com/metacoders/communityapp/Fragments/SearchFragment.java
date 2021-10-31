@@ -104,6 +104,7 @@ public class SearchFragment extends Fragment implements ProductListDifferAdapter
                 postsList.clear();
                 mAdapter.submitlist(postsList);
                 searchView.setQueryHint("Search For Anything..");
+                loadList("news", 1 );
                 return false;
             }
         });
@@ -252,4 +253,9 @@ public class SearchFragment extends Fragment implements ProductListDifferAdapter
         });
     }
 
+    @Override
+    public void onStart() {
+        loadList("news" , 1);
+        super.onStart();
+    }
 }

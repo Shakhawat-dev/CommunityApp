@@ -88,6 +88,14 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+
+                <Spinner
+                    android:layout_marginVertical="4dp"
+                    android:id="@+id/genderList"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/spinner_background"
+                    android:layout_height="@dimen/_40sdp"/>
+
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
@@ -102,6 +110,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/bio"
+                        android:maxLength="120"
                         android:drawableStart="@drawable/ic_baseline_language_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
@@ -144,6 +153,46 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/company"
                         android:drawableStart="@drawable/ic_baseline_business_center_24"
+                        android:drawableTint="@color/colorPrimary"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Zip Code"
+                    android:layout_marginTop="8dp"
+                    app:boxStrokeColor="@color/colorPrimary"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextColor="@color/black">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/zip_code"
+                        android:drawableStart="@drawable/ic_baseline_location_city_24"
+                        android:drawableTint="@color/colorPrimary"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Facebook Profile Link"
+                    android:layout_marginTop="8dp"
+                    app:boxStrokeColor="@color/colorPrimary"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextColor="@color/black">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/socialLink"
+                        android:drawableStart="@drawable/ic_baseline_language_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
 

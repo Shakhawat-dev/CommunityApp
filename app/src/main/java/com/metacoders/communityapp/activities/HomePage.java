@@ -48,9 +48,12 @@ import com.metacoders.communityapp.utils.SharedPrefManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     NavigationView navigationView;
-    ImageView hamburger, searchBtn, profileBtn, userImage;
+    ImageView hamburger, searchBtn, userImage;
+    CircleImageView profileBtn ;
     ViewPager2 viewPager;
     FloatingActionButton emergencyFuel;
     allDataResponse dataResponse;
@@ -127,6 +130,11 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         userNameOnSide = navigationView.findViewById(R.id.user_name);
         hamburger = findViewById(R.id.menu);
 
+        Glide.with(getApplicationContext())
+                .load(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getImage())
+                .error(R.drawable.placeholder)
+                .into(profileBtn);
+
 
         findViewById(R.id.closeBtn).setOnClickListener(
                 new View.OnClickListener() {
@@ -199,8 +207,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
 
         searchBtn.setOnClickListener(v -> {
-            Intent p = new Intent(getApplicationContext(), SerachActivity.class);
-            startActivity(p);
+           viewPager.setCurrentItem(1);
         });
 
 

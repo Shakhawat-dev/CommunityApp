@@ -5,7 +5,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public  class UserModel implements Serializable {
+public class UserModel implements Serializable {
+
+    @Expose
+    @SerializedName("follower_active")
+    private int follower_active;  //account_number
+    @Expose
+    @SerializedName("reporter_total_point")
+    private String reporter_total_point;  //account_number
 
     @Expose
     @SerializedName("social_link")
@@ -64,6 +71,22 @@ public  class UserModel implements Serializable {
 
     public String getAccount_number() {
         return account_number;
+    }
+
+    public int getFollower_active() {
+        return follower_active;
+    }
+
+    public void setFollower_active(int follower_active) {
+        this.follower_active = follower_active;
+    }
+
+    public String getReporter_total_point() {
+        return reporter_total_point;
+    }
+
+    public void setReporter_total_point(String reporter_total_point) {
+        this.reporter_total_point = reporter_total_point;
     }
 
     public void setAccount_number(String account_number) {

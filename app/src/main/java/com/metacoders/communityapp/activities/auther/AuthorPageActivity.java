@@ -117,6 +117,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
         mail = findViewById(R.id.mailTv);
 
 
+
         // recyclerView.setVisibility(View.VISIBLE);
         circleImageView = findViewById(R.id.profile_pic);
         followButton = findViewById(R.id.followBtn);
@@ -146,9 +147,19 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
 
     private void setViewToData(UserModel authermodel) {
         name.setText(authermodel.getName() + "");
-        mail.setText(authermodel.getEmail() + "");
+        try {
+            if(authermodel.getBio() == null || authermodel.getBio().isEmpty()){
+                mail.setText("");
+            }else {
+                mail.setText(authermodel.getBio() + "");
+            }
+
+        }catch (Exception e){
+            mail.setText("");
+        }
         countyName.setText(authermodel.getCountry()+"");
         link.setText(authermodel.getAccount_number()+"");
+       // followerCount.setText(""+authermodel.getFollower_active());
 
         Glide.with(getApplicationContext())
                 .load(authermodel.getImage() + "")

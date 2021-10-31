@@ -8,6 +8,9 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -22,20 +25,26 @@ import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EditProfile extends AppCompatActivity {
-    TextInputEditText full_nameIn, addressIn, emailIn, phoneIn, CompanyIn, lastDegreeIn, latLongIn, cityIN, bioin;
+    TextInputEditText full_nameIn,zipCodeIn , ssLinkIn  , addressIn, emailIn, phoneIn, CompanyIn, lastDegreeIn, latLongIn, cityIN, bioin;
     String full_name, address, email, phone, bio, company, lastDegree, latLong, country, city;
     UserModel model;
+    Spinner genderSpinner;
+    String gender ;
+
     private double lat = 1000, lon = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile_layout);
+
 
         try {
             AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "My Profile");
@@ -60,6 +69,7 @@ public class EditProfile extends AppCompatActivity {
                 company = CompanyIn.getText().toString();
                 bio = bioin.getText().toString();
 
+
                 sendData();
 
             }
@@ -76,8 +86,9 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void setUpUi(UserModel model) {
-
-
+        ssLinkIn = findViewById(R.id.socialLink);
+        zipCodeIn = findViewById(R.id.zip_code);
+        genderSpinner = findViewById(R.id.genderList);
         full_nameIn = findViewById(R.id.name);
         addressIn = findViewById(R.id.address);
         emailIn = findViewById(R.id.email_et);
@@ -88,13 +99,49 @@ public class EditProfile extends AppCompatActivity {
         bioin = findViewById(R.id.bio);
         cityIN = findViewById(R.id.city);
 
+        ArrayAdapter<String> catgoery_adapter = new ArrayAdapter<String>(EditProfile.this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender));
+        catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genderSpinner.setAdapter(catgoery_adapter);
 
-        full_nameIn.setText(model.getName());
-        addressIn.setText(model.getAddress());
-        emailIn.setText(model.getEmail());
-        phoneIn.setText(model.getPhone());
-        bioin.setText(model.getBio());
-        CompanyIn.setText(model.getCompany());
+
+        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                gender = parent.getSelectedItem().toString();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        try{
+            gender = model.getGender();
+            if(gender == null || gender.isEmpty()){
+
+            }else {
+               genderSpinner.setSelection( getIndexOfSpinner(genderSpinner , gender.toLowerCase()));
+            }
+
+            full_nameIn.setText(model.getName()+"");
+            addressIn.setText(model.getAddress()+"");
+            emailIn.setText(model.getEmail()+"");
+            phoneIn.setText(model.getPhone()+"");
+            bioin.setText(model.getBio()+"");
+            CompanyIn.setText(model.getCompany()+"");
+            ssLinkIn.setText(model.getSocial_link()+"");
+            zipCodeIn.setText(model.getZip_code()+"");
+
+        }catch ( Exception e ){
+
+        }
+
+
+
 
 
     }
@@ -116,6 +163,12 @@ public class EditProfile extends AppCompatActivity {
         model.setBio(bio);
         model.setCompany(company);
         model.setAddress(address);
+        if(gender.contains("male")){
+            model.setGender(gender);
+        }
+        model.setSocial_link(ssLinkIn.getText().toString());
+        model.setZip_code(zipCodeIn.getText().toString());
+
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, accessTokens);
 
@@ -126,7 +179,10 @@ public class EditProfile extends AppCompatActivity {
                         phone,
                         bio,
                         company,
-                        address
+                        address,
+                        gender,
+                        ssLinkIn.getText().toString(),
+                        zipCodeIn.getText().toString()
                 );
 
 
@@ -189,4 +245,14 @@ public class EditProfile extends AppCompatActivity {
         super.onResume();
 
     }
+    private int getIndexOfSpinner(Spinner spinner, String myString) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            String compare = ((String) spinner.getItemAtPosition(i)).toString() + "";
+            if (compare.equalsIgnoreCase(myString)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
 }

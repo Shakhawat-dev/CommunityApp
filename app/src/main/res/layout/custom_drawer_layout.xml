@@ -214,8 +214,33 @@
             android:layout_marginTop="@dimen/_2sdp"
             android:paddingVertical="@dimen/_14sdp"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_70sdp">
+            android:layout_height="@dimen/_100sdp">
 
+            <ImageView
+                android:id="@+id/fb"
+                android:layout_width="wrap_content"
+                android:layout_margin="@dimen/_8sdp"
+                android:background="@drawable/facebook"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/twitter"
+                android:layout_width="wrap_content"
+                android:background="@drawable/group6"
+                android:layout_margin="@dimen/_8sdp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/insta"
+                android:layout_width="wrap_content"
+                android:background="@drawable/group7"
+                android:layout_margin="@dimen/_8sdp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/youtube"
+                android:layout_width="wrap_content"
+                android:background="@drawable/group8"
+                android:layout_margin="@dimen/_8sdp"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 

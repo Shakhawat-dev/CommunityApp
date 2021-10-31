@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -63,6 +66,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     PlayerView playerView;
     SimpleExoPlayer player;
     int allReadySentTime = 0;
+    long time = 0;
     EditText commentEt;
     boolean isPLaying = false;
     UserModel authermodel;
@@ -78,6 +82,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     TextView qualityBtn;
     ShowMoreTextView mMediaDetails;
     AppCompatButton followBtn;
+    CountDownTimer countDownTimer  ;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
     private Button mMediaAllComments;
@@ -176,16 +181,69 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         //ProgressBar audioProgressBar = miniPlayerCardView.findViewById(R.id.audioProgressBar);
         playerControlView.setPlayer(PlayerManager.getSharedInstance(this).getPlayerView().getPlayer());
 
+      countDownTimer =   new CountDownTimer(72000000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                //   Log.d(TAG, "onTick: ");.setText("seconds remaining: " + millisUntilFinished / 1000);
+                time = millisUntilFinished;
+                long seconds = (long) (time/1000);
+                Log.d("TAG", "onTick: " + millisUntilFinished);
+                if(seconds%17  == 0 ){
+                    callForGift((int) manager.getPlayer().getCurrentPosition()+1);
+                }
+            }
+
+            public void onFinish() {
+
+            }
+        }.start();
+
+
+        PlayerManager.getSharedInstance(this).getPlayer().addListener(new Player.EventListener() {
+
+
+            @Override
+            public void onLoadingChanged(boolean isLoading) {
+
+            }
+
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                if (playWhenReady && playbackState == Player.STATE_READY) {
+                    //timer sta
+                    Log.d("TAG", "onPlayerStateChanged: TIMER STARTED ");
+                    countDownTimer.start();
+                } else if (playWhenReady) {
+                    // might be idle (plays after prepare()),
+                    // buffering (plays when data available)
+                    // or ended (plays when seek away from end)
+                    Log.d("TAG", "onPlayerStateChanged: TIMER STOPPED ");
+                    countDownTimer.cancel();
+                } else {
+                    // player paused in any state
+                    Log.d("TAG", "onPlayerStateChanged: TIMER STOPPED ");
+                    countDownTimer.cancel();
+                }
+
+            }
+
+            @Override
+            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+            }
+
+            @Override
+            public void onSeekProcessed() {
+
+            }
+        });
+
+
         playerControlView.setProgressUpdateListener((position, bufferedPosition) -> {
 
-            int currentDuration = (int) position / 1000;
-            Log.d("TAG", "callForGift: calling " + currentDuration
-                    + " " + allReadySentTime);
-
-            if (currentDuration > 0 && currentDuration % 16 == 0 && allReadySentTime != currentDuration) {
-                allReadySentTime = currentDuration;
-                callForGift(currentDuration);
-            }
+//            if (currentDuration > 0 && currentDuration % 16 == 0 && allReadySentTime != currentDuration) {
+//                allReadySentTime = currentDuration;
+//
+//            }
 
             //   int bufferedProgressBarPosition = (int) ((bufferedPosition * 100) / manager.getDuration());
             //  audioProgressBar.setProgress(progressBarPosition);
@@ -249,6 +307,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         setDetails();
 
 
+
+
     }
 
     @Override
@@ -261,7 +321,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
         Log.d("TAG", "call " + currentSec
-                + " " + allReadySentTime);
+                + " ");
         Call<LoginResponse.forgetPassResponse> NetworkCall = api.givePoint(
                 post.getUser_id() + "", post.getId(), currentSec
         );
@@ -728,5 +788,13 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startTimer();
+    }
 
+    private void startTimer() {
+
+    }
 }

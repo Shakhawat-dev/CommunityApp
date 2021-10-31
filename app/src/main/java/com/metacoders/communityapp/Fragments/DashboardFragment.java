@@ -97,7 +97,18 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
         // String   accessTokens = ;
         name.setText(sharedPrefManager.getUserModel().getName() + " ");
-        mail.setText(sharedPrefManager.getUserModel().getEmail() + " ");
+
+        try {
+            if(sharedPrefManager.getUserModel().getBio() == null || sharedPrefManager.getUserModel().getBio().isEmpty()){
+                mail.setText("");
+            }else {
+                mail.setText(sharedPrefManager.getUserModel().getBio() + "");
+            }
+
+        }catch (Exception e){
+            mail.setText("");
+        }
+
         Glide.with(context)
                 .load(sharedPrefManager.getUserModel().getImage())
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)

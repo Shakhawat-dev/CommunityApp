@@ -4,44 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
+    android:orientation="vertical"
 
     tools:context=".activities.SerachActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:textColor="@color/black"
-        android:text="Discover"
-        android:textSize="27sp"
-        android:layout_margin="@dimen/_8sdp"
-        android:fontFamily="@font/nunito_semi_bold"
-        android:layout_height="wrap_content"/>
-
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_bar"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
+        android:orientation="horizontal">
 
-        android:background="@drawable/editext_background"
-        android:backgroundTint="@color/gray"
-        app:backgroundTint="@color/gray"
-        app:iconifiedByDefault="false"
-        app:queryHint="Search Here!!" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:fontFamily="@font/nunito_semi_bold"
+            android:gravity="start"
+            android:text="Discover"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+        <!--    android:background="@drawable/editext_background"-->
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_bar"
+            android:layout_width="wrap_content"
+            android:maxWidth="@dimen/_200sdp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="16dp"
+            android:backgroundTint="@color/gray"
+            app:backgroundTint="@color/gray"
+            app:queryHint="Search Here!!"
+            app:searchIcon="@drawable/search_new" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:fontFamily="@font/nunito_semi_bold"
+        android:text="Most Relevent" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         android:fitsSystemWindows="true">
+
         <include layout="@layout/layout_empty_response" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/newsfeed"
-            android:layout_margin="@dimen/_4sdp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/_4sdp"
             android:clipToPadding="false"
             android:paddingBottom="@dimen/_60sdp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
