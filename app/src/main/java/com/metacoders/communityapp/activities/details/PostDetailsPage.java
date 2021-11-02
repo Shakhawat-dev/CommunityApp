@@ -68,6 +68,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     int allReadySentTime = 0;
     long time = 0;
     EditText commentEt;
+    Boolean  isStopped = true ;
+
     boolean isPLaying = false;
     UserModel authermodel;
     ImageView reportBtn;
@@ -78,11 +80,15 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     SparkButton sparkButton;
     Post.PostModel post;
     TextView like_count;
+    int prevSec = 0 ;
+    int newSec = 0 ;
     RelativeLayout loadingPanel;
     TextView qualityBtn;
     ShowMoreTextView mMediaDetails;
+    Boolean forcFinisj = false;
     AppCompatButton followBtn;
-    CountDownTimer countDownTimer  ;
+    private CountDownTimer downTimer;
+    long GlobarTimer = 0 ;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
     private Button mMediaAllComments;
@@ -94,6 +100,26 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_video_play_new);
         getSupportActionBar().hide();
+        downTimer = new CountDownTimer(16200, 1000) {
+            public void onTick(long millisUntilFinished) {
+                //   Log.d(TAG, "onTick: ");.setText("seconds remaining: " + millisUntilFinished / 1000);
+                // double sec = (double) time / 1000.00 ;
+                //long seconds = (long) (time / 1000);
+                // Log.d("TAG", "onTick: " + millisUntilFinished + " -> "+ sec);
+                // if (seconds % 16 == 0 && seconds !=16) {
+
+                //  }
+            }
+
+            public void onFinish() {
+                if (!forcFinisj) {
+                //    callForGift(16);
+                }
+                downTimer.cancel();
+
+
+            }
+        };
         loadingPanel = findViewById(R.id.loadingPanel);
         qualityBtn = findViewById(R.id.qualitu);
         Intent o = getIntent();
@@ -142,6 +168,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         }
 
+
         findViewById(R.id.msgIcon).setOnClickListener(
                 v -> {
                     Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
@@ -181,22 +208,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         //ProgressBar audioProgressBar = miniPlayerCardView.findViewById(R.id.audioProgressBar);
         playerControlView.setPlayer(PlayerManager.getSharedInstance(this).getPlayerView().getPlayer());
 
-      countDownTimer =   new CountDownTimer(72000000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                //   Log.d(TAG, "onTick: ");.setText("seconds remaining: " + millisUntilFinished / 1000);
-                time = millisUntilFinished;
-                long seconds = (long) (time/1000);
-                Log.d("TAG", "onTick: " + millisUntilFinished);
-                if(seconds%17  == 0 ){
-                    callForGift((int) manager.getPlayer().getCurrentPosition()+1);
-                }
-            }
-
-            public void onFinish() {
-
-            }
-        }.start();
-
 
         PlayerManager.getSharedInstance(this).getPlayer().addListener(new Player.EventListener() {
 
@@ -211,17 +222,24 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                 if (playWhenReady && playbackState == Player.STATE_READY) {
                     //timer sta
                     Log.d("TAG", "onPlayerStateChanged: TIMER STARTED ");
-                    countDownTimer.start();
+                    downTimer.start();
+                    isStopped = false ;
+
                 } else if (playWhenReady) {
                     // might be idle (plays after prepare()),
                     // buffering (plays when data available)
                     // or ended (plays when seek away from end)
                     Log.d("TAG", "onPlayerStateChanged: TIMER STOPPED ");
-                    countDownTimer.cancel();
+                    downTimer.cancel();
+                    isStopped = true ;
+
+
                 } else {
                     // player paused in any state
                     Log.d("TAG", "onPlayerStateChanged: TIMER STOPPED ");
-                    countDownTimer.cancel();
+                    downTimer.cancel();
+                    isStopped = true ;
+
                 }
 
             }
@@ -238,16 +256,33 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         });
 
 
+
         playerControlView.setProgressUpdateListener((position, bufferedPosition) -> {
+
+          //  Log.d("BUFFERED", "onCreate: " + position/1000 + " -> " + bufferedPosition);
+            if((position/1000) - prevSec == 1){
+                prevSec = newSec ;
+                newSec = newSec + 1  ;
+                Log.d("BUFFERED", "onCreate: " + newSec+ " -> " + prevSec);
+
+                if(newSec % 4 == 0 ){
+                    callForGift(16);
+                }
+
+            }else {
+                prevSec =(int) position/1000;
+            }
+
+
 
 //            if (currentDuration > 0 && currentDuration % 16 == 0 && allReadySentTime != currentDuration) {
 //                allReadySentTime = currentDuration;
 //
 //            }
-
-            //   int bufferedProgressBarPosition = (int) ((bufferedPosition * 100) / manager.getDuration());
-            //  audioProgressBar.setProgress(progressBarPosition);
-            //  audioProgressBar.setSecondaryProgress(bufferedProgressBarPosition);
+//
+//               int bufferedProgressBarPosition = (int) ((bufferedPosition * 100) / manager.getDuration());
+//              audioProgressBar.setProgress(progressBarPosition);
+//              audioProgressBar.setSecondaryProgress(bufferedProgressBarPosition);
 
         });
 
@@ -307,8 +342,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         setDetails();
 
 
-
-
     }
 
     @Override
@@ -335,12 +368,17 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     Gson gson = new Gson();
                     String str = gson.toJson(response.body());
                     Log.d("TAG", "onResponse: " + str);
+                    downTimer.cancel();
+                    downTimer.start();
+
 
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                downTimer.cancel();
+                downTimer.start();
 
             }
         });
@@ -473,12 +511,21 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-
         PlayerManager.getSharedInstance(PostDetailsPage.this).stopPlayer();
         PlayerManager.getSharedInstance(PostDetailsPage.this).releasePlayer();
 
+        //  countDownTimer = null ;
+        forcFinisj = true;
+        // downTimer.onFinish();
 
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //  forcFinisj = true ;
+        downTimer.cancel();
     }
 
     @Override
@@ -493,6 +540,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         super.onResume();
 
         initFullsceen();
+
     }
 
     private void loadAudioDetails(String id) {
@@ -794,7 +842,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         startTimer();
     }
 
+
     private void startTimer() {
 
     }
+
+
 }

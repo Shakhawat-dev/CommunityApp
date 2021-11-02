@@ -69,6 +69,7 @@
         <activity android:name=".activities.ChangePasswordActivity" />
         <activity
             android:name=".activities.details.PostDetailsPage"
+           android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|layoutDirection" />
         <activity android:name=".activities.HomePage" />
         <activity
