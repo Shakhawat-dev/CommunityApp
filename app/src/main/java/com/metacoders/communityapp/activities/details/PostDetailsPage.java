@@ -87,7 +87,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     ShowMoreTextView mMediaDetails;
     Boolean forcFinisj = false;
     AppCompatButton followBtn;
-    private CountDownTimer downTimer;
+ //   private CountDownTimer downTimer;
     long GlobarTimer = 0 ;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
@@ -100,26 +100,26 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_video_play_new);
         getSupportActionBar().hide();
-        downTimer = new CountDownTimer(16200, 1000) {
-            public void onTick(long millisUntilFinished) {
-                //   Log.d(TAG, "onTick: ");.setText("seconds remaining: " + millisUntilFinished / 1000);
-                // double sec = (double) time / 1000.00 ;
-                //long seconds = (long) (time / 1000);
-                // Log.d("TAG", "onTick: " + millisUntilFinished + " -> "+ sec);
-                // if (seconds % 16 == 0 && seconds !=16) {
-
-                //  }
-            }
-
-            public void onFinish() {
-                if (!forcFinisj) {
-                //    callForGift(16);
-                }
-                downTimer.cancel();
-
-
-            }
-        };
+//        downTimer = new CountDownTimer(16200, 1000) {
+//            public void onTick(long millisUntilFinished) {
+//                //   Log.d(TAG, "onTick: ");.setText("seconds remaining: " + millisUntilFinished / 1000);
+//                // double sec = (double) time / 1000.00 ;
+//                //long seconds = (long) (time / 1000);
+//                // Log.d("TAG", "onTick: " + millisUntilFinished + " -> "+ sec);
+//                // if (seconds % 16 == 0 && seconds !=16) {
+//
+//                //  }
+//            }
+//
+//            public void onFinish() {
+//                if (!forcFinisj) {
+//                //    callForGift(16);
+//                }
+//                downTimer.cancel();
+//
+//
+//            }
+//        };
         loadingPanel = findViewById(R.id.loadingPanel);
         qualityBtn = findViewById(R.id.qualitu);
         Intent o = getIntent();
@@ -222,7 +222,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                 if (playWhenReady && playbackState == Player.STATE_READY) {
                     //timer sta
                     Log.d("TAG", "onPlayerStateChanged: TIMER STARTED ");
-                    downTimer.start();
+                    //downTimer.start();
                     isStopped = false ;
 
                 } else if (playWhenReady) {
@@ -230,14 +230,14 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     // buffering (plays when data available)
                     // or ended (plays when seek away from end)
                     Log.d("TAG", "onPlayerStateChanged: TIMER STOPPED ");
-                    downTimer.cancel();
+                    //downTimer.cancel();
                     isStopped = true ;
 
 
                 } else {
                     // player paused in any state
                     Log.d("TAG", "onPlayerStateChanged: TIMER STOPPED ");
-                    downTimer.cancel();
+                    //downTimer.cancel();
                     isStopped = true ;
 
                 }
@@ -263,10 +263,12 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             if((position/1000) - prevSec == 1){
                 prevSec = newSec ;
                 newSec = newSec + 1  ;
-                Log.d("BUFFERED", "onCreate: " + newSec+ " -> " + prevSec);
 
-                if(newSec % 4 == 0 ){
+
+                if(newSec % 16 == 0 ){
                     callForGift(16);
+                    Log.d("BUFFERED", "onCreate: " + newSec+ " -> " + prevSec);
+
                 }
 
             }else {
@@ -368,8 +370,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     Gson gson = new Gson();
                     String str = gson.toJson(response.body());
                     Log.d("TAG", "onResponse: " + str);
-                    downTimer.cancel();
-                    downTimer.start();
+                   // downTimer.cancel();
+                    //downTimer.start();
 
 
                 }
@@ -377,8 +379,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
             @Override
             public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
-                downTimer.cancel();
-                downTimer.start();
+             //   downTimer.cancel();
+             //   downTimer.start();
 
             }
         });
@@ -525,7 +527,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     protected void onStop() {
         super.onStop();
         //  forcFinisj = true ;
-        downTimer.cancel();
+        //downTimer.cancel();
     }
 
     @Override
