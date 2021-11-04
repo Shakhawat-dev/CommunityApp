@@ -21,6 +21,7 @@ import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.News_List_Model;
+import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 import com.metacoders.communityapp.utils.StringGen;
@@ -79,13 +80,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
 
         SharedPrefManager  sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
-        String   accessTokens = sharedPrefManager.getUserToken();
-        Log.d("TAG", "loadList: activity " + accessTokens);
 
 
-        NewsRmeApi api  = ServiceGenerator.createService(NewsRmeApi.class , accessTokens) ;
 
-        Call<LoginResponse.forgetPassResponse> call = api.changePassword(oldPass , newPass) ;
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+        Call<LoginResponse.forgetPassResponse> call = api.changePassword(newPass , newPass) ;
 
         call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
             @Override

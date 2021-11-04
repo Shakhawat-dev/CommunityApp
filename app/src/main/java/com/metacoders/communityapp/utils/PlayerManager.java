@@ -110,9 +110,9 @@ public class PlayerManager {
         BANDWIDTH_METER.addEventListener(handler, new BandwidthMeter.EventListener() {
             @Override
             public void onBandwidthSample(int elapsedMs, long bytesTransferred, long bitrateEstimate) {
-                Log.d(TAG, "elapsedMs: " + elapsedMs);
-                Log.d(TAG, "bytes transferred: " + bytesTransferred);
-                Log.d(TAG, "Average bitrate (bps) = " + (double) (bytesTransferred * 8) / (elapsedMs / 1000));
+               // Log.d(TAG, "elapsedMs: " + elapsedMs);
+               // Log.d(TAG, "bytes transferred: " + bytesTransferred);
+               // Log.d(TAG, "Average bitrate (bps) = " + (double) (bytesTransferred * 8) / (elapsedMs / 1000));
             }
         });
         mPlayer.addListener(new Player.EventListener() {
@@ -176,7 +176,7 @@ public class PlayerManager {
 
             @Override
             public void onSeekProcessed() {
-                Log.i(TAG, "onSeekProcessed: " + mPlayer.getVideoFormat().bitrate);
+              //  Log.i(TAG, "onSeekProcessed: " + mPlayer.getVideoFormat().bitrate);
             }
         });
     }

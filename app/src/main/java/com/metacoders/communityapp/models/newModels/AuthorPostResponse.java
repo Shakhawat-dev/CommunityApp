@@ -20,8 +20,32 @@ public class AuthorPostResponse implements Serializable {
     public List<Post.PostModel> ownArticles;
 
     @Expose
+    @SerializedName("totalPostCount")
+    public int totalPostCount;
+
+    @Expose
+    @SerializedName("otherProfileFollowersCount")
+    public int otherProfileFollowersCount;
+
+    @Expose
     @SerializedName("otherUserInfo")
-    public UserModel author ;
+    public UserModel author;
+
+    public int getTotalPostCount() {
+        return totalPostCount;
+    }
+
+    public void setTotalPostCount(int totalPostCount) {
+        this.totalPostCount = totalPostCount;
+    }
+
+    public int getOtherProfileFollowersCount() {
+        return otherProfileFollowersCount;
+    }
+
+    public void setOtherProfileFollowersCount(int otherProfileFollowersCount) {
+        this.otherProfileFollowersCount = otherProfileFollowersCount;
+    }
 
     public List<Post.PostModel> getOwnVideos() {
         return ownVideos;

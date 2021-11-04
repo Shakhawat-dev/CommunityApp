@@ -1,5 +1,6 @@
 package com.metacoders.communityapp.models.newModels;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -13,7 +14,6 @@ public class SinglePostResponse {
     @SerializedName("post")
     public Post.PostModel data;
 
-
     @Expose
     @SerializedName("relatedPost")
     public List<Post.PostModel> relatedPosts = new ArrayList<>();
@@ -21,15 +21,20 @@ public class SinglePostResponse {
     @Expose
     @SerializedName("postLikesCount")
     public int postLikesCount = 0 ;
+
     @Expose
     @SerializedName("postLikesCheck")
     public JSONObject postLikesCheck = null;
+
     @Expose
     @SerializedName("followerCount")
     public int followerCount;
     @Expose
     @SerializedName("followerCheck")
     public JSONObject followerCheck;
+    @Expose
+    @SerializedName("comments")
+    public  List<JsonObject> comments ;
 
 
     public Post.PostModel getData() {
@@ -42,6 +47,14 @@ public class SinglePostResponse {
 
     public List<Post.PostModel> getRelatedPosts() {
         return relatedPosts;
+    }
+
+    public List<JsonObject> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<JsonObject> comments) {
+        this.comments = comments;
     }
 
     public void setRelatedPosts(List<Post.PostModel> relatedPosts) {

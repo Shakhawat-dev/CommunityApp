@@ -189,10 +189,10 @@ public interface NewsRmeApi {
 
 
     @FormUrlEncoded
-    @POST("profile/change-password")
+    @POST("reset-password")
     Call<LoginResponse.forgetPassResponse> changePassword(
-            @Field("old_password") String old_password,
-            @Field("new_password") String new_password
+            @Field("password_confirmation") String old_password,
+            @Field("password") String new_password
     );
 
     @GET("search")

@@ -79,9 +79,10 @@
                                     android:textStyle="bold" />
 
                                 <TextView
+                                    android:id="@+id/followerCount"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="520 Followers"
+                                    android:text="0 Followers"
                                     android:textColor="#8F918F"
                                     android:textSize="12sp" />
 
@@ -275,6 +276,7 @@
                     android:layout_height="wrap_content"
                     android:padding="12dp"
                     android:elevation="1dp"
+                    android:visibility="gone"
                     android:layout_marginTop="8dp"
                     android:layout_marginStart="2dp"
                     android:layout_marginEnd="2dp"
@@ -287,6 +289,7 @@
                     android:layout_height="@dimen/_28sdp"
                     android:layout_marginTop="8dp"
                     android:layout_gravity="end"
+                    android:visibility="gone"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/rounded_boarder_tint_blue"
                     android:text="Add Comment"

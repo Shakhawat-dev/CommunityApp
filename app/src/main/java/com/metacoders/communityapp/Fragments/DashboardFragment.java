@@ -129,7 +129,10 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
 
                     //   followerCount.setText(ownListModelList.);
                     link.setText(ownListModelList.getAuthor().getAccount_number() + "");
+                    followerCount.setText(ownListModelList.otherProfileFollowersCount+ "");
+                    totalCount.setText("" + ownListModelList.totalPostCount);
                     country_name.setText("Country: " + ownListModelList.getAuthor().getCountry());
+
 
                 } else {
                     Toast.makeText(getContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();

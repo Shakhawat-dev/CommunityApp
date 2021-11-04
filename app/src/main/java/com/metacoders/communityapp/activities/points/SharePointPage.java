@@ -1,6 +1,7 @@
 package com.metacoders.communityapp.activities.points;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,6 +57,19 @@ public class SharePointPage extends AppCompatActivity {
             finish();
         });
 
+        button.setOnClickListener(v -> {
+            int point = 0 ;
+            double money = 0.0 ;
+            //Log.d("TAG", "onCreate: " );
+            try{
+                point  = Integer.parseInt(button.getText().toString() );
+                money = 0.0000122 * point ;
+                button.setText("£ " + String.format("%.4f" , money));
+
+            }catch (Exception e){
+                Log.e("TAG", "onCreate: " + e.getMessage());
+            }
+        });
 
     }
 

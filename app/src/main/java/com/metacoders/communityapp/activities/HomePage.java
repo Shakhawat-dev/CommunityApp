@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -37,11 +38,14 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.countryWiseList.CountryList;
-import com.metacoders.communityapp.activities.payments.WithdrawPayment;
 import com.metacoders.communityapp.activities.points.Points_withdraw_options;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
+import com.metacoders.communityapp.api.NewsRmeApi;
+import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.allDataResponse;
+import com.metacoders.communityapp.models.newModels.AuthorPostResponse;
 import com.metacoders.communityapp.models.newModels.UserModel;
+import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
@@ -49,11 +53,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     NavigationView navigationView;
     ImageView hamburger, searchBtn, userImage;
-    CircleImageView profileBtn ;
+    CircleImageView profileBtn;
     ViewPager2 viewPager;
     FloatingActionButton emergencyFuel;
     allDataResponse dataResponse;
@@ -62,7 +69,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     Dialog dialog;
     CountryCodePicker countryCodePicker;
     boolean isGo = true;
-
+    TextView pointView;
     List<String> idlist = new ArrayList<>();
     CardView jobSide, profileSide, notificationSide;
     List<String> langList = new ArrayList<>();
@@ -119,6 +126,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         RequestPermission();
         final BottomNavigationView navigationBar = findViewById(R.id.bottom_navigation_);
         viewPager = findViewById(R.id.view_pager);
+        pointView = findViewById(R.id.pointView);
         drawerLayout = findViewById(R.id.drawer_layout);
         profileBtn = findViewById(R.id.profileBtn);
         searchBtn = findViewById(R.id.searchBtn);
@@ -205,9 +213,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         });
 
 
-
         searchBtn.setOnClickListener(v -> {
-           viewPager.setCurrentItem(1);
+            viewPager.setCurrentItem(1);
         });
 
 
@@ -405,8 +412,41 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
 
         countryCodePicker.setAutoDetectedCountry(true);
-        SharedPrefManager pref = new SharedPrefManager(getApplicationContext());
 
+        loadUrPost();
+
+    }
+
+    public void loadUrPost() {
+        // findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+        Call<AuthorPostResponse> catCall = api.getAuthorPost(SharedPrefManager.getInstance(getApplicationContext()).getUser_ID() + "");
+
+        catCall.enqueue(new Callback<AuthorPostResponse>() {
+            @Override
+            public void onResponse(Call<AuthorPostResponse> call, Response<AuthorPostResponse> response) {
+                AuthorPostResponse ownListModelList = response.body();
+                // findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                if (response.code() == 200) {
+                    ownListModelList = response.body();
+
+                    //   followerCount.setText(ownListModelList.);
+                    pointView.setText(ownListModelList.getAuthor().getTotal_point()
+                            + " pts");
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AuthorPostResponse> call, Throwable t) {
+                //  findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 
     @Override
@@ -437,26 +477,56 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         }
     }
 
-    public  void SideBarClick(){
-        findViewById(R.id.homeSide).setOnClickListener(v->{
+    public void SideBarClick() {
+
+        findViewById(R.id.fb).setOnClickListener(v -> {
+            String url = "https://www.facebook.com/NewsRme-105145475119080";
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        });
+
+        findViewById(R.id.twitter).setOnClickListener(v -> {
+            String url = "https://twitter.com/NewsRme";
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        });
+        findViewById(R.id.youtube).setOnClickListener(v -> {
+            String url = "https://www.youtube.com/channel/UCORpN-qZFskiuMoCiuYNzjQ";
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        });
+        findViewById(R.id.insta).setOnClickListener(v -> {
+            String url = "https://www.instagram.com/newsrme/";
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        });
+
+
+        findViewById(R.id.homeSide).setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
             viewPager.setCurrentItem(0);
         });
 
-        findViewById(R.id.shoppingSide).setOnClickListener(v->{
-            startActivity(new Intent( getApplicationContext() , ShopPage.class));
+        findViewById(R.id.shoppingSide).setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), ShopPage.class));
         });
 
-        findViewById(R.id.profileSide).setOnClickListener(v->{
-            startActivity(new Intent( getApplicationContext() , ProfileActivity.class));
+        findViewById(R.id.profileSide).setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         });
 
-        findViewById(R.id.categoriesSide).setOnClickListener(v->{
-            startActivity(new Intent(getApplicationContext() , CategoryList.class));
+        findViewById(R.id.categoriesSide).setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), CategoryList.class));
         });
-        findViewById(R.id.pointShopping).setOnClickListener(v->{
-            startActivity(new Intent(getApplicationContext() , Points_withdraw_options.class));
+        findViewById(R.id.pointShopping).setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), Points_withdraw_options.class));
         });
 
     }
+
+
 }

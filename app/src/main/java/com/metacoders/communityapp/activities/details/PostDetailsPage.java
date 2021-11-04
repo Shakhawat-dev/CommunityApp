@@ -72,6 +72,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     boolean isPLaying = false;
     UserModel authermodel;
+    TextView followersCount  , commentCount;
     ImageView reportBtn;
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
@@ -120,6 +121,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 //
 //            }
 //        };
+        commentCount = findViewById(R.id.commentCount);
+        followersCount = findViewById(R.id.followerCount);
         loadingPanel = findViewById(R.id.loadingPanel);
         qualityBtn = findViewById(R.id.qualitu);
         Intent o = getIntent();
@@ -244,15 +247,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
             }
 
-            @Override
-            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
 
-            }
 
-            @Override
-            public void onSeekProcessed() {
-
-            }
         });
 
 
@@ -712,13 +708,15 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
                     isFollowed = res.followerCheck != null;
-
+                    followersCount.setText(res.getFollowerCount()+" Followers");
+                    commentCount.setText(res.getComments().size()+" Comments");
                     if (isFollowed) {
                         followBtn.setText("Un-Follow");
                     } else {
                         followBtn.setText("Follow");
                     }
                     like_count.setText(res.getPostLikesCount() + "");
+
                     authermodel = res.data.getAuther();
                     Glide.with(getApplicationContext())
                             .load(res.getData().getAuther().getImage() + "")
@@ -816,6 +814,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         dialog.dismiss();
                         Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                         commentEt.setText("");
+                        loadPostDetails(post.getSlug());
 
 
                     } catch (Exception er) {

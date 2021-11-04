@@ -62,6 +62,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     UserModel authermodel;
     ImageView profile_image;
     EditText commentEt;
+    TextView followersCount ;
 
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, followBtn, mMediaComments, mMediaDetails, authorTv;
@@ -73,6 +74,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_article_page_new);
 
         Intent o = getIntent();
+        followersCount = findViewById(R.id.followerCount);
         loadingPanel = findViewById(R.id.loadingPanel);
         autherImage = findViewById(R.id.profile_image);
         TextView textView = findViewById(R.id.titleTV);
@@ -289,6 +291,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
                         followBtn.setText("Follow");
                     }
 
+                    followersCount.setText(res.getFollowerCount()+" Followers");
+
                     Glide.with(getApplicationContext())
                             .load(res.getData().getAuther().getImage() + "")
                             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
@@ -392,6 +396,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
                         dialog.dismiss();
                         Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                         commentEt.setText("");
+                       // loadPostDetails(post.getSlug());
 
                     } catch (Exception er) {
                         dialog.dismiss();

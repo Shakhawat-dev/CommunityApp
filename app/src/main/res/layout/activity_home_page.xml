@@ -78,7 +78,19 @@
                 android:layout_gravity="end"
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/placeholder"
-                android:visibility="visible" />
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/pointView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/sf"
+                android:text="0 Point"
+                android:textColor="@color/Blue"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <com.hbb20.CountryCodePicker
                 android:id="@+id/ccp11"
@@ -102,6 +114,7 @@
                 android:layout_marginEnd="5dp"
                 android:backgroundTint="@color/gray"
                 android:src="@drawable/search_new"
+                android:visibility="gone"
                 app:backgroundTint="@color/gray" />
 
         </androidx.appcompat.widget.Toolbar>

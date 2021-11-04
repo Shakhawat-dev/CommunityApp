@@ -56,7 +56,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     ProductListDifferAdapter mAdapter;
     ConstraintLayout emptyLayout;
     int videoCount = 0, audioCount = 0, postCount = 0;
-    TextView followButton , followerCount;
+    TextView followButton , followerCount , totalCount;
     int user_id;
     UserModel authermodel;
     TabLayout tabLayout;
@@ -75,7 +75,6 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
         setView();
         authermodel = (UserModel) getIntent().getSerializableExtra("auther");
         setViewToData(authermodel);
-
 
 
         if (isFollow) {
@@ -105,6 +104,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     private void setView() {
         mAdapter = new ProductListDifferAdapter(this, this, false);
         tabLayout = findViewById(R.id.tabMode);
+        totalCount = findViewById(R.id.totalPost);
         countyName = findViewById(R.id.country_name);
         viewPager2 = findViewById(R.id.rlist);
         link = findViewById(R.id.link);
@@ -184,6 +184,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
                     if (response.isSuccessful() && response.code() == 200) {
 
                         LoginResponse.forgetPassResponse model = response.body();
+
                         Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
                         if (followButton.getText().toString().contains("Un-Follow")) {
                             followButton.setText("Follow");
@@ -212,7 +213,42 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     @Override
     protected void onResume() {
         super.onResume();
-        //     loadUrPost();
+            loadUrPost();
+    }
+    public void loadUrPost() {
+        //setting up layout
+       // emptyLayout.setVisibility(View.GONE);
+       // recyclerView.setVisibility(View.VISIBLE);
+
+
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+        Call<AuthorPostResponse> catCall = api.getAuthorPost(user_id + "");
+
+        catCall.enqueue(new Callback<AuthorPostResponse>() {
+            @Override
+            public void onResponse(Call<AuthorPostResponse> call, Response<AuthorPostResponse> response) {
+                AuthorPostResponse ownListModelList = response.body();
+                if (response.code() == 200) {
+                    try {
+                        followerCount.setText("" + ownListModelList.otherProfileFollowersCount);
+                        totalCount.setText("" + ownListModelList.totalPostCount);
+                    } catch (Exception e) {
+
+                    }
+
+
+                } else {
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AuthorPostResponse> call, Throwable t) {
+              //  Toast.makeText(getContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 
 }
