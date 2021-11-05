@@ -27,6 +27,9 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".activities.details.EditPostPage"
+            android:exported="false" />
+        <activity
             android:name=".activities.points.SharePointPage"
             android:exported="false" />
         <activity
@@ -69,8 +72,8 @@
         <activity android:name=".activities.ChangePasswordActivity" />
         <activity
             android:name=".activities.details.PostDetailsPage"
-           android:launchMode="singleTask"
-            android:configChanges="orientation|screenSize|layoutDirection" />
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:launchMode="singleTask" />
         <activity android:name=".activities.HomePage" />
         <activity
             android:name=".activities.Voice_Recoder_Activity"

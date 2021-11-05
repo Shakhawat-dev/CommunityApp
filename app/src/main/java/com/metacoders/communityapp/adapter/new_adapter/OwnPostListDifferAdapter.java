@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDifferAdapter.DiffferViewholder> {
+public class OwnPostListDifferAdapter extends RecyclerView.Adapter<OwnPostListDifferAdapter.DiffferViewholder> {
     //callBack
 
     private static final int VIDEO_ROW = 1;
@@ -59,7 +59,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
 
     };
 
-    public ProductListDifferAdapter(Context context, ItemClickListener itemClickListener, Boolean will_show_big_row) {
+    public OwnPostListDifferAdapter(Context context, ItemClickListener itemClickListener, Boolean will_show_big_row) {
 
         this.mInflater = LayoutInflater.from(context);
         // this.mData = productList;
@@ -152,10 +152,13 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         holder.viewCount.setText(newsFeed.getHit() + "");
 
 
-
+        if(will_show_big_row){
+            holder.more_option.setVisibility(View.VISIBLE);
+        }else holder.more_option.setVisibility(View.GONE);
 
         holder.more_option.setOnClickListener(v -> {
 
+            itemClickListener.onItemClick(newsFeed , true );
         });
 
         //  Log.d("TAGE", "onBindViewHolder: "+ newsFeed.getStatus() + " Vis" + newsFeed.getVisibility());
@@ -215,7 +218,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickListener.onItemClick(newsFeed);
+                itemClickListener.onItemClick(newsFeed , false);
             }
         });
 
@@ -238,7 +241,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
     }
 
     public interface ItemClickListener {
-        void onItemClick(Post.PostModel model);
+        void onItemClick(Post.PostModel model , Boolean isOption);
     }
 
     public class DiffferViewholder extends RecyclerView.ViewHolder {

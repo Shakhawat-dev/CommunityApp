@@ -167,6 +167,18 @@ public interface NewsRmeApi {
                                                       @Part MultipartBody.Part image);
     // new api ends
 
+    //lang, category, country, title, thumb_image, video, description
+    @FormUrlEncoded
+    @POST("update-video/{post_id}")
+    Call<JSONObject> updateVideo(
+            @Path("post_id")String id ,
+            @Field("lang") String lang,
+            @Field("category") String category,
+            @Field("country") String country,
+            @Field("title") String title,
+            @Field("description") String description
+    );
+
 
     @FormUrlEncoded
     @POST("register")

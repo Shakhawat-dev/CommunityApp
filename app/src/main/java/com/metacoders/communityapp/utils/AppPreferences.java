@@ -9,8 +9,12 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.ActionBar;
+
+import com.metacoders.communityapp.models.newModels.CountryModel;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import java.text.SimpleDateFormat;
 
@@ -23,6 +27,28 @@ public class AppPreferences {
     public AppPreferences(Context context) {
         prefs = context.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
     }
+
+    public static int getIndexOfSpinner(Spinner spinner, String myString) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            String compare =  spinner.getItemAtPosition(i).toString() + "";
+            if (compare.equalsIgnoreCase(myString)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+    public static int getCountrySpinner(SearchableSpinner spinner, String myString) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+
+            String compare = ((CountryModel) spinner.getItemAtPosition(i)).getName() + "";
+
+            if (compare.equalsIgnoreCase(myString)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
 
     public static int getRandomMaterialColor(String typeColor, Context context) {
         int returnColor = Color.BLACK;

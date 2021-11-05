@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,9 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.activities.details.EditPostPage;
 import com.metacoders.communityapp.activities.details.NewsDetailsActivity;
 import com.metacoders.communityapp.activities.details.PostDetailsPage;
+import com.metacoders.communityapp.adapter.new_adapter.OwnPostListDifferAdapter;
 import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -33,9 +37,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostFragment extends Fragment implements ProductListDifferAdapter.ItemClickListener {
+public class PostFragment extends Fragment implements OwnPostListDifferAdapter.ItemClickListener {
 
-    ProductListDifferAdapter mAdapter;
+    OwnPostListDifferAdapter mAdapter;
 
     View view;
     List<Post.PostModel> post_modelList = new ArrayList<>();
@@ -68,7 +72,13 @@ public class PostFragment extends Fragment implements ProductListDifferAdapter.I
         emptyLayout = view.findViewById(R.id.emptyLayout);
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-        mAdapter = new ProductListDifferAdapter(getContext(), this, false);
+
+        if(auther_id.equals(AppPreferences.getUSerID(context))){
+            mAdapter = new OwnPostListDifferAdapter(getContext(), this, true );
+        }else{
+            mAdapter = new OwnPostListDifferAdapter(getContext(), this, false);
+        }
+
 
         recyclerView.setAdapter(mAdapter);
         loadMiscData();
@@ -155,14 +165,36 @@ public class PostFragment extends Fragment implements ProductListDifferAdapter.I
     }
 
     @Override
-    public void onItemClick(Post.PostModel model) {
+    public void onItemClick(Post.PostModel model , Boolean isOPtion) {
         Intent p;
-        if (model.getType().equals("audio") || model.getType().equals("video")) {
-            p = new Intent(context, PostDetailsPage.class);
-        } else {
-            p = new Intent(context, NewsDetailsActivity.class);
-        }
-        p.putExtra("POST", model);
-        startActivity(p);
+      if(isOPtion){
+          /*
+           tri
+           */
+          triggerOPtions(model);
+
+      }else {
+          if (model.getType().equals("audio") || model.getType().equals("video")) {
+              p = new Intent(context, PostDetailsPage.class);
+          } else {
+              p = new Intent(context, NewsDetailsActivity.class);
+          }
+          p.putExtra("POST", model);
+          startActivity(p);
+      }
+    }
+
+    private void triggerOPtions(Post.PostModel model) {
+        BottomSheetDialog dialog  = new BottomSheetDialog(getContext());
+        dialog.setContentView(R.layout.post_options);
+        LinearLayout edit = dialog.findViewById(R.id.edit);
+
+        edit.setOnClickListener(v -> {
+                Intent p = new Intent(getContext() , EditPostPage.class);
+                p.putExtra("MODEL" , model);
+                startActivity(p);
+        });
+
+        dialog.show();
     }
 }

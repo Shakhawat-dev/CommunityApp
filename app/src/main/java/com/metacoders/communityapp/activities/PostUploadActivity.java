@@ -236,6 +236,8 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         catgoerySelector = findViewById(R.id.categoryList);
         langugaNameSelector = findViewById(R.id.langList);
 
+
+
         addImage.setOnClickListener(v -> {
 
             // open the gallery to
@@ -368,7 +370,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
                 CountryModel countryModel = (CountryModel) parent.getSelectedItem();
 
-                countyID = countryModel.getId() + "";
+                countyID = countryModel.getName() + "";
             }
 
             @Override
@@ -376,6 +378,8 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 langid = "null";
             }
         });
+
+
 
         findViewById(R.id.closeBtn).setOnClickListener(new View.OnClickListener() {
             @Override
