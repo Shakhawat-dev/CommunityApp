@@ -72,7 +72,7 @@ public class EditPostPage extends AppCompatActivity {
         desc = findViewById(R.id.desc_et);
         model = (Post.PostModel) getIntent().getSerializableExtra("MODEL");
 
-        AppPreferences.setActionbarTextColor(getSupportActionBar() , Color.WHITE , "Edit Post" );
+        AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "Edit Post");
 
         loadMiscData();
 
@@ -148,12 +148,62 @@ public class EditPostPage extends AppCompatActivity {
             public void onClick(View v) {
                 if (model.getType().contains("video")) {
                     uploadVideo();
-                } else {
-
+                } else if (model.getType().contains("audio")) {
+                    updateAudioFile();
+                }else {
+                    updatePost();
                 }
             }
         });
 
+    }
+
+    private void updatePost() {
+        api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+        Call<JSONObject> NetworkCall = api.updateArticle(model.getId() + "",
+                langid, catid, countyID, title.getText().toString(), desc.getText().toString());
+
+        NetworkCall.enqueue(new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                if (response.isSuccessful() && response.code() == 200) {
+                    Toast.makeText(getApplicationContext(), "Post Updated", Toast.LENGTH_LONG).show();
+                }
+                else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Error " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void updateAudioFile() {
+        api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+        Call<JSONObject> NetworkCall = api.updateAudioPost(model.getId() + "",
+                langid, catid, countyID, title.getText().toString(), desc.getText().toString());
+
+        NetworkCall.enqueue(new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                if (response.isSuccessful() && response.code() == 200) {
+                    Toast.makeText(getApplicationContext(), "Post Updated", Toast.LENGTH_LONG).show();
+                }
+                else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Error " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void uploadVideo() {

@@ -7,7 +7,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +23,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerControlView;
@@ -36,6 +37,7 @@ import com.google.gson.Gson;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.auther.AuthorPageActivity;
 import com.metacoders.communityapp.activities.comments.CommentsActivity;
+import com.metacoders.communityapp.adapter.new_adapter.NextListDifferAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
@@ -60,7 +62,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class PostDetailsPage extends AppCompatActivity implements CallBacks.playerCallBack {
+public class PostDetailsPage extends AppCompatActivity implements CallBacks.playerCallBack, NextListDifferAdapter.ItemClickListener {
     public static String LIVETIVELINK = "https://newsrme.s3.ap-southeast-1.amazonaws.com/frontend/video/hls/7xtvXeoDsBi42AH1631677319.m3u8";
     Boolean isFollowed = false;
     PlayerView playerView;
@@ -68,32 +70,34 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     int allReadySentTime = 0;
     long time = 0;
     EditText commentEt;
-    Boolean  isStopped = true ;
-
+    Boolean isStopped = true;
+    NestedScrollView nestedScrollView;
     boolean isPLaying = false;
     UserModel authermodel;
-    TextView followersCount  , commentCount;
+    TextView followersCount, commentCount;
     ImageView reportBtn;
+    RecyclerView nextList;
+
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
     ImageView fullscreenButton, profile_image;
     Dialog mFullScreenDialog;
     SparkButton sparkButton;
-    Post.PostModel post;
+    Post.PostModel posts;
     TextView like_count;
-    int prevSec = 0 ;
-    int newSec = 0 ;
+    int prevSec = 0;
+    int newSec = 0;
     RelativeLayout loadingPanel;
     TextView qualityBtn;
     ShowMoreTextView mMediaDetails;
     Boolean forcFinisj = false;
     AppCompatButton followBtn;
- //   private CountDownTimer downTimer;
-    long GlobarTimer = 0 ;
+    //   private CountDownTimer downTimer;
+    long GlobarTimer = 0;
+    NextListDifferAdapter mNextListDifferAdapter;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
     private Button mMediaAllComments;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +105,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_video_play_new);
         getSupportActionBar().hide();
+        mNextListDifferAdapter = new NextListDifferAdapter(this, this, false);
 //        downTimer = new CountDownTimer(16200, 1000) {
 //            public void onTick(long millisUntilFinished) {
 //                //   Log.d(TAG, "onTick: ");.setText("seconds remaining: " + millisUntilFinished / 1000);
@@ -126,6 +131,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         loadingPanel = findViewById(R.id.loadingPanel);
         qualityBtn = findViewById(R.id.qualitu);
         Intent o = getIntent();
+        nestedScrollView = findViewById(R.id.nestedScroll);
+        nextList = findViewById(R.id.nextList);
         profile_image = findViewById(R.id.profile_image);
         sparkButton = findViewById(R.id.spark_button);
         TextView textView = findViewById(R.id.titleTV);
@@ -143,15 +150,14 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         playerView = findViewById(R.id.player_view);
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
         playerView.setUseArtwork(true);
-        post = (Post.PostModel) o.getSerializableExtra("POST");
+        posts = (Post.PostModel) o.getSerializableExtra("POST");
         //Toast.makeText(getApplicationContext() , "p" + post.getId()  , Toast.LENGTH_LONG).show(); ;
         mMediaDetails.setShowingLine(2);
         mMediaDetails.setShowMoreColor(Color.parseColor("#4169E2"));
         mMediaDetails.addShowMoreText("Continue");
 
-        if (SharedPrefManager.getInstance(getApplicationContext()).getUser_ID().equals(post.getUser_id() + "")) {
-            followBtn.setVisibility(View.GONE);
-        }
+        nextList.setLayoutManager(new LinearLayoutManager(this));
+        nextList.setAdapter(mNextListDifferAdapter);
 
 
         findViewById(R.id.add_comment).setOnClickListener(v -> {
@@ -162,21 +168,20 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         });
 
 
-        followBtn.setOnClickListener(v -> TriggerAuthorFollow(post.getUser_id() + ""));
+        followBtn.setOnClickListener(v -> TriggerAuthorFollow(posts.getUser_id() + ""));
 
-        setUpIcon();
+
         try {
             AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "Post Details");
         } catch (Exception e) {
-
         }
 
 
         findViewById(R.id.msgIcon).setOnClickListener(
                 v -> {
                     Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
-                    intent.putExtra("POST_ID", post.getId() + "");
-                    intent.putExtra("slug", post.getSlug() + "");
+                    intent.putExtra("POST_ID", posts.getId() + "");
+                    intent.putExtra("slug", posts.getSlug() + "");
                     startActivity(intent);
                 });
 
@@ -186,21 +191,11 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("text/plain");
             share.putExtra(Intent.EXTRA_SUBJECT, "Check This From NewsRme");
-            share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(post.getSlug(), post.getLang()));
+            share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(posts.getSlug(), posts.getLang()));
             startActivity(Intent.createChooser(share, "Share link!"));
-
 
         });
 
-
-//        mMediaAllComments.setOnClickListener(view -> {
-//
-//            Intent intent = new Intent(PostDetailsPage.this, CommentsActivity.class);
-//            intent.putExtra("POST_ID", post.getId() + "");
-//            intent.putExtra("slug", post.getSlug() + "");
-//
-//            startActivity(intent);
-//        });
 
         playerView.setPlayer(PlayerManager.getSharedInstance(PostDetailsPage.this).getPlayerView().getPlayer());
 
@@ -226,7 +221,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     //timer sta
                     Log.d("TAG", "onPlayerStateChanged: TIMER STARTED ");
                     //downTimer.start();
-                    isStopped = false ;
+                    isStopped = false;
 
                 } else if (playWhenReady) {
                     // might be idle (plays after prepare()),
@@ -234,43 +229,40 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     // or ended (plays when seek away from end)
                     Log.d("TAG", "onPlayerStateChanged: TIMER STOPPED ");
                     //downTimer.cancel();
-                    isStopped = true ;
+                    isStopped = true;
 
 
                 } else {
                     // player paused in any state
                     Log.d("TAG", "onPlayerStateChanged: TIMER STOPPED ");
                     //downTimer.cancel();
-                    isStopped = true ;
+                    isStopped = true;
 
                 }
 
             }
-
 
 
         });
 
 
-
         playerControlView.setProgressUpdateListener((position, bufferedPosition) -> {
 
-          //  Log.d("BUFFERED", "onCreate: " + position/1000 + " -> " + bufferedPosition);
-            if((position/1000) - prevSec == 1){
-                prevSec = newSec ;
-                newSec = newSec + 1  ;
+            //  Log.d("BUFFERED", "onCreate: " + position/1000 + " -> " + bufferedPosition);
+            if ((position / 1000) - prevSec == 1) {
+                prevSec = newSec;
+                newSec = newSec + 1;
 
 
-                if(newSec % 16 == 0 ){
+                if (newSec % 16 == 0) {
                     callForGift(16);
-                    Log.d("BUFFERED", "onCreate: " + newSec+ " -> " + prevSec);
+                    Log.d("BUFFERED", "onCreate: " + newSec + " -> " + prevSec);
 
                 }
 
-            }else {
-                prevSec =(int) position/1000;
+            } else {
+                prevSec = (int) position / 1000;
             }
-
 
 
 //            if (currentDuration > 0 && currentDuration % 16 == 0 && allReadySentTime != currentDuration) {
@@ -284,6 +276,84 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         });
 
+
+        // play the media
+
+        fullscreenButton.setOnClickListener(v -> {
+
+            if (!mExoPlayerFullscreen) {
+                // not in fullscreen
+
+                openFullScreenDialog();
+
+
+            } else {
+
+                closeFullScreenDialog();
+
+            }
+
+
+        });
+
+        authorTv.setOnClickListener(v -> {
+
+            Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
+            p.putExtra("author_id", posts.getUser_id());
+            p.putExtra("is_followed", isFollowed);
+            p.putExtra("auther", authermodel);
+            startActivity(p);
+
+
+        });
+
+        setDetails(posts);
+
+
+    }
+
+
+    private void callForGift(int currentSec) {
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+        Log.d("TAG", "call " + currentSec
+                + " ");
+        Call<LoginResponse.forgetPassResponse> NetworkCall = api.givePoint(
+                posts.getUser_id() + "", posts.getId(), currentSec
+        );
+
+        NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.d("TAG", "onResponse: " + response.code());
+                    allReadySentTime = currentSec;
+                    Gson gson = new Gson();
+                    String str = gson.toJson(response.body());
+                    Log.d("TAG", "onResponse: " + str);
+                    // downTimer.cancel();
+                    //downTimer.start();
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                //   downTimer.cancel();
+                //   downTimer.start();
+
+            }
+        });
+
+
+    }
+
+    private void setDetails(Post.PostModel post) {
+
+        if (SharedPrefManager.getInstance(getApplicationContext()).getUser_ID().equals(post.getUser_id() + "")) {
+            followBtn.setVisibility(View.GONE);
+        }
 
         if (post.getType().equals("audio")) {
 
@@ -307,84 +377,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
 
         }
-        // play the media
 
-        fullscreenButton.setOnClickListener(v -> {
-
-            if (!mExoPlayerFullscreen) {
-                // not in fullscreen
-
-                openFullScreenDialog();
-
-
-            } else {
-
-                closeFullScreenDialog();
-
-            }
-
-
-        });
-
-        authorTv.setOnClickListener(v -> {
-
-            Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
-            p.putExtra("author_id", post.getUser_id());
-            p.putExtra("is_followed", isFollowed);
-            p.putExtra("auther", authermodel);
-            startActivity(p);
-
-
-        });
-
-        setDetails();
-
-
-    }
-
-    @Override
-    protected void onResumeFragments() {
-        loadPostDetails(post.getSlug());
-        super.onResumeFragments();
-    }
-
-    private void callForGift(int currentSec) {
-        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
-
-        Log.d("TAG", "call " + currentSec
-                + " ");
-        Call<LoginResponse.forgetPassResponse> NetworkCall = api.givePoint(
-                post.getUser_id() + "", post.getId(), currentSec
-        );
-
-        NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
-            @Override
-            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
-                if (response.isSuccessful()) {
-                    Log.d("TAG", "onResponse: " + response.code());
-                    allReadySentTime = currentSec;
-                    Gson gson = new Gson();
-                    String str = gson.toJson(response.body());
-                    Log.d("TAG", "onResponse: " + str);
-                   // downTimer.cancel();
-                    //downTimer.start();
-
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
-             //   downTimer.cancel();
-             //   downTimer.start();
-
-            }
-        });
-
-
-    }
-
-    private void setDetails() {
+        setUpIcon();
         mMediaTitle.setText(post.getTitle() + "");
         SimpleDateFormat df = new SimpleDateFormat(Constants.CREATED_AT_FORMAT);
 //        try {
@@ -536,8 +530,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     @Override
     protected void onResume() {
         super.onResume();
-
         initFullsceen();
+        loadPostDetails(posts.getSlug());
 
     }
 
@@ -656,9 +650,9 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
         Call<LoginResponse.forgetPassResponse> callwd = api.likePost(
-                post.getId(),
-                post.getUser_id(),
-                post.getId()
+                posts.getId(),
+                posts.getUser_id(),
+                posts.getId()
         );
 
         callwd.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
@@ -708,14 +702,16 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
                     isFollowed = res.followerCheck != null;
-                    followersCount.setText(res.getFollowerCount()+" Followers");
-                    commentCount.setText(res.getComments().size()+" Comments");
+                    followersCount.setText(res.getFollowerCount() + " Followers");
+                    commentCount.setText(res.getComments().size() + " Comments");
                     if (isFollowed) {
                         followBtn.setText("Un-Follow");
                     } else {
                         followBtn.setText("Follow");
                     }
                     like_count.setText(res.getPostLikesCount() + "");
+
+                    mNextListDifferAdapter.submitlist(res.getRelatedPosts());
 
                     authermodel = res.data.getAuther();
                     Glide.with(getApplicationContext())
@@ -802,7 +798,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
         Call<LoginResponse.forgetPassResponse> NetworkCall = api.post_comments(
-                post.getId() + "", AppPreferences.getUSerID(getApplicationContext()) + "", commnet
+                posts.getId() + "", AppPreferences.getUSerID(getApplicationContext()) + "", commnet
 
         );
 
@@ -814,7 +810,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         dialog.dismiss();
                         Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                         commentEt.setText("");
-                        loadPostDetails(post.getSlug());
+                        loadPostDetails(posts.getSlug());
 
 
                     } catch (Exception er) {
@@ -849,4 +845,26 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     }
 
 
+    @Override
+    public void onItemClick(Post.PostModel model) {
+        Intent p;
+        if (model.getType().equals("audio") || model.getType().equals("video")) {
+            p = new Intent(getApplicationContext(), PostDetailsPage.class);
+            try {
+                setDetails(model);
+                loadPostDetails(model.getSlug());
+                nestedScrollView.fling(0);
+                nestedScrollView.smoothScrollTo(0, 0);
+            } catch (Exception e) {
+
+            }
+
+        } else {
+            p = new Intent(getApplicationContext(), NewsDetailsActivity.class);
+        }
+        p.putExtra("POST", model);
+        //  startActivity(p);
+
+
+    }
 }

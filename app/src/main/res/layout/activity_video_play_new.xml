@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -26,35 +27,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/black"
-                    app:use_controller="false"
                     app:default_artwork="@drawable/musicicon"
                     app:hide_on_touch="false"
                     app:played_color="@color/com_facebook_blue"
                     app:show_buffering="always"
-                    app:use_artwork="true" />
+                    app:use_artwork="true"
+                    app:use_controller="false" />
 
                 <com.google.android.exoplayer2.ui.PlayerControlView
+                    android:id="@+id/CreateHousePlayerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:show_timeout="0"
-                    app:controller_layout_id="@layout/customsettings"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:id = "@+id/CreateHousePlayerView"
                     android:layout_margin="5dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:visibility="visible"
+                    app:controller_layout_id="@layout/customsettings"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:show_timeout="0" />
 
 
                 <ImageView
                     android:id="@+id/backBtn"
                     android:layout_width="@dimen/_25sdp"
-                    android:layout_margin="@dimen/_8sdp"
+                    android:layout_height="@dimen/_25sdp"
                     android:layout_gravity="top|start"
-                    android:backgroundTint="@color/white"
+                    android:layout_margin="@dimen/_8sdp"
                     android:background="@drawable/ic_baseline_arrow_back_24"
-                    android:layout_height="@dimen/_25sdp"/>
+                    android:backgroundTint="@color/white" />
 
 
                 <ImageView
@@ -84,10 +84,11 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_height="wrap_content">
+                        android:layout_weight="1"
+                        android:gravity="center">
+
                         <TextView
                             android:id="@+id/like_count"
                             android:layout_width="wrap_content"
@@ -96,6 +97,7 @@
                             android:textColor="@color/black"
                             android:textSize="14sp"
                             android:textStyle="bold" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -105,7 +107,6 @@
                             android:textStyle="bold" />
 
                     </LinearLayout>
-
 
 
                     <TextView
@@ -316,20 +317,21 @@
                     android:id="@+id/commnetET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12dp"
-                    android:elevation="1dp"
-                    android:layout_marginTop="8dp"
                     android:layout_marginStart="2dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="2dp"
                     android:layout_marginBottom="2dp"
                     android:background="@drawable/rounded_boarder_stroke_gray"
-                    android:hint="Your Comment" />
+                    android:elevation="1dp"
+                    android:hint="Your Comment"
+                    android:padding="12dp" />
+
                 <Button
                     android:id="@+id/add_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_28sdp"
-                    android:layout_marginTop="8dp"
                     android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/rounded_boarder_tint_blue"
                     android:text="Add Comment"
@@ -356,6 +358,8 @@
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/nextList"
+                    android:nestedScrollingEnabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -363,7 +367,7 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout
         android:id="@+id/loadingPanel"

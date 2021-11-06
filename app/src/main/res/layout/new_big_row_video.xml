@@ -110,6 +110,9 @@
                     android:textColor="#D3E3D3" />
 
                 <TextView
+                    android:drawableStart="@drawable/ic_baseline_remove_red_eye_24"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/white"
                     android:id="@+id/video_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

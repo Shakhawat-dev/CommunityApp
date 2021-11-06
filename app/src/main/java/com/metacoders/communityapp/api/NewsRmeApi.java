@@ -157,6 +157,37 @@ public interface NewsRmeApi {
             @Field("password") String password
     );
 
+    // lang, category, country, title, image, description
+
+    @FormUrlEncoded
+    @POST("update-article/{post_id}")
+    Call<JSONObject> updateArticle(@Path("post_id") String id,
+                                   @Field("lang") String lang,
+                                   @Field("category") String category,
+                                   @Field("country") String country,
+                                   @Field("title") String title,
+                                   @Field("description") String description
+    );
+
+    //  https://newsrme.com/v1/remove-post/{id}
+
+    @FormUrlEncoded
+    @POST("remove-post/{post_id}")
+    Call<JSONObject> ChangeStatus(
+            @Path("post_id") String id,
+            @Field("publication_status") String publication_status
+    );
+
+    @FormUrlEncoded
+    @POST("update-audio/{post_id}")
+    Call<JSONObject> updateAudioPost(@Path("post_id") String id,
+                                     @Field("lang") String lang,
+                                     @Field("category") String category,
+                                     @Field("country") String country,
+                                     @Field("title") String title,
+                                     @Field("description") String description
+    );
+
     @Multipart
     @POST("store-article")
     Call<LoginResponse.forgetPassResponse> uploadPost(@Part("title") RequestBody title,
@@ -171,7 +202,7 @@ public interface NewsRmeApi {
     @FormUrlEncoded
     @POST("update-video/{post_id}")
     Call<JSONObject> updateVideo(
-            @Path("post_id")String id ,
+            @Path("post_id") String id,
             @Field("lang") String lang,
             @Field("category") String category,
             @Field("country") String country,

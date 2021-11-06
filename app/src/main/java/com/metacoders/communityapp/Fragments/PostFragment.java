@@ -22,13 +22,14 @@ import com.metacoders.communityapp.activities.details.EditPostPage;
 import com.metacoders.communityapp.activities.details.NewsDetailsActivity;
 import com.metacoders.communityapp.activities.details.PostDetailsPage;
 import com.metacoders.communityapp.adapter.new_adapter.OwnPostListDifferAdapter;
-import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.newModels.AuthorPostResponse;
 import com.metacoders.communityapp.models.newModels.Post;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +51,13 @@ public class PostFragment extends Fragment implements OwnPostListDifferAdapter.I
     ConstraintLayout emptyLayout;
     SwipeRefreshLayout swipeContainer;
     String type = "";
-    String auther_id = "" ;
+    String auther_id = "";
     private ShimmerFrameLayout mShimmerViewContainer2;
 
     public PostFragment(String type, String auther_id) {
         // Required empty public constructor
         this.type = type;
-        this.auther_id = auther_id ;
+        this.auther_id = auther_id;
     }
 
 
@@ -73,9 +74,9 @@ public class PostFragment extends Fragment implements OwnPostListDifferAdapter.I
         emptyLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
-        if(auther_id.equals(AppPreferences.getUSerID(context))){
-            mAdapter = new OwnPostListDifferAdapter(getContext(), this, true );
-        }else{
+        if (auther_id.equals(AppPreferences.getUSerID(context))) {
+            mAdapter = new OwnPostListDifferAdapter(getContext(), this, true);
+        } else {
             mAdapter = new OwnPostListDifferAdapter(getContext(), this, false);
         }
 
@@ -120,8 +121,7 @@ public class PostFragment extends Fragment implements OwnPostListDifferAdapter.I
 
                             emptyLayout.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
-                        }
-                        else {
+                        } else {
                             /*
                                 loop the whole list for counting post type
 
@@ -165,36 +165,77 @@ public class PostFragment extends Fragment implements OwnPostListDifferAdapter.I
     }
 
     @Override
-    public void onItemClick(Post.PostModel model , Boolean isOPtion) {
+    public void onItemClick(Post.PostModel model, Boolean isOPtion) {
         Intent p;
-      if(isOPtion){
-          /*
-           tri
-           */
-          triggerOPtions(model);
+        if (isOPtion) {
+            triggerOPtions(model);
 
-      }else {
-          if (model.getType().equals("audio") || model.getType().equals("video")) {
-              p = new Intent(context, PostDetailsPage.class);
-          } else {
-              p = new Intent(context, NewsDetailsActivity.class);
-          }
-          p.putExtra("POST", model);
-          startActivity(p);
-      }
+        } else {
+            if (model.getType().equals("audio") || model.getType().equals("video")) {
+                p = new Intent(context, PostDetailsPage.class);
+            } else {
+                p = new Intent(context, NewsDetailsActivity.class);
+            }
+            p.putExtra("POST", model);
+            startActivity(p);
+        }
     }
 
     private void triggerOPtions(Post.PostModel model) {
-        BottomSheetDialog dialog  = new BottomSheetDialog(getContext());
+        BottomSheetDialog dialog = new BottomSheetDialog(getContext());
         dialog.setContentView(R.layout.post_options);
+        dialog.setDismissWithAnimation(true);
         LinearLayout edit = dialog.findViewById(R.id.edit);
+        LinearLayout delete = dialog.findViewById(R.id.Delete);
+        LinearLayout cancel = dialog.findViewById(R.id.cancel);
 
         edit.setOnClickListener(v -> {
-                Intent p = new Intent(getContext() , EditPostPage.class);
-                p.putExtra("MODEL" , model);
-                startActivity(p);
+            Intent p = new Intent(getContext(), EditPostPage.class);
+            p.putExtra("MODEL", model);
+            startActivity(p);
         });
 
+        delete.setOnClickListener(v -> {
+            unPublish(model.getId(), dialog);
+        });
+
+        cancel.setOnClickListener(v -> {
+            dialog.setDismissWithAnimation(true);
+            dialog.dismiss();
+        });
+
+
         dialog.show();
+    }
+
+    private void unPublish(int id, BottomSheetDialog dialog) {
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getContext()));
+/*
+ @Field("lang") String lang,
+            @Field("category") String category,
+            @Field("country") String country,
+            @Field("title") String title,
+            @Field("description") String description
+ */
+        Call<JSONObject> NetworkCall = api.ChangeStatus(id + "", "2");
+
+        NetworkCall.enqueue(new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                if (response.isSuccessful() && response.code() == 200) {
+                    Toast.makeText(getContext(), "Post Removed", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                    loadUrPost();
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                Toast.makeText(getContext(), "Error " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 }
