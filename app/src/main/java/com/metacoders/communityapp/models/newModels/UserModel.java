@@ -69,6 +69,18 @@ public class UserModel implements Serializable {
     @SerializedName("account_number")
     private String account_number;
 
+    @Expose
+    @SerializedName("id")
+    private int  id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getAccount_number() {
         return account_number;
     }

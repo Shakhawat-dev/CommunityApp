@@ -104,7 +104,6 @@ public class AppPreferences {
 
     public static String getUSerID(Context context) {
         String userID = SharedPrefManager.getInstance(context).getUser_ID();
-
         return userID;
     }
 

@@ -9,6 +9,7 @@ public class RegistrationResp {
     @Expose
     private String accessToken;
 
+
     @SerializedName("user")
     @Expose
     private UserModel user;
@@ -28,6 +29,9 @@ public class RegistrationResp {
     public UserModel getUser() {
         return user;
     }
+
+
+
 
     public void setUser(UserModel user) {
         this.user = user;

@@ -6,6 +6,7 @@ import com.metacoders.communityapp.models.CountryPostRespose;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.Profile_Model;
 import com.metacoders.communityapp.models.RegistrationResponse;
+import com.metacoders.communityapp.models.ShortUrlResponse;
 import com.metacoders.communityapp.models.SinglePostDetails;
 import com.metacoders.communityapp.models.Video_List_Model;
 import com.metacoders.communityapp.models.allDataResponse;
@@ -32,6 +33,12 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface NewsRmeApi {
+    //Short URL API
+    @FormUrlEncoded
+    @POST("shorturlapi")
+    Call<ShortUrlResponse> createShortUrl(
+            @Field("url") String longurl
+    );
 
     //send point
     @FormUrlEncoded
@@ -223,6 +230,13 @@ public interface NewsRmeApi {
 
     );
 
+
+    @FormUrlEncoded
+    @POST("invite-friend")
+    Call<JSONObject> invite_friend(
+            @Field("referral_user_id") String referral_user_id,
+            @Field("invited_user_id") String invited_user_id
+    );
 
     @FormUrlEncoded
     @POST("forgot-password")

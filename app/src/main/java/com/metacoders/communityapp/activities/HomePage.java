@@ -479,6 +479,15 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
     public void SideBarClick() {
 
+        findViewById(R.id.settings).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getApplicationContext(), Settings.class);
+                startActivity(intent);
+            }
+        });
+
         findViewById(R.id.fb).setOnClickListener(v -> {
             String url = "https://www.facebook.com/NewsRme-105145475119080";
             Uri uri = Uri.parse(url);

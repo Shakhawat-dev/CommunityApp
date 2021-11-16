@@ -54,6 +54,7 @@
         <activity android:name=".activities.comments.CommentsActivity" />
         <activity android:name=".activities.ShopPage" />
         <activity android:name=".activities.EditProfile" />
+        <activity android:name=".activities.Settings" />
         <activity android:name=".activities.details.NewsDetailsActivity" />
         <activity android:name=".singleList" />
         <activity android:name=".activities.ProfileActivity" />
@@ -64,6 +65,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="newsrme.com"
+                    android:scheme="http" />
+                <data
+                    android:host="newsrme.com"
+                    android:scheme="https" />
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".activities.PostUploadActivity"

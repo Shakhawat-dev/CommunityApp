@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.CallbackManager;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.textfield.TextInputEditText;
 import com.metacoders.communityapp.R;
@@ -32,7 +32,7 @@ public class ContactPage extends AppCompatActivity {
     Button googleBtn, fbBtn, vk;
     GoogleSignInOptions gso;
     Spinner genderSpinner;
-    GoogleSignInClient mGoogleSignInClient;
+
     CallbackManager callbackManager;
     private TextInputEditText mName, mEmail, mPassword, mPhone, mMsg;
     private Button mSignUpBtn;

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
@@ -12,8 +13,13 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.metacoders.communityapp.BuildConfig;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
@@ -62,7 +68,7 @@ public class SplashScreen extends AppCompatActivity {
 
                 LoadData();
 
-
+                //  createAShortLink();
                 // throw new RuntimeException("Test Crash");
 
             }
@@ -131,19 +137,12 @@ public class SplashScreen extends AppCompatActivity {
                     }
                     // send it to adaper
 
-                    if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
-                        // to the activity
-                        Intent p = new Intent(getApplicationContext(), HomePage.class);
-                        // p.putExtra("MISC", dataResponse);
-                        startActivity(p);
-                        finish();
-                    } else {
-                        // to the activity
-                        Intent p = new Intent(getApplicationContext(), LoginActivity.class);
-                        // p.putExtra("MISC", dataResponse);
-                        startActivity(p);
-                        finish();
+                    try {
+                        checkDynamicData();
+                    }catch (Exception e){
+                        goToHome();
                     }
+
 
                 } else {
 
@@ -159,5 +158,74 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
     }
+
+
+    private void checkDynamicData() {
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent()).
+                addOnSuccessListener(new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+
+                        // now we  get the dynamic link
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+
+                            deepLink = pendingDynamicLinkData.getLink();
+
+                            String id = deepLink.getQueryParameter("id");
+                            Log.d("TAG", "onSuccess: " + id);
+                            if (id != null) {
+                                // came from link
+                                // cehck if is logged in
+                                if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
+                                    Toast.makeText(getApplicationContext(), "You Are All ready Registered User", Toast.LENGTH_SHORT).show();
+                                    goToHome();
+                                }else {
+                                    Intent p = new Intent(getApplicationContext(), RegistrationActivity.class);
+                                     p.putExtra("ID", id);
+                                     p.putExtra("IS_DEEP_LINK", true );
+                                    startActivity(p);
+                                    finish();
+
+                                }
+
+
+                            } else {
+                                goToHome();
+                            }
+
+                        } else {
+
+                            goToHome();
+
+                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                goToHome();
+            }
+        });
+
+    }
+
+    private void goToHome() {
+
+        if (SharedPrefManager.getInstance(getApplicationContext()).isUserLoggedIn()) {
+            // to the activity
+            Intent p = new Intent(getApplicationContext(), HomePage.class);
+            // p.putExtra("MISC", dataResponse);
+            startActivity(p);
+            finish();
+        } else {
+            // to the activity
+            Intent p = new Intent(getApplicationContext(), LoginActivity.class);
+            // p.putExtra("MISC", dataResponse);
+            startActivity(p);
+            finish();
+        }
+    }
+
 
 }

@@ -1,34 +1,41 @@
 {
   "project_info": {
-    "project_number": "337429481737",
-    "firebase_url": "https://communtiy-c1c2e.firebaseio.com",
-    "project_id": "communtiy-c1c2e",
-    "storage_bucket": "communtiy-c1c2e.appspot.com"
+    "project_number": "687729641706",
+    "project_id": "newsrme-cb356",
+    "storage_bucket": "newsrme-cb356.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:337429481737:android:90fa4af98343982c5aebd8",
+        "mobilesdk_app_id": "1:687729641706:android:6253c08bb5b1ca9e556f93",
         "android_client_info": {
           "package_name": "com.metacoders.communityapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "337429481737-q6qmtp1fdhgbrjmnobe4m93dlj5ajcmp.apps.googleusercontent.com",
+          "client_id": "687729641706-luj41k1bcq8macshgvuba8b7pst1bdcb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.metacoders.communityapp",
+            "certificate_hash": "e7134e9e771c4552820851631487affe4d0ba29b"
+          }
+        },
+        {
+          "client_id": "687729641706-mkktf9rg5kl27uam07as6ihtac5ibief.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD5EYHFQu3mcpYw15SiZpLTwHGqao_DaG4"
+          "current_key": "AIzaSyDuUk9qdOuakfx62la-9gjtlA9r3RLWVR0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "337429481737-q6qmtp1fdhgbrjmnobe4m93dlj5ajcmp.apps.googleusercontent.com",
+              "client_id": "687729641706-mkktf9rg5kl27uam07as6ihtac5ibief.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

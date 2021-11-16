@@ -22,9 +22,9 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar pbar;
     Button googleBtn, fbBtn, vk;
     GoogleSignInOptions gso;
-    GoogleSignInClient mGoogleSignInClient;
     CallbackManager callbackManager;
     private TextView forget_pass_tv;
     private TextView registerTV;
@@ -85,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
          */
         //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         getSupportActionBar().hide();
         initializations();
 
@@ -262,10 +261,6 @@ public class LoginActivity extends AppCompatActivity {
         request.executeAsync();
     }
 
-    private void googleSignIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -275,8 +270,7 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
+
         } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }

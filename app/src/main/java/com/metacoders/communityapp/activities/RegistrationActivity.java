@@ -19,9 +19,7 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
@@ -48,12 +46,14 @@ public class RegistrationActivity extends AppCompatActivity {
     Button googleBtn, fbBtn, vk;
     GoogleSignInOptions gso;
     Spinner genderSpinner;
-    GoogleSignInClient mGoogleSignInClient;
+
     CallbackManager callbackManager;
     CountryCodePicker countryCodePicker;
     private EditText mName, mEmail, mPassword, mConfirmationPass;
     private AppCompatButton mSignUpBtn;
     private String gender = "";
+    private Boolean isDeepLink = false;
+    private String INVITED_USER_ID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +67,18 @@ public class RegistrationActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
+        isDeepLink = getIntent().getBooleanExtra("IS_DEEP_LINK", false);
+        if (isDeepLink) {
+            INVITED_USER_ID = getIntent().getStringExtra("ID");
+        }
+
+
         /*
          *if account is null then not yet signed in ;
          *
          */
         //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         getSupportActionBar().hide();
         initializations();
 
@@ -181,10 +186,6 @@ public class RegistrationActivity extends AppCompatActivity {
         request.executeAsync();
     }
 
-    private void googleSignIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
 
     private void register() {
 
@@ -207,9 +208,38 @@ public class RegistrationActivity extends AppCompatActivity {
 
                         Toast.makeText(RegistrationActivity.this, response.body().getMessage() + " Please Login ", Toast.LENGTH_LONG).show();
 
-                        Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
+                        if (isDeepLink) {
+                            NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
+                            Call<JSONObject> in3 = api.invite_friend(response.body().getUser().getId() + "", INVITED_USER_ID);
+                            in3.enqueue(new Callback<JSONObject>() {
+                                @Override
+                                public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+
+                                    Log.d("TAG", "onResponse: " + response.body().toString());
+                                    Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<JSONObject> call, Throwable t) {
+                                    Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+//                                   Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+//                                   startActivity(intent);
+//                                   finish();
+
+
+                                }
+                            });
+
+                        } else {
+                            Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+
+                        }
 
 
                     } else {
@@ -269,8 +299,8 @@ public class RegistrationActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
+
+
         } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
