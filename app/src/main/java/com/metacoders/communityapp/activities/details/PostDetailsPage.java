@@ -55,6 +55,7 @@ import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -95,6 +96,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     //   private CountDownTimer downTimer;
     long GlobarTimer = 0;
     NextListDifferAdapter mNextListDifferAdapter;
+    List<Post.PostModel> relatedPosts = new ArrayList<>();
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
     private Button mMediaAllComments;
@@ -231,13 +233,41 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     //downTimer.cancel();
                     isStopped = true;
 
-
                 } else {
                     // player paused in any state
                     Log.d("TAG", "onPlayerStateChanged: TIMER STOPPED ");
                     //downTimer.cancel();
                     isStopped = true;
 
+                }
+
+                if (playbackState == Player.STATE_ENDED) {
+                    Intent p = new Intent(getApplicationContext(), PostDetailsPage.class);
+                    // Toast.makeText(getApplicationContext(), "rr" , Toast.LENGTH_LONG).show();
+                    try {
+                        if (!relatedPosts.isEmpty() && relatedPosts.size() > 0) {
+                            Post.PostModel model = relatedPosts.get(0);
+                            if (model.getType().equals("audio") || model.getType().equals("video")) {
+                                p = new Intent(getApplicationContext(), PostDetailsPage.class);
+                                try {
+                                    setDetails(model);
+                                    loadPostDetails(model.getSlug());
+                                    nestedScrollView.fling(0);
+                                    nestedScrollView.smoothScrollTo(0, 0);
+                                } catch (Exception e) {
+
+                                }
+
+                            } else {
+                                p = new Intent(getApplicationContext(), NewsDetailsActivity.class);
+                            }
+                            p.putExtra("POST", model);
+                            //  startActivity(p);
+
+                        }
+                    } catch (Exception er) {
+                        Toast.makeText(getApplicationContext(), "Something Went  Wrong While Trying To Play Next Video", Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }
@@ -711,6 +741,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     }
                     like_count.setText(res.getPostLikesCount() + "");
 
+                    relatedPosts = res.getRelatedPosts();
                     mNextListDifferAdapter.submitlist(res.getRelatedPosts());
 
                     authermodel = res.data.getAuther();

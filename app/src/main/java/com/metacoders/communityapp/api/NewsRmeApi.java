@@ -235,7 +235,8 @@ public interface NewsRmeApi {
     @POST("invite-friend")
     Call<JSONObject> invite_friend(
             @Field("referral_user_id") String referral_user_id,
-            @Field("invited_user_id") String invited_user_id
+            @Field("invited_user_id") String invited_user_id,
+            @Field("mac") String mac_address
     );
 
     @FormUrlEncoded

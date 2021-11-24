@@ -1,14 +1,19 @@
 package com.metacoders.communityapp.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,9 +56,10 @@ public class RegistrationActivity extends AppCompatActivity {
     CountryCodePicker countryCodePicker;
     private EditText mName, mEmail, mPassword, mConfirmationPass;
     private AppCompatButton mSignUpBtn;
-    private String gender = "";
+    private String gender = "gender";
     private Boolean isDeepLink = false;
     private String INVITED_USER_ID = "";
+    private String deviceID = "xxx";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +79,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
 
 
+        deviceID = getDeviceID();
         /*
          *if account is null then not yet signed in ;
          *
@@ -158,6 +165,17 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
+    private String getDeviceID() {
+        String IMEINumber;
+//        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            IMEINumber = telephonyManager.getImei();
+//        } else {
+//
+//        }
+        return  Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
+    }
+
     private void loadUserInfo(AccessToken accessToken) {
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -210,7 +228,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                         if (isDeepLink) {
                             NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
-                            Call<JSONObject> in3 = api.invite_friend(response.body().getUser().getId() + "", INVITED_USER_ID);
+                            Call<JSONObject> in3 = api.invite_friend(INVITED_USER_ID + "", response.body().getUser().getId() + "", deviceID);
                             in3.enqueue(new Callback<JSONObject>() {
                                 @Override
                                 public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
@@ -269,24 +287,25 @@ public class RegistrationActivity extends AppCompatActivity {
         fbBtn = findViewById(R.id.fbBtn);
 
 
-//        ArrayAdapter<String> catgoery_adapter = new ArrayAdapter<String>(RegistrationActivity.this,
-//                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender));
-//        catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        genderSpinner.setAdapter(catgoery_adapter);
-//
-//
-//        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                gender = parent.getSelectedItem().toString();
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
+        ArrayAdapter<String> catgoery_adapter = new ArrayAdapter<String>(RegistrationActivity.this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender));
+        catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genderSpinner.setAdapter(catgoery_adapter);
+
+
+        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                gender = parent.getSelectedItem().toString();
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                gender = "gender";
+            }
+        });
 
 
     }

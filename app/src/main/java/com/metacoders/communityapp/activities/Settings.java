@@ -31,7 +31,7 @@ public class Settings extends AppCompatActivity {
     private void createAShortLink() {
 
         Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                .setLongLink(Uri.parse("https://newsrmee.page.link/?link=https://newsrme.com/?id%3D"+AppPreferences.getUSerID(getApplicationContext())+"&apn=com.metacoders.communityapp"))
+                .setLongLink(Uri.parse("https://newsrmee.page.link/?link=https://newsrme.com/?id%3D" + AppPreferences.getUSerID(getApplicationContext()) + "&apn=com.metacoders.communityapp"))
                 .buildShortDynamicLink()
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -56,7 +56,8 @@ public class Settings extends AppCompatActivity {
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_TEXT,
-                            "Hey check out This app at: " + link);
+                            "I'm on NewsRme. Please join with us and get 50k bonus points.\n" +
+                                    link);
                     sendIntent.setType("text/plain");
                     startActivity(sendIntent);
                 });
