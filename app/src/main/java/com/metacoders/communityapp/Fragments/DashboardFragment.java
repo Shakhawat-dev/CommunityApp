@@ -112,6 +112,8 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         Glide.with(context)
                 .load(sharedPrefManager.getUserModel().getImage())
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .error(R.drawable.placeholder)
+                .placeholder(R.drawable.placeholder)
                 .into(circleImageView);
     }
 

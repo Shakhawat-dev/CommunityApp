@@ -173,10 +173,15 @@ public class PostFragment extends Fragment implements OwnPostListDifferAdapter.I
         } else {
             if (model.getType().equals("audio") || model.getType().equals("video")) {
                 p = new Intent(context, PostDetailsPage.class);
+
             } else {
                 p = new Intent(context, NewsDetailsActivity.class);
             }
+
             p.putExtra("POST", model);
+            if (!auther_id.equals(AppPreferences.getUSerID(context))) {
+             //   p.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
             startActivity(p);
         }
     }

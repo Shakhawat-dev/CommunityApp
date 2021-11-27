@@ -79,7 +79,7 @@
                     android:id="@+id/video_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="8sp"
+                    android:textSize="10sp"
                     android:textColor="#D3E3D3"
                     android:text="2 hours ago" />
 
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:text="Country Name"
                     android:textColor="#4169E2"
-                    android:textSize="8sp"
+                    android:textSize="10sp"
                     android:fontFamily="sans-serif-condensed"
                     android:textFontWeight="900"
                     android:textStyle="bold" />
@@ -128,7 +128,7 @@
                     android:id="@+id/video_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="8sp"
+                    android:textSize="10sp"
                     android:textColor="#D3E3D3"
                     android:text="6k hits" />
             </LinearLayout>

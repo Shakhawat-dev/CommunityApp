@@ -30,13 +30,14 @@ public class AppPreferences {
 
     public static int getIndexOfSpinner(Spinner spinner, String myString) {
         for (int i = 0; i < spinner.getCount(); i++) {
-            String compare =  spinner.getItemAtPosition(i).toString() + "";
+            String compare = spinner.getItemAtPosition(i).toString() + "";
             if (compare.equalsIgnoreCase(myString)) {
                 return i;
             }
         }
         return 0;
     }
+
     public static int getCountrySpinner(SearchableSpinner spinner, String myString) {
         for (int i = 0; i < spinner.getCount(); i++) {
 
@@ -114,5 +115,10 @@ public class AppPreferences {
 
     public void setCacheLocation(int cacheLocation) {
         prefs.edit().putInt(KEY_CACHE_LOCATION, cacheLocation).apply();
+    }
+
+    public static Boolean isStringIsEmptyORNull(String value) {
+        return value == null || value.toString().equalsIgnoreCase("null");
+
     }
 }

@@ -3,6 +3,7 @@ package com.metacoders.communityapp.activities;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import com.facebook.login.LoginManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.hbb20.CCPCountry;
 import com.hbb20.CountryCodePicker;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -115,6 +117,18 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
                 }
             };
+
+    public  String getCountryForNameCodeFromLibraryMasterList(Context context, String name) {
+        List<CCPCountry> countries;
+        countries = CCPCountry.getLibraryMasterCountryList(context, CountryCodePicker.Language.ENGLISH);
+        for (CCPCountry ccpCountry : countries) {
+            if (ccpCountry.getName().equalsIgnoreCase(name)) {
+            //    Toast.makeText(this  , "Toast : "+ ccpCountry.getNameCode() , Toast.LENGTH_LONG).show();
+                return ccpCountry.getNameCode();
+            }
+        }
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -398,7 +412,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 }).onSameThread().check();
     }
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -411,7 +424,14 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         super.onResume();
 
 
-        countryCodePicker.setAutoDetectedCountry(true);
+        // countryCodePicker.setAutoDetectedCountry(true);
+        try {
+            String country = SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry();
+            countryCodePicker.setCountryForNameCode(getCountryForNameCodeFromLibraryMasterList(getApplicationContext(), country));
+        } catch (Exception e) {
+            countryCodePicker.setAutoDetectedCountry(true);
+        }
+
 
         loadUrPost();
 

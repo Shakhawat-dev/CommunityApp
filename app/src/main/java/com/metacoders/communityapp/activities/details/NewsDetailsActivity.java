@@ -344,7 +344,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.code() == 200) {
 
                         LoginResponse.forgetPassResponse model = response.body();
-                        Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
                         if (followBtn.getText().toString().contains("Un-Follow")) {
                             followBtn.setText("Follow");
                         } else {
@@ -394,7 +394,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     try {
                         dialog.dismiss();
-                        Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                      //  Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                         commentEt.setText("");
                        // loadPostDetails(post.getSlug());
 

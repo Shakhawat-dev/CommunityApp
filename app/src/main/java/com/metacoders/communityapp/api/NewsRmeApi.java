@@ -347,7 +347,7 @@ public interface NewsRmeApi {
             @Field("company") String company,
             @Field("address") String address,
             @Field("gender") String gender,
-            @Field("social_link") String social_link,
+            @Field("website") String social_link,
             @Field("zip_code") String zip_code
     );
 

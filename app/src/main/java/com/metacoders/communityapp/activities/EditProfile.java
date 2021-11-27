@@ -25,18 +25,16 @@ import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
-import java.util.Locale;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EditProfile extends AppCompatActivity {
-    TextInputEditText full_nameIn,zipCodeIn , ssLinkIn  , addressIn, emailIn, phoneIn, CompanyIn, lastDegreeIn, latLongIn, cityIN, bioin;
+    TextInputEditText full_nameIn, zipCodeIn, ssLinkIn, addressIn, emailIn, phoneIn, CompanyIn, lastDegreeIn, latLongIn, cityIN, bioin;
     String full_name, address, email, phone, bio, company, lastDegree, latLong, country, city;
     UserModel model;
     Spinner genderSpinner;
-    String gender ;
+    String gender;
 
     private double lat = 1000, lon = 1000;
 
@@ -105,6 +103,9 @@ public class EditProfile extends AppCompatActivity {
         genderSpinner.setAdapter(catgoery_adapter);
 
 
+        String gendert = SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getGender();
+
+
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -119,29 +120,75 @@ public class EditProfile extends AppCompatActivity {
         });
 
 
-        try{
+        try {
             gender = model.getGender();
-            if(gender == null || gender.isEmpty()){
+            if (gender == null || gender.isEmpty()) {
 
-            }else {
-               genderSpinner.setSelection( getIndexOfSpinner(genderSpinner , gender.toLowerCase()));
+            } else {
+                //   genderSpinner.setSelection(getIndexOfSpinner(genderSpinner, gender.toLowerCase()));
+
+                if (gendert.equalsIgnoreCase("male")) {
+                    genderSpinner.setSelection(1);
+                } else if (gendert.equalsIgnoreCase("female")) {
+                    genderSpinner.setSelection(2);
+                } else {
+                    genderSpinner.setSelection(3);
+                }
             }
 
-            full_nameIn.setText(model.getName()+"");
-            addressIn.setText(model.getAddress()+"");
-            emailIn.setText(model.getEmail()+"");
-            phoneIn.setText(model.getPhone()+"");
-            bioin.setText(model.getBio()+"");
-            CompanyIn.setText(model.getCompany()+"");
-            ssLinkIn.setText(model.getSocial_link()+"");
-            zipCodeIn.setText(model.getZip_code()+"");
+            if (AppPreferences.isStringIsEmptyORNull(model.getName())) {
+                full_nameIn.setHint("Your Name");
+            } else {
+                full_nameIn.setText(model.getName() + "");
+            }
 
-        }catch ( Exception e ){
+            if (AppPreferences.isStringIsEmptyORNull(model.getAddress())) {
+                addressIn.setHint("Your Address");
+            } else {
+                addressIn.setText(model.getAddress() + "");
+            }
+
+            if (AppPreferences.isStringIsEmptyORNull(model.getEmail())) {
+                emailIn.setHint("Your Email Address");
+            } else {
+                emailIn.setText(model.getEmail() + "");
+            }
+
+            if (AppPreferences.isStringIsEmptyORNull(model.getPhone())) {
+                phoneIn.setHint("Your Phone Number");
+            } else {
+                phoneIn.setText(model.getPhone() + "");
+            }
+
+            if (AppPreferences.isStringIsEmptyORNull(model.getBio())) {
+                bioin.setHint("Your Bio");
+            } else {
+                bioin.setText(model.getBio() + "");
+            }
+
+            if (AppPreferences.isStringIsEmptyORNull(model.getCompany())) {
+                CompanyIn.setHint("Your Company");
+            } else {
+                CompanyIn.setText(model.getCompany() + "");
+            }
+
+            if (AppPreferences.isStringIsEmptyORNull(model.getWebsite())) {
+                ssLinkIn.setHint("Your Website Link");
+            } else {
+                ssLinkIn.setText(model.getWebsite() + "");
+            }
+
+
+            if (AppPreferences.isStringIsEmptyORNull(model.getZip_code())) {
+                zipCodeIn.setHint("ZipCode");
+            } else {
+                zipCodeIn.setText(model.getZip_code() + "");
+            }
+
+
+        } catch (Exception e) {
 
         }
-
-
-
 
 
     }
@@ -163,7 +210,7 @@ public class EditProfile extends AppCompatActivity {
         model.setBio(bio);
         model.setCompany(company);
         model.setAddress(address);
-        if(gender.contains("male")){
+        if (gender.contains("male")) {
             model.setGender(gender);
         }
         model.setSocial_link(ssLinkIn.getText().toString());
@@ -245,6 +292,7 @@ public class EditProfile extends AppCompatActivity {
         super.onResume();
 
     }
+
     private int getIndexOfSpinner(Spinner spinner, String myString) {
         for (int i = 0; i < spinner.getCount(); i++) {
             String compare = ((String) spinner.getItemAtPosition(i)).toString() + "";

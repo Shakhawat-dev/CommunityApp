@@ -90,7 +90,7 @@
         <activity
             android:name=".activities.details.PostDetailsPage"
             android:configChanges="orientation|screenSize|layoutDirection"
-            android:launchMode="singleTask" />
+             />
         <activity android:name=".activities.HomePage" />
         <activity
             android:name=".activities.Voice_Recoder_Activity"

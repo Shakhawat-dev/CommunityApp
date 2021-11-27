@@ -9,9 +9,9 @@
     <string name="fb_login_protocol_scheme">fb370531994107270</string>
 
     <string-array name="gender">
-        <item><font fgcolor='#FFFFFFFF'> Select Your Gender</font></item>
-        <item><font fgcolor='#FFFFFFFF'> Male </font></item>
-        <item><font fgcolor='#FFFFFFFF'> Female </font></item>
-        <item><font fgcolor='#FFFFFFFF'> Others </font></item>
+        <item><font > Select Your Gender</font></item>
+        <item><font > Male </font></item>
+        <item><font > Female </font></item>
+        <item><font> Others </font></item>
     </string-array>
 </resources>

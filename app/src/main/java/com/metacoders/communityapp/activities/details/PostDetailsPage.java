@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -209,6 +210,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         playerControlView.setPlayer(PlayerManager.getSharedInstance(this).getPlayerView().getPlayer());
 
 
+
         PlayerManager.getSharedInstance(this).getPlayer().addListener(new Player.EventListener() {
 
 
@@ -274,6 +276,15 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
 
         });
+        playerControlView.hide();
+
+       playerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playerControlView.show();
+            }
+        });
+
 
 
         playerControlView.setProgressUpdateListener((position, bufferedPosition) -> {
@@ -543,12 +554,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //  forcFinisj = true ;
-        //downTimer.cancel();
-    }
+
 
     @Override
     protected void onPause() {

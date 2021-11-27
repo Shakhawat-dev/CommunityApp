@@ -38,7 +38,7 @@
                     android:layout_marginEnd="32dp"
                     android:orientation="horizontal">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -56,6 +56,9 @@
                             android:id="@+id/name_country_container"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_toEndOf="@+id/profile_image"
+                            android:layout_toStartOf="@+id/shareIcon"
+                            android:layout_centerVertical="true"
                             android:orientation="horizontal"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/shareIcon"
@@ -97,7 +100,7 @@
                                     android:text="Follow"
                                     android:clickable="true"
                                     android:textColor="@color/white"
-                                    android:textSize="7sp"
+                                    android:textSize="10sp"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
@@ -110,12 +113,14 @@
                             android:id="@+id/shareIcon"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
                             android:src="@drawable/share"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"

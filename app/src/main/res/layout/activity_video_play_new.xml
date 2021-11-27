@@ -28,7 +28,6 @@
                     android:layout_height="match_parent"
                     android:background="@color/black"
                     app:default_artwork="@drawable/musicicon"
-                    app:hide_on_touch="false"
                     app:played_color="@color/com_facebook_blue"
                     app:show_buffering="always"
                     app:use_artwork="true"
@@ -44,7 +43,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:show_timeout="0" />
+                    />
 
 
                 <ImageView
@@ -248,14 +247,14 @@
                 android:layout_marginBottom="16dp"
                 android:orientation="vertical">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_image"
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
+                        android:layout_width="62dp"
+                        android:layout_height="62dp"
                         android:src="@drawable/placeholder"
                         android:start="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -264,37 +263,32 @@
 
                     <LinearLayout
                         android:id="@+id/name_country_container"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toEndOf="@id/profile_image"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/profile_image"
+                       android:layout_toStartOf="@+id/followBtn"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toEndOf="@id/profile_image">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/author"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:orientation="vertical">
+                            android:text="Robin "
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/author"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Robin Sharma"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/followerCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 Followers"
+                            android:textColor="#8F918F"
+                            android:textSize="12sp" />
 
-                            <TextView
-                                android:id="@+id/followerCount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0 Followers"
-                                android:textColor="#8F918F"
-                                android:textSize="12sp" />
-                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -302,6 +296,8 @@
                         android:id="@+id/followBtn"
                         android:layout_width="79dp"
                         android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/rounded_background_blue"
                         android:text="Follow"
@@ -311,7 +307,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </RelativeLayout>
 
                 <EditText
                     android:id="@+id/commnetET"

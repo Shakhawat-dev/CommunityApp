@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -21,6 +21,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -30,15 +31,15 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Full Name"
                     android:layout_marginTop="8dp"
+                    android:hint="Full Name"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
                         android:id="@+id/name"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_baseline_person_24"
                         android:drawableTint="@color/colorPrimary"
@@ -50,21 +51,20 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
                     android:layout_marginTop="8dp"
+                    android:hint="Email"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
                         android:id="@+id/email_et"
-                        android:focusable="false"
-                        android:clickable="false"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:clickable="false"
                         android:drawableStart="@drawable/ic_email"
                         android:drawableTint="@color/colorPrimary"
-                         />
+                        android:focusable="false" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,16 +72,16 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Mobile "
                     android:layout_marginTop="8dp"
+                    android:hint="Mobile "
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/mobilePhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/mobilePhone"
                         android:drawableStart="@drawable/ic_baseline_phone_android_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
@@ -90,47 +90,47 @@
 
 
                 <Spinner
-                    android:layout_marginVertical="4dp"
                     android:id="@+id/genderList"
                     android:layout_width="match_parent"
-                    android:background="@drawable/spinner_background"
-                    android:layout_height="@dimen/_40sdp"/>
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginVertical="4dp"
+                    android:background="@drawable/spinner_background" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Your Bio"
                     android:layout_marginTop="8dp"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/bio"
-                        android:maxLength="120"
                         android:drawableStart="@drawable/ic_baseline_language_24"
                         android:drawableTint="@color/colorPrimary"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        android:maxLength="120" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:hint="City "
                     android:visibility="gone"
-                    android:layout_marginTop="8dp"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/city"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/city"
                         android:drawableStart="@drawable/ic_baseline_location_city_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
@@ -139,59 +139,40 @@
 
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/companyET"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint=" Company "
                     android:layout_marginTop="8dp"
+
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/company"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/company"
                         android:drawableStart="@drawable/ic_baseline_business_center_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Zip Code"
                     android:layout_marginTop="8dp"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/zip_code"
-                        android:drawableStart="@drawable/ic_baseline_location_city_24"
-                        android:drawableTint="@color/colorPrimary"
-                        android:inputType="text" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Facebook Profile Link"
-                    android:layout_marginTop="8dp"
-                    app:boxStrokeColor="@color/colorPrimary"
-                    app:hintAnimationEnabled="true"
-                    app:hintTextColor="@color/black">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:id="@+id/socialLink"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_baseline_language_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
@@ -200,6 +181,7 @@
 
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/addressET"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -219,22 +201,43 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/zip_codeET"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+
+                    app:boxStrokeColor="@color/colorPrimary"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextColor="@color/black">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/zip_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:drawableStart="@drawable/ic_baseline_location_city_24"
+                        android:drawableTint="@color/colorPrimary"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Last Degree  "
                     android:layout_marginTop="8dp"
+                    android:hint="Last Degree  "
                     android:visibility="gone"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/lastDegree"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/lastDegree"
                         android:drawableStart="@drawable/ic_baseline_school_24"
                         android:drawableTint="@color/colorPrimary"
                         android:inputType="text" />
@@ -245,16 +248,16 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:hint="Latitude, Longitude "
                     android:visibility="gone"
-                    android:layout_marginTop="8dp"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
                         android:id="@+id/latlong"
+                        android:layout_width="match_parent"
 
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_baseline_edit_location_24"
@@ -281,7 +284,6 @@
 
             </LinearLayout>
         </ScrollView>
-
 
 
     </LinearLayout>
