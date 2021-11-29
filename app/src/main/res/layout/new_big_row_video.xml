@@ -36,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            android:background="#66000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -98,7 +99,7 @@
                     android:textSize="10sp"
                     android:fontFamily="sans-serif-condensed"
                     android:textFontWeight="900"
-                    android:textStyle="bold" />
+                  />
 
                 <TextView
                     android:layout_height="wrap_content"

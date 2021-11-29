@@ -25,10 +25,8 @@ import com.metacoders.communityapp.models.newModels.Post;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.ConvertTime;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -152,8 +150,6 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         holder.viewCount.setText(newsFeed.getHit() + "");
 
 
-
-
         holder.more_option.setOnClickListener(v -> {
 
         });
@@ -162,9 +158,11 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         // convert time
         SimpleDateFormat df = new SimpleDateFormat(Constants.CREATED_AT_FORMAT);
         try {
-            Date date = df.parse(newsFeed.getCreated_at());
-            holder.date.setText(ConvertTime.getTimeAgo(date));
-        } catch (ParseException e) {
+            // Date date = df.parse(newsFeed.getCreated_at());
+
+            holder.date.setText(ConvertTime.covertTimeToText(newsFeed.getCreated_at()));
+
+        } catch (Exception e) {
             e.printStackTrace();
             holder.date.setText(newsFeed.getCreated_at());
         }
@@ -243,7 +241,7 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
 
     public class DiffferViewholder extends RecyclerView.ViewHolder {
         public TextView title, desc;
-        public ImageView image, playBtn , more_option;
+        public ImageView image, playBtn, more_option;
         public TextView author, viewCount, date, country_name;
         //  public TextView commentCount;
         //  public CardView container;

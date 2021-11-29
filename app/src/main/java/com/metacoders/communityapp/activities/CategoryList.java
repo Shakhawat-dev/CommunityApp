@@ -52,7 +52,8 @@ public class CategoryList extends AppCompatActivity {
         itemClickListenter = (view, pos) -> {
 
             Intent o = new Intent(getApplicationContext(), singleList.class);
-            o.putExtra("cat_name", categoryList.get(pos).getCategory_name());
+            o.putExtra("cat_name", categoryList.get(pos).getSlug());
+            o.putExtra("name", categoryList.get(pos).getCategory_name());
             o.putExtra("type", "cat");
             startActivity(o);
 

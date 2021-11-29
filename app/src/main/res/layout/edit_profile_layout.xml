@@ -73,7 +73,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:hint="Mobile "
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
@@ -186,7 +185,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:hint="Address"
+
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
@@ -196,6 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
+
                         android:inputType="textMultiLine"
                         android:minLines="4" />
 

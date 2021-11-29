@@ -165,9 +165,9 @@ public class OwnPostListDifferAdapter extends RecyclerView.Adapter<OwnPostListDi
         // convert time
         SimpleDateFormat df = new SimpleDateFormat(Constants.CREATED_AT_FORMAT);
         try {
-            Date date = df.parse(newsFeed.getCreated_at());
-            holder.date.setText(ConvertTime.getTimeAgo(date));
-        } catch (ParseException e) {
+           // Date date = df.parse(newsFeed.getCreated_at());
+            holder.date.setText(ConvertTime.covertTimeToText(newsFeed.getCreated_at()));
+        } catch (Exception e) {
             e.printStackTrace();
             holder.date.setText(newsFeed.getCreated_at());
         }

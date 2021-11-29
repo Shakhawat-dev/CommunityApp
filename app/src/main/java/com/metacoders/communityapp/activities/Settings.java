@@ -4,28 +4,52 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.utils.AppPreferences;
+import com.metacoders.communityapp.utils.SharedPrefManager;
 
 public class Settings extends AppCompatActivity {
     String link = "";
+    TextView logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_new);
 
+        logout = findViewById(R.id.log_out);
+
+        logout.setText("Log Out " + SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getName());
+
         findViewById(R.id.inviteFriends).setOnClickListener(
                 v -> {
                     createAShortLink();
                 }
         );
+
+        logout.setOnClickListener(v -> {
+
+            try {
+                LoginManager.getInstance().logOut();
+            } catch (Exception e) {
+                Log.d("TAG", "onCreate: " + e.getMessage());
+            }
+            Intent o = new Intent(getApplicationContext(), LoginActivity.class);
+            SharedPrefManager manager = new SharedPrefManager(getApplicationContext());
+            manager.logout();
+            o.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(o);
+            finish();
+        });
+
     }
 
     private void createAShortLink() {

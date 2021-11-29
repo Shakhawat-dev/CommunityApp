@@ -1,34 +1,22 @@
 package com.metacoders.communityapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
-import com.metacoders.communityapp.api.RetrofitClient;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
-import com.metacoders.communityapp.models.News_List_Model;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
-import com.metacoders.communityapp.utils.StringGen;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,7 +26,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
     String oldpass, newPass;
     TextInputEditText oldPASS, newPASS, confirmPass;
 
-    AlertDialog dialog  ;
+    AlertDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +51,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
             } else {
 
-                Toast.makeText(getApplicationContext() , "Both Passwords Didn't Match" , Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Both Passwords Didn't Match", Toast.LENGTH_LONG).show();
 
             }
 
@@ -79,49 +68,56 @@ public class ChangePasswordActivity extends AppCompatActivity {
 //                .changePassword(oldPass, newPass);
 
 
-        SharedPrefManager  sharedPrefManager = new SharedPrefManager(getApplicationContext()) ;
-
+        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
 
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
-        Call<LoginResponse.forgetPassResponse> call = api.changePassword(newPass , newPass) ;
+        Call<LoginResponse.forgetPassResponse> call = api.changePassword(newPass, newPass, AppPreferences.getAccessToken(getApplicationContext()));
 
         call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
             @Override
             public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
 
-                LoginResponse.forgetPassResponse model = response.body() ;
+                LoginResponse.forgetPassResponse model = response.body();
 
-                if(model.getError()){
-                    dialog.setTitle("Error !!!");
-                    dialog.setMessage("" +model.getMessage());
-                    dialog.setCancelable(false);
-                    dialog.setButton("ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+               try{
+                   if (model.getError()) {
+                       dialog.setTitle("Error !!!");
+                       dialog.setMessage("" + model.getMessage());
+                       dialog.setCancelable(false);
+                       dialog.setButton("ok", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
 
-                            dialog.dismiss();
+                               dialog.dismiss();
 
-                        }
-                    });
+                           }
+                       });
 
-                }
-                else {
-                    dialog.setTitle("Success !!!");
-                    dialog.setMessage("" +model.getMessage());
-                    dialog.setCancelable(false);
-                    dialog.setButton("ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                   }
+                   else {
+                       dialog.setTitle("Success !!!");
+                       dialog.setMessage("" + model.getMessage());
+                       dialog.setCancelable(false);
+                       dialog.setButton("ok", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
 
-                            dialog.dismiss();
-                            finish();
+                               dialog.dismiss();
+                               finish();
 
-                        }
-                    });
+                           }
+                       });
 
-                }
+                   }
+               }catch (Exception e ){
+
+                   dialog.setTitle("Error !!!");
+                   dialog.setMessage("" + model.getMessage());
+                   dialog.setCancelable(false);
+                   dialog.setButton("ok", (dialog, which) -> dialog.dismiss());
+               }
                 dialog.show();
 
             }

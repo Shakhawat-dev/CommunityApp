@@ -160,7 +160,8 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View view) {
 

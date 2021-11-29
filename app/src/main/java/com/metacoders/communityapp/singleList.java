@@ -73,9 +73,10 @@ public class singleList extends AppCompatActivity implements ProductListDifferAd
 
         if (typeMeta != null && typeMeta.contains("cat")) {
             cateGoryName = o.getStringExtra("cat_name");
+            String name = o.getStringExtra("name");
             loadCateogryedList(cateGoryName, currentPage);
             try {
-                AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, cateGoryName);
+                AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, name);
             } catch (Exception e) {
 
             }

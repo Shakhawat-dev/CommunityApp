@@ -250,7 +250,8 @@ public interface NewsRmeApi {
     @POST("reset-password")
     Call<LoginResponse.forgetPassResponse> changePassword(
             @Field("password_confirmation") String old_password,
-            @Field("password") String new_password
+            @Field("password") String new_password ,
+            @Field("token") String token
     );
 
     @GET("search")

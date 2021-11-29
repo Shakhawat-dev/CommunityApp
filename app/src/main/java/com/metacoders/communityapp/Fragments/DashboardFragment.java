@@ -86,7 +86,7 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         view.findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext() , ProfileActivity.class));
+                startActivity(new Intent(getContext() , EditProfile.class));
             }
         });
         return view;
