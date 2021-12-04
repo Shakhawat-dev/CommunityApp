@@ -3,6 +3,7 @@ package com.metacoders.communityapp.activities;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,8 +11,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
+import com.metacoders.communityapp.models.LoginResponse;
 
-import org.json.JSONObject;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,20 +59,20 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-        Call<JSONObject> Call = api.forget_password(eMail);
+        Call<LoginResponse.forgetPassResponse> Call = api.forget_password(eMail);
 
-        Call.enqueue(new Callback<JSONObject>() {
+        Call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
             @Override
-            public void onResponse(retrofit2.Call<JSONObject> call, Response<JSONObject> response) {
-                if (response.isSuccessful() || response.code() == 201) {
-
+            public void onResponse(retrofit2.Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+                if (response.isSuccessful() || response.code() == 200) {
+                    Toast.makeText(getApplicationContext() , "Message : " + response.body().getMessage() , Toast.LENGTH_LONG ).show();
 
                 }
 
             }
 
             @Override
-            public void onFailure(retrofit2.Call<JSONObject> call, Throwable t) {
+            public void onFailure(retrofit2.Call<LoginResponse.forgetPassResponse> call, Throwable t) {
 
             }
         });

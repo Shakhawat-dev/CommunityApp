@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SinglePostResponse {
@@ -16,11 +15,11 @@ public class SinglePostResponse {
 
     @Expose
     @SerializedName("relatedPost")
-    public List<Post.PostModel> relatedPosts = new ArrayList<>();
+    public RelatedPostResponse relatedPosts;
 
     @Expose
     @SerializedName("postLikesCount")
-    public int postLikesCount = 0 ;
+    public int postLikesCount = 0;
 
     @Expose
     @SerializedName("postLikesCheck")
@@ -34,7 +33,7 @@ public class SinglePostResponse {
     public JSONObject followerCheck;
     @Expose
     @SerializedName("comments")
-    public  List<JsonObject> comments ;
+    public List<JsonObject> comments;
 
 
     public Post.PostModel getData() {
@@ -45,8 +44,12 @@ public class SinglePostResponse {
         this.data = data;
     }
 
-    public List<Post.PostModel> getRelatedPosts() {
+    public RelatedPostResponse getRelatedPosts() {
         return relatedPosts;
+    }
+
+    public void setRelatedPosts(RelatedPostResponse relatedPosts) {
+        this.relatedPosts = relatedPosts;
     }
 
     public List<JsonObject> getComments() {
@@ -57,9 +60,7 @@ public class SinglePostResponse {
         this.comments = comments;
     }
 
-    public void setRelatedPosts(List<Post.PostModel> relatedPosts) {
-        this.relatedPosts = relatedPosts;
-    }
+
 
     public int getPostLikesCount() {
 

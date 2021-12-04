@@ -220,6 +220,14 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
+        else {
+            if(TextUtils.isEmpty(mUsername.getText().toString().trim())){
+                mUsername.setError("Email Can't Be Empty");
+            }
+            if(TextUtils.isEmpty(mPassword.getText().toString().trim())){
+                mPassword.setError("Password Can't Be Empty");
+            }
+        }
 
     }
 

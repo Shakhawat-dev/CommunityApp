@@ -45,19 +45,19 @@ public class Points_withdraw_options extends AppCompatActivity {
         findViewById(R.id.share_point).setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), SharePointPage.class));
         });
-        button.setOnClickListener(v -> {
-            int point = 0 ;
-            double money = 0.0 ;
-            //Log.d("TAG", "onCreate: " );
-            try{
-            point  = Integer.parseInt(button.getText().toString() );
-            money = 0.0000122 * point ;
-            button.setText("£ " + String.format("%.4f" , money));
-
-            }catch (Exception e){
-                Log.e("TAG", "onCreate: " + e.getMessage());
-            }
-        });
+//        button.setOnClickListener(v -> {
+//            int point = 0 ;
+//            double money = 0.0 ;
+//            //Log.d("TAG", "onCreate: " );
+//            try{
+//            point  = Integer.parseInt(button.getText().toString() );
+//            money = 0.0000122 * point ;
+//            button.setText("£ " + String.format("%.4f" , money));
+//
+//            }catch (Exception e){
+//                Log.e("TAG", "onCreate: " + e.getMessage());
+//            }
+//        });
 
 
     }

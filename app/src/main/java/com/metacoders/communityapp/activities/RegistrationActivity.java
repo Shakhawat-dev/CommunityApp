@@ -96,11 +96,17 @@ public class RegistrationActivity extends AppCompatActivity {
                 if (isCehcked.isChecked()) {
                     if (gender.contains("gender")) {
                         Toast.makeText(getApplicationContext(), "Please Select Your Gender", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (TextUtils.isEmpty(mName.getText().toString())){
+                        mName.setError("Can't Be Empty");
+                    }
 
-                    } else {
+                    else {
                         if (mPassword.getText().toString().equals(mConfirmationPass.getText().toString())) {
                             register();
                         } else {
+                            mPassword.setError("Password Don't Match");
+                            mConfirmationPass.setError("Password Don't Match");
                             Toast.makeText(getApplicationContext(), "Password Don't Match !!", Toast.LENGTH_SHORT).show();
                         }
 
@@ -173,7 +179,7 @@ public class RegistrationActivity extends AppCompatActivity {
 //        } else {
 //
 //        }
-        return  Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
+        return Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     private void loadUserInfo(AccessToken accessToken) {
@@ -271,6 +277,13 @@ public class RegistrationActivity extends AppCompatActivity {
                     Toast.makeText(RegistrationActivity.this, "Please Check Your Entered Data!!!", Toast.LENGTH_LONG).show();
                 }
             });
+        } else {
+            if (TextUtils.isEmpty(mEmail.getText().toString())) {
+                mEmail.setError("Can't be Empty");
+            }
+            if (TextUtils.isEmpty(mPassword.getText().toString())) {
+                mPassword.setError("Can't be Empty");
+            }
         }
     }
 

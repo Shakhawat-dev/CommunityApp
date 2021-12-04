@@ -1,6 +1,7 @@
 package com.metacoders.communityapp.activities.payments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -8,11 +9,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.utils.AppPreferences;
+import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,14 +26,15 @@ public class WithdrawPayment extends AppCompatActivity {
     RadioGroup bankTypeGroup, cardGroup;
     EditText b_nameET, bra_nameET, ac_nameET, ac_numberET, amt_bankET, card_numET, nameCardET, amt_cardET;
     NewsRmeApi api;
-
+    MaterialButton button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_withdraw_payment);
-
+        button = findViewById(R.id.pointView);
         getSupportActionBar().hide();
 
+        button.setText(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getTotal_point() + "");
 
         bankTypeGroup = findViewById(R.id.bankGroup);
         cardGroup = findViewById(R.id.cardGroup);
@@ -66,7 +70,19 @@ public class WithdrawPayment extends AppCompatActivity {
         });
 
         allClick();
+        button.setOnClickListener(v -> {
+            int point = 0 ;
+            double money = 0.0 ;
+            //Log.d("TAG", "onCreate: " );
+            try{
+            point  = Integer.parseInt(button.getText().toString() );
+            money = 0.0000122 * point ;
+            button.setText("£ " + String.format("%.4f" , money));
 
+            }catch (Exception e){
+                Log.e("TAG", "onCreate: " + e.getMessage());
+            }
+        });
     }
 
     private void allClick() {

@@ -90,7 +90,8 @@ public interface NewsRmeApi {
     // single p/ost details
     @GET("single-post/{slug}")
     Call<SinglePostResponse> getSinglePost(
-            @Path("slug") String slug
+            @Path("slug") String slug ,
+            @Query("page")int page
     );
 
     // name, email, phone,
@@ -241,7 +242,7 @@ public interface NewsRmeApi {
 
     @FormUrlEncoded
     @POST("forgot-password")
-    Call<JSONObject> forget_password(
+    Call<LoginResponse.forgetPassResponse> forget_password(
             @Field("email") String email
     );
 

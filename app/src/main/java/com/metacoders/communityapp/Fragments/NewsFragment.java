@@ -437,7 +437,7 @@ public class NewsFragment extends Fragment implements ProductListDifferAdapter.I
                 Toast.makeText(getContext(), "Your At The End Of The List!!!", Toast.LENGTH_LONG).show();
             } else {
                 //incerease the common post
-                Log.d("TAG", "loadMore: Here To Increase the ");
+
                 commonCurrentPage += 1;
                 progressBar.setVisibility(View.VISIBLE);
                 loadCommonPost(commonCurrentPage);

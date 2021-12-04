@@ -42,8 +42,7 @@
                     app:controller_layout_id="@layout/customsettings"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintStart_toStartOf="parent" />
 
 
                 <ImageView
@@ -265,10 +264,10 @@
                         android:id="@+id/name_country_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp"
                         android:layout_centerVertical="true"
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_toStartOf="@+id/followBtn"
                         android:layout_toEndOf="@+id/profile_image"
-                       android:layout_toStartOf="@+id/followBtn"
                         android:orientation="vertical"
                         app:layout_constraintStart_toEndOf="@id/profile_image">
 
@@ -309,29 +308,50 @@
 
                 </RelativeLayout>
 
-                <EditText
-                    android:id="@+id/commnetET"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginBottom="2dp"
-                    android:background="@drawable/rounded_boarder_stroke_gray"
-                    android:elevation="1dp"
-                    android:hint="Your Comment"
-                    android:padding="12dp" />
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:background="@drawable/rounded_boarder_stroke_gray">
 
-                <Button
-                    android:id="@+id/add_comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_28sdp"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/rounded_boarder_tint_blue"
-                    android:text="Add Comment"
-                    android:textAllCaps="false" />
+
+                    <EditText
+                        android:id="@+id/commnetET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="36dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginVertical="@dimen/_4sdp"
+                        android:background="@android:color/transparent"
+                        android:elevation="1dp"
+                        android:hint="Your Comment"
+                        android:padding="8dp" />
+
+                    <ImageButton
+                        android:id="@+id/add_comment"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:background="@drawable/ic_baseline_send_24"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="visible" />
+
+
+                    <!--                    <Button-->
+                    <!--                       -->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="@dimen/_28sdp"-->
+                    <!--                        android:layout_gravity="end"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:layout_marginBottom="8dp"-->
+                    <!--                        android:background="@drawable/rounded_boarder_tint_blue"-->
+                    <!--                        android:text="Add Comment"-->
+                    <!--                        android:textAllCaps="false" />-->
+
+                </FrameLayout>
 
 
             </LinearLayout>
@@ -353,11 +373,29 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/nextList"
-                    android:nestedScrollingEnabled="false"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/nextList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingBottom="@dimen/_80sdp" />
+
+                    <ProgressBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/spin_kit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:layout_marginBottom="@dimen/_50sdp"
+                        android:visibility="visible" />
+
+
+                </FrameLayout>
             </LinearLayout>
 
 

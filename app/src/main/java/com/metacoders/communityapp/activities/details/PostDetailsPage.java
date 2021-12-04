@@ -7,8 +7,9 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -16,7 +17,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,7 +82,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     TextView followersCount, commentCount;
     ImageView reportBtn;
     RecyclerView nextList;
-
+    int currentPage = 1;
+    int totalPage = 1;
+    ProgressBar progressBar;
+    List<Post.PostModel> newsList = new ArrayList<>();
     String LINK, ID, TITILE, category;
     boolean fullscreen = false;
     ImageView fullscreenButton, profile_image;
@@ -94,6 +100,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     ShowMoreTextView mMediaDetails;
     Boolean forcFinisj = false;
     AppCompatButton followBtn;
+    ImageButton addComment;
     //   private CountDownTimer downTimer;
     long GlobarTimer = 0;
     NextListDifferAdapter mNextListDifferAdapter;
@@ -108,6 +115,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_video_play_new);
         getSupportActionBar().hide();
+
+        addComment = findViewById(R.id.add_comment);
         mNextListDifferAdapter = new NextListDifferAdapter(this, this, false);
 //        downTimer = new CountDownTimer(16200, 1000) {
 //            public void onTick(long millisUntilFinished) {
@@ -129,6 +138,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 //
 //            }
 //        };
+        progressBar = findViewById(R.id.spin_kit);
+        progressBar.setVisibility(View.GONE);
         commentCount = findViewById(R.id.commentCount);
         followersCount = findViewById(R.id.followerCount);
         loadingPanel = findViewById(R.id.loadingPanel);
@@ -162,8 +173,28 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         nextList.setLayoutManager(new LinearLayoutManager(this));
         nextList.setAdapter(mNextListDifferAdapter);
 
+        commentEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count == 0) {
+                    addComment.setVisibility(View.GONE);
+                } else {
+                    addComment.setVisibility(View.VISIBLE);
+                }
+            }
 
-        findViewById(R.id.add_comment).setOnClickListener(v -> {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        addComment.setOnClickListener(v -> {
             String commnet = commentEt.getText().toString();
             if (!commnet.isEmpty()) {
                 sendTheCommnet(commnet);
@@ -210,7 +241,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         playerControlView.setPlayer(PlayerManager.getSharedInstance(this).getPlayerView().getPlayer());
 
 
-
         PlayerManager.getSharedInstance(this).getPlayer().addListener(new Player.EventListener() {
 
 
@@ -253,7 +283,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                                 p = new Intent(getApplicationContext(), PostDetailsPage.class);
                                 try {
                                     setDetails(model);
-                                    loadPostDetails(model.getSlug());
+                                    loadPostDetails(model.getSlug(), 1);
                                     nestedScrollView.fling(0);
                                     nestedScrollView.smoothScrollTo(0, 0);
                                 } catch (Exception e) {
@@ -278,13 +308,12 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         });
         playerControlView.hide();
 
-       playerView.setOnClickListener(new View.OnClickListener() {
+        playerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 playerControlView.show();
             }
         });
-
 
 
         playerControlView.setProgressUpdateListener((position, bufferedPosition) -> {
@@ -349,7 +378,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         });
 
         setDetails(posts);
-
+        initScrollListener();
 
     }
 
@@ -555,7 +584,6 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     }
 
 
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -567,7 +595,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     protected void onResume() {
         super.onResume();
         initFullsceen();
-        loadPostDetails(posts.getSlug());
+        loadPostDetails(posts.getSlug(), 1);
 
     }
 
@@ -720,12 +748,17 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     }
 
-    private void loadPostDetails(String slug) {
+    private void loadPostDetails(String slug, int page) {
+        if (page == 1) {
+            loadingPanel.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+        }
 
-        loadingPanel.setVisibility(View.VISIBLE);
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
-        Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug);
+        Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug, page);
 
         NetworkCall.enqueue(new Callback<SinglePostResponse>() {
             @Override
@@ -733,51 +766,65 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
                 if (response.isSuccessful()) {
                     SinglePostResponse res = response.body();
+                    Log.d("sdaf", "onResponse: "+ res.getRelatedPosts().toString());
+                    if (page == 1) {
+                        //  Toast.makeText(getApplicationContext(), "R -> " + res.getPostLikesCheck(), Toast.LENGTH_LONG).show();
+                        Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
-                    //  Toast.makeText(getApplicationContext(), "R -> " + res.getPostLikesCheck(), Toast.LENGTH_LONG).show();
-                    Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+                        isFollowed = res.followerCheck != null;
 
-                    isFollowed = res.followerCheck != null;
-                    followersCount.setText(res.getFollowerCount() + " Followers");
-                    commentCount.setText(res.getComments().size() + " Comments");
-                    if (isFollowed) {
-                        followBtn.setText("Un-Follow");
+                        followersCount.setText(res.getFollowerCount() + " Followers");
+                        commentCount.setText(res.getComments().size() + " Comments");
+                        if (isFollowed) {
+                            followBtn.setText("Un-Follow");
+                        } else {
+                            followBtn.setText("Follow");
+                        }
+                        currentPage = res.getRelatedPosts().getCurrent_page();
+                        totalPage = res.getRelatedPosts().getLast_page();
+                        like_count.setText(res.getPostLikesCount() + "");
+                        relatedPosts.addAll(res.getRelatedPosts().getRelatedPosts());
+
+                        mNextListDifferAdapter.submitlist(relatedPosts);
+
+                        authermodel = res.data.getAuther();
+                        Glide.with(getApplicationContext())
+                                .load(res.getData().getAuther().getImage() + "")
+                                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                                .into(profile_image);
+                        try {
+                            authorTv.setText(response.body().getData().getAuther().getName());
+                        } catch (Exception e) {
+
+                        }
+
+
+                        if (res.postLikesCheck != null) {
+                            sparkButton.setChecked(true);
+                        } else {
+                            sparkButton.setChecked(false);
+
+                        }
+
                     } else {
-                        followBtn.setText("Follow");
-                    }
-                    like_count.setText(res.getPostLikesCount() + "");
+                        currentPage = res.getRelatedPosts().getCurrent_page();
 
-                    relatedPosts = res.getRelatedPosts();
-                    mNextListDifferAdapter.submitlist(res.getRelatedPosts());
-
-                    authermodel = res.data.getAuther();
-                    Glide.with(getApplicationContext())
-                            .load(res.getData().getAuther().getImage() + "")
-                            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                            .into(profile_image);
-                    try {
-                        authorTv.setText(response.body().getData().getAuther().getName());
-                    } catch (Exception e) {
-
+                        totalPage = res.getRelatedPosts().getLast_page();
+                        relatedPosts.addAll(res.getRelatedPosts().getRelatedPosts());
+                        mNextListDifferAdapter.submitlist(relatedPosts);
                     }
 
-
-                    if (res.postLikesCheck != null) {
-                        sparkButton.setChecked(true);
-                    } else {
-                        sparkButton.setChecked(false);
-
-                    }
-
-                } else {
-
+                    loadingPanel.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                 }
-                loadingPanel.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<SinglePostResponse> call, Throwable t) {
-                loadingPanel.setVisibility(View.GONE);
+                if (page == 1) {
+                    loadingPanel.setVisibility(View.GONE);
+                }
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "Error : " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
@@ -847,7 +894,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         dialog.dismiss();
                         Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                         commentEt.setText("");
-                        loadPostDetails(posts.getSlug());
+                        loadPostDetails(posts.getSlug(), 1);
 
 
                     } catch (Exception er) {
@@ -889,7 +936,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             p = new Intent(getApplicationContext(), PostDetailsPage.class);
             try {
                 setDetails(model);
-                loadPostDetails(model.getSlug());
+                loadPostDetails(model.getSlug(), 1);
                 nestedScrollView.fling(0);
                 nestedScrollView.smoothScrollTo(0, 0);
             } catch (Exception e) {
@@ -901,6 +948,70 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         }
         p.putExtra("POST", model);
         //  startActivity(p);
+
+
+    }
+
+
+    private void initScrollListener() {
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+//                    isScrolling = true;
+//                }
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                if (dy > 0) { // scroll down
+//                    currentItems = manager.getChildCount();
+//                    totalItems = manager.getItemCount();
+//                    scrollOutItems = manager.findFirstVisibleItemPosition();
+//
+//                    Toasty.warning(context, "d" , Toasty.LENGTH_LONG)
+//                            .show();
+//                    if (isScrolling && (currentItems + scrollOutItems == totalItems)) {
+//                        isScrolling = false;
+//                        Toasty.warning(context, "d" + currentPage, Toasty.LENGTH_LONG)
+//                                .show();
+//                        loadMore();
+//                    }
+//                }
+//
+//
+//            }
+//        });re
+
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (v.getChildAt(v.getChildCount() - 1) != null) {
+                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                        scrollY > oldScrollY) {
+                    //code to fetch more data for endless scrolling
+                    int test = (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight());
+                    loadMore();
+
+                }
+            }
+        });
+    }
+
+
+    private void loadMore() {
+
+        if (totalPage <= currentPage) {
+            Toast.makeText(getApplicationContext(), "Your At The Last Page.", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+//            Toasty.warning(context, "Loading Start", Toasty.LENGTH_SHORT)
+//                    .show();
+            currentPage = currentPage + 1;
+            Log.d("TTTTT", "loadMore: "  + currentPage);
+            loadPostDetails(posts.getSlug(), currentPage);
+
+        }
 
 
     }

@@ -275,7 +275,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
-        Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug);
+        Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug ,1 );
 
         NetworkCall.enqueue(new Callback<SinglePostResponse>() {
             @Override
