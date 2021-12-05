@@ -60,6 +60,7 @@ import com.varunest.sparkbutton.SparkEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -660,7 +661,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     if (response.isSuccessful() && response.code() == 200) {
 
                         LoginResponse.forgetPassResponse model = response.body();
-                        Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
                         if (followBtn.getText().toString().contains("Un-Follow")) {
                             followBtn.setText("Follow");
                             isFollowed = false;
@@ -723,7 +724,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             @Override
             public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
-                    Toast.makeText(getApplicationContext(), "Message : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                    //  Toast.makeText(getApplicationContext(), "Message : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                     if (response.body().getMessage().toLowerCase().contains("added")) {
                         like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + "");
                     } else {
@@ -766,7 +767,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
                 if (response.isSuccessful()) {
                     SinglePostResponse res = response.body();
-                    Log.d("sdaf", "onResponse: "+ res.getRelatedPosts().toString());
+                    Log.d("sdaf", "onResponse: " + res.getRelatedPosts().toString());
                     if (page == 1) {
                         //  Toast.makeText(getApplicationContext(), "R -> " + res.getPostLikesCheck(), Toast.LENGTH_LONG).show();
                         Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
@@ -783,8 +784,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         currentPage = res.getRelatedPosts().getCurrent_page();
                         totalPage = res.getRelatedPosts().getLast_page();
                         like_count.setText(res.getPostLikesCount() + "");
-                        relatedPosts.addAll(res.getRelatedPosts().getRelatedPosts());
-
+                        relatedPosts = res.getRelatedPosts().getRelatedPosts();
+                        Collections.shuffle(relatedPosts);
                         mNextListDifferAdapter.submitlist(relatedPosts);
 
                         authermodel = res.data.getAuther();
@@ -892,7 +893,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                 if (response.code() == 200) {
                     try {
                         dialog.dismiss();
-                        Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        //   Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                         commentEt.setText("");
                         loadPostDetails(posts.getSlug(), 1);
 
@@ -1008,7 +1009,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 //            Toasty.warning(context, "Loading Start", Toasty.LENGTH_SHORT)
 //                    .show();
             currentPage = currentPage + 1;
-            Log.d("TTTTT", "loadMore: "  + currentPage);
+            Log.d("TTTTT", "loadMore: " + currentPage);
             loadPostDetails(posts.getSlug(), currentPage);
 
         }

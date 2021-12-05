@@ -206,7 +206,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
-                    Toast.makeText(getApplicationContext(), "Msg : " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getApplicationContext(), "Msg : " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     if (response.body().getMessage().toLowerCase().contains("added")) {
                         like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + "");
                     } else {

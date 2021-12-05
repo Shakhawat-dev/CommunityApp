@@ -46,6 +46,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
@@ -279,8 +280,17 @@ public class ProfileActivity extends AppCompatActivity {
             phone.setText(singleProfile.getAuthor().getPhone());
             user_bio.setText(singleProfile.getAuthor().getBio());
             // load the proifle image
+
+            String gender = singleProfile.getAuthor().getGender() ;
+            String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+            if(gender.toLowerCase(Locale.ROOT).contains("fe")){
+                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
+            }else {
+                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png" ;
+            }
             Glide.with(context).load(singleProfile.getAuthor().getImage())
                     .placeholder(R.drawable.placeholder)
+                    .error(link)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(pp);
 

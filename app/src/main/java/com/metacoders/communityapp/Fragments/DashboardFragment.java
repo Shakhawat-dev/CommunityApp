@@ -18,7 +18,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.EditProfile;
-import com.metacoders.communityapp.activities.ProfileActivity;
 import com.metacoders.communityapp.activities.details.NewsDetailsActivity;
 import com.metacoders.communityapp.activities.details.PostDetailsPage;
 import com.metacoders.communityapp.adapter.new_adapter.ProductListDifferAdapter;
@@ -29,6 +28,8 @@ import com.metacoders.communityapp.models.newModels.AuthorPostResponse;
 import com.metacoders.communityapp.models.newModels.Post;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
+
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -86,7 +87,7 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         view.findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext() , EditProfile.class));
+                startActivity(new Intent(getContext(), EditProfile.class));
             }
         });
         return view;
@@ -99,20 +100,28 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         name.setText(sharedPrefManager.getUserModel().getName() + " ");
 
         try {
-            if(sharedPrefManager.getUserModel().getBio() == null || sharedPrefManager.getUserModel().getBio().isEmpty()){
+            if (sharedPrefManager.getUserModel().getBio() == null || sharedPrefManager.getUserModel().getBio().isEmpty()) {
                 mail.setText("");
-            }else {
+            } else {
                 mail.setText(sharedPrefManager.getUserModel().getBio() + "");
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             mail.setText("");
+        }
+
+        String gender = sharedPrefManager.getUserModel().getGender();
+        String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+        if (gender.toLowerCase(Locale.ROOT).contains("fe")) {
+            link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
+        } else {
+            link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
         }
 
         Glide.with(context)
                 .load(sharedPrefManager.getUserModel().getImage())
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .error(R.drawable.placeholder)
+                .error(link)
                 .placeholder(R.drawable.placeholder)
                 .into(circleImageView);
     }
@@ -131,7 +140,7 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
 
                     //   followerCount.setText(ownListModelList.);
                     link.setText(ownListModelList.getAuthor().getAccount_number() + "");
-                    followerCount.setText(ownListModelList.otherProfileFollowersCount+ "");
+                    followerCount.setText(ownListModelList.otherProfileFollowersCount + "");
                     totalCount.setText("" + ownListModelList.totalPostCount);
                     country_name.setText("Country: " + ownListModelList.getAuthor().getCountry());
 
