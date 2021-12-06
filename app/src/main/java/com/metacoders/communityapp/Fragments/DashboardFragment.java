@@ -112,11 +112,15 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
 
         String gender = sharedPrefManager.getUserModel().getGender();
         String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
-        if (gender.toLowerCase(Locale.ROOT).contains("fe")) {
-            link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
-        } else {
-            link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
-        }
+      try {
+          if (gender.toLowerCase().contains("female")) {
+              link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
+          } else {
+              link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+          }
+      }catch (Exception e){
+
+      }
 
         Glide.with(context)
                 .load(sharedPrefManager.getUserModel().getImage())

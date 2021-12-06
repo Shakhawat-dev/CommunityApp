@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -67,8 +68,13 @@ public class EditProfile extends AppCompatActivity {
                 company = CompanyIn.getText().toString();
                 bio = bioin.getText().toString();
 
+                if(genderSpinner.getSelectedItemPosition() == 0){
+                    Toast.makeText(getApplicationContext(), "Please Select Gender" , Toast.LENGTH_LONG).show();
+                }else {
+                    sendData();
+                }
 
-                sendData();
+
 
             }
         });
@@ -102,6 +108,7 @@ public class EditProfile extends AppCompatActivity {
         catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(catgoery_adapter);
 
+        Log.d("TAGGED", "sendData: " +  SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry());
 
         String gendert = SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getGender();
 
@@ -219,6 +226,7 @@ public class EditProfile extends AppCompatActivity {
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, accessTokens);
 
+
         Call<RegistrationResponse> NetworkCall = api.
                 update_profile(
                         AppPreferences.getUSerID(getApplicationContext()),
@@ -229,7 +237,8 @@ public class EditProfile extends AppCompatActivity {
                         address,
                         gender,
                         ssLinkIn.getText().toString(),
-                        zipCodeIn.getText().toString()
+                        zipCodeIn.getText().toString(),
+                        SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry()
                 );
 
 

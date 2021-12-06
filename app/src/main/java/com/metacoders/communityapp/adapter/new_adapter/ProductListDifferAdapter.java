@@ -148,8 +148,6 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         holder.country_name.setText(newsFeed.getCountry());
         holder.title.setText(newsFeed.getTitle());
         holder.viewCount.setText(newsFeed.getHit() + "");
-
-
         holder.more_option.setOnClickListener(v -> {
 
         });

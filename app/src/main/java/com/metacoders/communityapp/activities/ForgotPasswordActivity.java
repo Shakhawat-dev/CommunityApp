@@ -65,6 +65,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             @Override
             public void onResponse(retrofit2.Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
                 if (response.isSuccessful() || response.code() == 200) {
+
                     Toast.makeText(getApplicationContext() , "Message : " + response.body().getMessage() , Toast.LENGTH_LONG ).show();
 
                 }

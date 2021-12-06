@@ -61,7 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE = 100, PICK_IMAGE_DOC = 580;
     Context context;
-    TextView nameHeader, emailHeader, name, phone, email, address, user_bio;
+    TextView nameHeader, emailHeader, name, phone, email, address, user_bio, zipCode;
     CircleImageView pp;
     ProgressDialog mprogressDialog;
     CardView changePassCard, LogOutCard, addDoc;
@@ -105,7 +105,7 @@ public class ProfileActivity extends AppCompatActivity {
         LogOutCard = findViewById(R.id.logout_card);
         addDoc = findViewById(R.id.add_card);
         user_bio = findViewById(R.id.user_bio);
-
+        zipCode = findViewById(R.id.zipCodeTxt);
         RequestPermission();
 
         try {
@@ -161,8 +161,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener()
-        {
+        findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -246,7 +245,7 @@ public class ProfileActivity extends AppCompatActivity {
                     try {
 
                         AuthorPostResponse ownListModelList = response.body();
-
+                        SharedPrefManager.getInstance(getApplicationContext()).saveUserModel(ownListModelList.getAuthor());
                         setData(ownListModelList);
 
                     } catch (Exception e) {
@@ -279,14 +278,19 @@ public class ProfileActivity extends AppCompatActivity {
             emailHeader.setText(singleProfile.getAuthor().getEmail());
             phone.setText(singleProfile.getAuthor().getPhone());
             user_bio.setText(singleProfile.getAuthor().getBio());
+            zipCode.setText(singleProfile.getAuthor().getZip_code());
             // load the proifle image
 
-            String gender = singleProfile.getAuthor().getGender() ;
+            String gender = singleProfile.getAuthor().getGender();
             String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
-            if(gender.toLowerCase(Locale.ROOT).contains("fe")){
-                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
-            }else {
-                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png" ;
+            try {
+                if (gender.toLowerCase(Locale.ROOT).contains("fe")) {
+                    link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
+                } else {
+                    link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+                }
+            } catch (Exception e) {
+
             }
             Glide.with(context).load(singleProfile.getAuthor().getImage())
                     .placeholder(R.drawable.placeholder)

@@ -350,7 +350,8 @@ public interface NewsRmeApi {
             @Field("address") String address,
             @Field("gender") String gender,
             @Field("website") String social_link,
-            @Field("zip_code") String zip_code
+            @Field("zip_code") String zip_code ,
+            @Field("country")String country
     );
 
     // create a comment via
