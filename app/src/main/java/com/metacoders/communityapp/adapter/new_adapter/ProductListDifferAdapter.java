@@ -145,6 +145,11 @@ public class ProductListDifferAdapter extends RecyclerView.Adapter<ProductListDi
         //viewHolder.itemView.animation = AnimationUtils.loadAnimation(context,R.anim.item_animation_fall_down)
 
         holder.author.setText(newsFeed.getName());
+        try{
+            holder.author.setText(newsFeed.getAuther().getName());
+        }catch (Exception e ){
+
+        }
         holder.country_name.setText(newsFeed.getCountry());
         holder.title.setText(newsFeed.getTitle());
         holder.viewCount.setText(newsFeed.getHit() + "");
