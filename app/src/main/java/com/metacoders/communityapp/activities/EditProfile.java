@@ -18,6 +18,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.hbb20.CCPCountry;
+import com.hbb20.CountryCodePicker;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -26,16 +29,21 @@ import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EditProfile extends AppCompatActivity {
+
     TextInputEditText full_nameIn, zipCodeIn, ssLinkIn, addressIn, emailIn, phoneIn, CompanyIn, lastDegreeIn, latLongIn, cityIN, bioin;
     String full_name, address, email, phone, bio, company, lastDegree, latLong, country, city;
     UserModel model;
     Spinner genderSpinner;
     String gender;
+    CountryCodePicker countryCodePicker;
 
     private double lat = 1000, lon = 1000;
 
@@ -68,12 +76,11 @@ public class EditProfile extends AppCompatActivity {
                 company = CompanyIn.getText().toString();
                 bio = bioin.getText().toString();
 
-                if(genderSpinner.getSelectedItemPosition() == 0){
-                    Toast.makeText(getApplicationContext(), "Please Select Gender" , Toast.LENGTH_LONG).show();
-                }else {
+                if (genderSpinner.getSelectedItemPosition() == 0) {
+                    Toast.makeText(getApplicationContext(), "Please Select Gender", Toast.LENGTH_LONG).show();
+                } else {
                     sendData();
                 }
-
 
 
             }
@@ -90,6 +97,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void setUpUi(UserModel model) {
+        countryCodePicker = findViewById(R.id.ccp);
         ssLinkIn = findViewById(R.id.socialLink);
         zipCodeIn = findViewById(R.id.zip_code);
         genderSpinner = findViewById(R.id.genderList);
@@ -108,9 +116,10 @@ public class EditProfile extends AppCompatActivity {
         catgoery_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(catgoery_adapter);
 
-        Log.d("TAGGED", "sendData: " +  SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry());
+        Log.d("TAGGED", "sendData: " + SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry());
 
         String gendert = SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getGender();
+
 
 
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -128,6 +137,7 @@ public class EditProfile extends AppCompatActivity {
 
 
         try {
+            detectCountry(model.getCountry());
             gender = model.getGender();
             if (gender == null || gender.isEmpty()) {
 
@@ -165,31 +175,43 @@ public class EditProfile extends AppCompatActivity {
                 phoneIn.setHint("Your Phone Number");
             } else {
                 phoneIn.setText(model.getPhone() + "");
+                TextInputLayout textInputLayout = (TextInputLayout) findViewById(phoneIn.getId()).getParent().getParent();
+                textInputLayout.setHint("Phone");
             }
 
             if (AppPreferences.isStringIsEmptyORNull(model.getBio())) {
                 bioin.setHint("Your Bio");
             } else {
                 bioin.setText(model.getBio() + "");
+                TextInputLayout textInputLayout = (TextInputLayout) findViewById(bioin.getId()).getParent().getParent();
+                textInputLayout.setHint("Bio");
             }
 
             if (AppPreferences.isStringIsEmptyORNull(model.getCompany())) {
                 CompanyIn.setHint("Your Company");
             } else {
                 CompanyIn.setText(model.getCompany() + "");
+                TextInputLayout textInputLayout = (TextInputLayout) findViewById(CompanyIn.getId()).getParent().getParent();
+                textInputLayout.setHint("Company");
             }
 
             if (AppPreferences.isStringIsEmptyORNull(model.getWebsite())) {
                 ssLinkIn.setHint("Your Website Link");
+
             } else {
                 ssLinkIn.setText(model.getWebsite() + "");
+                TextInputLayout textInputLayout = (TextInputLayout) findViewById(ssLinkIn.getId()).getParent().getParent();
+                textInputLayout.setHint("Website");
             }
 
 
             if (AppPreferences.isStringIsEmptyORNull(model.getZip_code())) {
                 zipCodeIn.setHint("ZipCode");
             } else {
+
                 zipCodeIn.setText(model.getZip_code() + "");
+                TextInputLayout textInputLayout = (TextInputLayout) findViewById(zipCodeIn.getId()).getParent().getParent();
+                textInputLayout.setHint("ZipCode");
             }
 
 
@@ -238,7 +260,8 @@ public class EditProfile extends AppCompatActivity {
                         gender,
                         ssLinkIn.getText().toString(),
                         zipCodeIn.getText().toString(),
-                        SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry()
+                        countryCodePicker.getSelectedCountryName()
+                        //SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry()
                 );
 
 
@@ -310,6 +333,19 @@ public class EditProfile extends AppCompatActivity {
             }
         }
         return 0;
+    }
+
+    private void detectCountry(String name) {
+        if (name != null && !name.isEmpty()) {
+            //   CCPCountry country = CCPCountry.getCountryForNameCodeFromLibraryMasterList(getApplicationContext(), CountryCodePicker.Language.ENGLISH, name.toLowerCase()); //xml stores data in string format, but want to allow only numeric value to country code to user.
+            List<CCPCountry> countries = new ArrayList<>();
+            countries = CCPCountry.getLibraryMasterCountryList(getApplicationContext(), CountryCodePicker.Language.ENGLISH);
+            for (CCPCountry ccpCountry : countries) {
+                if (ccpCountry.getName().equalsIgnoreCase(name)) {
+                    countryCodePicker.setCountryForNameCode(ccpCountry.getNameCode());
+                }
+            }
+        }
     }
 
 }

@@ -61,7 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE = 100, PICK_IMAGE_DOC = 580;
     Context context;
-    TextView nameHeader, emailHeader, name, phone, email, address, user_bio, zipCode;
+    TextView nameHeader, emailHeader, name, phone, email, address, user_bio, zipCode , country , gender  , website , company ;
     CircleImageView pp;
     ProgressDialog mprogressDialog;
     CardView changePassCard, LogOutCard, addDoc;
@@ -103,9 +103,13 @@ public class ProfileActivity extends AppCompatActivity {
         emailHeader = findViewById(R.id.profile_email_txt);
         pp = findViewById(R.id.profile_pic);
         LogOutCard = findViewById(R.id.logout_card);
-        addDoc = findViewById(R.id.add_card);
+     //   addDoc = findViewById(R.id.add_card);
         user_bio = findViewById(R.id.user_bio);
         zipCode = findViewById(R.id.zipCodeTxt);
+        country = findViewById(R.id.country_name);
+        gender =  findViewById(R.id.gender) ;
+        website  = findViewById(R.id.websiteName);
+        company = findViewById(R.id.companyName);
         RequestPermission();
 
         try {
@@ -179,11 +183,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         });
 
-        addDoc.setOnClickListener(view -> {
-
-            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(i, PICK_IMAGE_DOC);
-        });
+//        addDoc.setOnClickListener(view -> {
+//
+//            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//            startActivityForResult(i, PICK_IMAGE_DOC);
+//        });
 
         pp.setOnClickListener(v -> {
             // open the gallery to
@@ -279,6 +283,11 @@ public class ProfileActivity extends AppCompatActivity {
             phone.setText(singleProfile.getAuthor().getPhone());
             user_bio.setText(singleProfile.getAuthor().getBio());
             zipCode.setText(singleProfile.getAuthor().getZip_code());
+            country.setText(singleProfile.getAuthor().getCountry());
+            gender.setText(singleProfile.getAuthor().getGender());
+            website.setText(singleProfile.getAuthor().getWebsite());
+            company.setText(singleProfile.getAuthor().getCompany());
+
             // load the proifle image
 
             String gender = singleProfile.getAuthor().getGender();

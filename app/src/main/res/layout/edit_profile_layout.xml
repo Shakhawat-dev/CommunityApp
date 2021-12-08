@@ -24,6 +24,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:gravity="center_horizontal"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -73,6 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:id="@+id/mobileLayout"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
@@ -100,6 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:id="@+id/bioLayout"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
@@ -138,12 +141,11 @@
 
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/companyET"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-
+                    android:id="@+id/companyLayout"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
@@ -164,6 +166,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:id="@+id/webLayout"
                     app:boxStrokeColor="@color/colorPrimary"
                     app:hintAnimationEnabled="true"
                     app:hintTextColor="@color/black">
@@ -177,6 +180,32 @@
                         android:inputType="text" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:text="Update Country"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"/>
+
+
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/ccp"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="@dimen/_22sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginVertical="4dp"
+                    android:background="@drawable/spinner_background"
+                    android:backgroundTint="@color/white"
+                    android:gravity="center"
+
+                    app:ccpDialog_showTitle="true"
+                    app:ccp_contentColor="@color/black"
+                    app:ccp_selectionMemoryTag="hggy"
+                    app:ccp_showFullName="true"
+                    app:ccp_showNameCode="false"
+                    app:ccp_showPhoneCode="false" />
 
 
                 <com.google.android.material.textfield.TextInputLayout

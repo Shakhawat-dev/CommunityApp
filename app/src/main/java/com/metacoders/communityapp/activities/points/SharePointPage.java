@@ -25,7 +25,8 @@ import retrofit2.Response;
 public class SharePointPage extends AppCompatActivity {
     EditText accountNum, pointAmt;
     Button shareBtn;
-    MaterialButton button ;
+    MaterialButton button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,14 @@ public class SharePointPage extends AppCompatActivity {
 
             if (point.isEmpty() || ac_number.isEmpty()) {
                 Toast.makeText(getApplicationContext(), "Error : Can't Be Empty", Toast.LENGTH_LONG).show();
+                if (point.isEmpty()) {
+                    pointAmt.setError("Can't Be Empty");
+                }
+                if (ac_number.isEmpty()) {
+                    accountNum.setError("Can't Be Empty");
+                }
+
+
             } else {
                 //send the point
                 RequestForPoint(ac_number, point);
@@ -58,15 +67,15 @@ public class SharePointPage extends AppCompatActivity {
         });
 
         button.setOnClickListener(v -> {
-            int point = 0 ;
-            double money = 0.0 ;
+            int point = 0;
+            double money = 0.0;
             //Log.d("TAG", "onCreate: " );
-            try{
-                point  = Integer.parseInt(button.getText().toString() );
-                money = 0.0000122 * point ;
-                button.setText("£ " + String.format("%.4f" , money));
+            try {
+                point = Integer.parseInt(button.getText().toString());
+                money = 0.0000122 * point;
+                button.setText("£ " + String.format("%.4f", money));
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e("TAG", "onCreate: " + e.getMessage());
             }
         });
