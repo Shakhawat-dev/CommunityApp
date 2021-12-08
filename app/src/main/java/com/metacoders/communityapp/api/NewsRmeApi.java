@@ -250,6 +250,7 @@ public interface NewsRmeApi {
     @FormUrlEncoded
     @POST("reset-password")
     Call<LoginResponse.forgetPassResponse> changePassword(
+            @Field("old_password") String old_pass ,
             @Field("password_confirmation") String old_password,
             @Field("password") String new_password ,
             @Field("token") String token

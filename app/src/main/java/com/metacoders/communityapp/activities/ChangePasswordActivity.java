@@ -45,7 +45,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
             oldpass = oldPASS.getText().toString();
             newPass = newPASS.getText().toString();
 
-            if (newPass.equals(confirmPass.getText().toString())) {
+
+            if (oldpass.isEmpty() || newPass.isEmpty() || confirmPass.getText().toString().isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Please Fill all the value.", Toast.LENGTH_LONG).show();
+            } else if (newPass.equals(confirmPass.getText().toString())) {
 
                 changePassword(oldpass, newPass);
 
@@ -61,19 +64,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void changePassword(String oldPass, String newPass) {
-//
-//        Call<ResponseBody> call = RetrofitClient
-//                .getInstance()
-//                .getApi()
-//                .changePassword(oldPass, newPass);
-
-
-        SharedPrefManager sharedPrefManager = new SharedPrefManager(getApplicationContext());
-
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
-        Call<LoginResponse.forgetPassResponse> call = api.changePassword(newPass, newPass, AppPreferences.getAccessToken(getApplicationContext()));
+        Call<LoginResponse.forgetPassResponse> call = api.changePassword(oldPass, newPass, newPass, AppPreferences.getAccessToken(getApplicationContext()));
 
         call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
             @Override
@@ -81,43 +75,42 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
                 LoginResponse.forgetPassResponse model = response.body();
 
-               try{
-                   if (model.getError()) {
-                       dialog.setTitle("Error !!!");
-                       dialog.setMessage("" + model.getMessage());
-                       dialog.setCancelable(false);
-                       dialog.setButton("ok", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialog, int which) {
+                try {
+                    if (model.getError()) {
+                        dialog.setTitle("Error !!!");
+                        dialog.setMessage("" + model.getMessage());
+                        dialog.setCancelable(false);
+                        dialog.setButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                               dialog.dismiss();
+                                dialog.dismiss();
 
-                           }
-                       });
+                            }
+                        });
 
-                   }
-                   else {
-                       dialog.setTitle("Success !!!");
-                       dialog.setMessage("" + model.getMessage());
-                       dialog.setCancelable(false);
-                       dialog.setButton("ok", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialog, int which) {
+                    } else {
+                        dialog.setTitle("Success !!!");
+                        dialog.setMessage("" + model.getMessage());
+                        dialog.setCancelable(false);
+                        dialog.setButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                               dialog.dismiss();
-                               finish();
+                                dialog.dismiss();
+                                finish();
 
-                           }
-                       });
+                            }
+                        });
 
-                   }
-               }catch (Exception e ){
+                    }
+                } catch (Exception e) {
 
-                   dialog.setTitle("Error !!!");
-                   dialog.setMessage("" + model.getMessage());
-                   dialog.setCancelable(false);
-                   dialog.setButton("ok", (dialog, which) -> dialog.dismiss());
-               }
+                    dialog.setTitle("Error !!!");
+                    dialog.setMessage("" + model.getMessage());
+                    dialog.setCancelable(false);
+                    dialog.setButton("ok", (dialog, which) -> dialog.dismiss());
+                }
                 dialog.show();
 
             }

@@ -146,7 +146,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         searchableCountySpinner = findViewById(R.id.countrySpinner);
         progressDialog.setCancelable(false);
         try {
-            AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "Upload POst");
+            AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "Upload Post");
         } catch (Exception e) {
 
         }
@@ -270,7 +270,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             Desc = desc.getText().toString();
             Title = title.getText().toString();
 
-            if (!TextUtils.isEmpty(Title) || !TextUtils.isEmpty(Desc) || mFilePathUri != null || !catid.equals("null") || !langid.equals("null")) {
+            if (!TextUtils.isEmpty(Title) &&!TextUtils.isEmpty(Desc) && mFilePathUri != null && !catid.equals("null") && !langid.equals("null")) {
 
                 /*
                     check video sizE
@@ -319,6 +319,16 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 }
 
 
+            }
+            else {
+                if(Desc.isEmpty()){
+                    desc.setError("Can't Be Empty");
+
+                }
+                if(Title.isEmpty()){
+                    title.setError("Can't Be Empty");
+
+                }
             }
 
         });

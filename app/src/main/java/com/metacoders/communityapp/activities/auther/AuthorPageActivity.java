@@ -14,7 +14,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.metacoders.communityapp.R;
@@ -31,8 +30,6 @@ import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.AppPreferences;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -47,7 +44,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     Context context;
     TextView tpost, tvideo, taudio, name, mail, totalArticle;
     //    RecyclerView recyclerView;
-    String[] tabTitle = {"Video", "Audio", "Post"};
+    String[] tabTitle = {"Video", "Audio", "Article"};
     CircleImageView circleImageView;
 
     List<Post.PostModel> post_modelList = new ArrayList<>();
@@ -56,13 +53,13 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     ProductListDifferAdapter mAdapter;
     ConstraintLayout emptyLayout;
     int videoCount = 0, audioCount = 0, postCount = 0;
-    TextView followButton , followerCount , totalCount;
+    TextView followButton, followerCount, totalCount;
     int user_id;
     UserModel authermodel;
     TabLayout tabLayout;
     ViewPager2 viewPager2;
 
-    TextView countyName ,link ;
+    TextView countyName, link;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,11 +114,9 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
         mail = findViewById(R.id.mailTv);
 
 
-
         // recyclerView.setVisibility(View.VISIBLE);
         circleImageView = findViewById(R.id.profile_pic);
         followButton = findViewById(R.id.followBtn);
-
 
 
         new TabLayoutMediator(tabLayout, viewPager2,
@@ -148,18 +143,18 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     private void setViewToData(UserModel authermodel) {
         name.setText(authermodel.getName() + "");
         try {
-            if(authermodel.getBio() == null || authermodel.getBio().isEmpty()){
+            if (authermodel.getBio() == null || authermodel.getBio().isEmpty()) {
                 mail.setText("");
-            }else {
+            } else {
                 mail.setText(authermodel.getBio() + "");
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             mail.setText("");
         }
-        countyName.setText(authermodel.getCountry()+"");
-        link.setText(authermodel.getAccount_number()+"");
-       // followerCount.setText(""+authermodel.getFollower_active());
+        countyName.setText(authermodel.getCountry() + "");
+        link.setText(authermodel.getAccount_number() + "");
+        // followerCount.setText(""+authermodel.getFollower_active());
 
         Glide.with(getApplicationContext())
                 .load(authermodel.getImage() + "")
@@ -213,12 +208,13 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
     @Override
     protected void onResume() {
         super.onResume();
-            loadUrPost();
+        loadUrPost();
     }
+
     public void loadUrPost() {
         //setting up layout
-       // emptyLayout.setVisibility(View.GONE);
-       // recyclerView.setVisibility(View.VISIBLE);
+        // emptyLayout.setVisibility(View.GONE);
+        // recyclerView.setVisibility(View.VISIBLE);
 
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
@@ -245,7 +241,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
 
             @Override
             public void onFailure(Call<AuthorPostResponse> call, Throwable t) {
-              //  Toast.makeText(getContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
+                //  Toast.makeText(getContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         });

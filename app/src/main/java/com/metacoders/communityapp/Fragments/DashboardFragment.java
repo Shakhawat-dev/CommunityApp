@@ -45,7 +45,7 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
     View view;
     Context context;
     TextView name, mail, totalCount, link, followerCount, followingCount, country_name;
-    String[] tabTitle = {"Video", "Audio", "Post"};
+    String[] tabTitle = {"Video", "Audio", "Article"};
     CircleImageView circleImageView;
     ProductListDifferAdapter mAdapter;
     TabLayout tabLayout;
