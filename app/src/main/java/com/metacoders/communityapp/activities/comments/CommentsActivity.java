@@ -117,7 +117,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentAdapte
                 if (response.code() == 200) {
                     try {
                         dialog.dismiss();
-                        Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                    //    Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                         commentEt.setText("");
                         loadAllComments();
 
@@ -160,7 +160,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentAdapte
                 if (response.code() == 200) {
                     try {
                         dialog.dismiss();
-                        Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                      //  Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                         commentEt.setText("");
                         loadAllComments();
                         replyContainer.setVisibility(View.GONE);
