@@ -12,23 +12,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
@@ -39,8 +33,6 @@ import com.metacoders.communityapp.utils.Constants;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
 import org.json.JSONObject;
-
-import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     CallbackManager callbackManager;
     private TextView forget_pass_tv;
-    private TextView registerTV;
+    private AppCompatButton registerTV;
     private EditText mUsername, mPassword;
     private Button mLoginBtn;
 
@@ -219,12 +211,11 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d(Constants.TAG, "onResponse: " + t.toString());
                 }
             });
-        }
-        else {
-            if(TextUtils.isEmpty(mUsername.getText().toString().trim())){
+        } else {
+            if (TextUtils.isEmpty(mUsername.getText().toString().trim())) {
                 mUsername.setError("Email Can't Be Empty");
             }
-            if(TextUtils.isEmpty(mPassword.getText().toString().trim())){
+            if (TextUtils.isEmpty(mPassword.getText().toString().trim())) {
                 mPassword.setError("Password Can't Be Empty");
             }
         }
@@ -232,9 +223,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initializations() {
-        registerTV = (TextView) findViewById(R.id.register_tv);
-        mUsername =  findViewById(R.id.login_username);
-        mPassword =  findViewById(R.id.login_password);
+        registerTV = findViewById(R.id.register_tv);
+        mUsername = findViewById(R.id.login_username);
+        mPassword = findViewById(R.id.login_password);
         mLoginBtn = (Button) findViewById(R.id.login_btn);
         forget_pass_tv = findViewById(R.id.forget_passwordBtn);
     }

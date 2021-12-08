@@ -19,11 +19,13 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
@@ -37,6 +39,7 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.Gson;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.auther.AuthorPageActivity;
@@ -62,6 +65,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -76,6 +80,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     int allReadySentTime = 0;
     long time = 0;
     EditText commentEt;
+    String qualityTextStr = "Auto";
     Boolean isStopped = true;
     NestedScrollView nestedScrollView;
     boolean isPLaying = false;
@@ -106,6 +111,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     long GlobarTimer = 0;
     NextListDifferAdapter mNextListDifferAdapter;
     List<Post.PostModel> relatedPosts = new ArrayList<>();
+    LinearLayout mBottomSheetLayout;
+    BottomSheetBehavior sheetBehavior;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
     private Button mMediaAllComments;
@@ -116,7 +123,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_video_play_new);
         getSupportActionBar().hide();
-
+        mBottomSheetLayout = findViewById(R.id.test);
+        sheetBehavior = BottomSheetBehavior.from(mBottomSheetLayout);
         addComment = findViewById(R.id.add_comment);
         mNextListDifferAdapter = new NextListDifferAdapter(this, this, false);
 //        downTimer = new CountDownTimer(16200, 1000) {
@@ -170,6 +178,44 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         mMediaDetails.setShowingLine(2);
         mMediaDetails.setShowMoreColor(Color.parseColor("#4169E2"));
         mMediaDetails.addShowMoreText("Continue");
+        mMediaDetails.addShowLessText("Show Less");
+
+
+        // sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        sheetBehavior.setDraggable(false);
+        findViewById(R.id.moreOption).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+                } else {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                }
+
+
+            }
+        });
+
+        triggerOPtions();
+
+        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+                Log.i("GG", "onClick: NEW STATE -> " + newState);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+
+            }
+        });
 
         nextList.setLayoutManager(new LinearLayoutManager(this));
         nextList.setAdapter(mNextListDifferAdapter);
@@ -223,11 +269,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         findViewById(R.id.backBtn).setOnClickListener(v -> finish());
 
         findViewById(R.id.shareIcon).setOnClickListener(v -> {
-            Intent share = new Intent(Intent.ACTION_SEND);
-            share.setType("text/plain");
-            share.putExtra(Intent.EXTRA_SUBJECT, "Check This From NewsRme");
-            share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(posts.getSlug(), posts.getLang()));
-            startActivity(Intent.createChooser(share, "Share link!"));
+
+            shareVideo();
 
         });
 
@@ -380,7 +423,15 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         setDetails(posts);
         initScrollListener();
+        loadPostDetails(posts.getSlug(), 1);
+    }
 
+    private void shareVideo() {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.putExtra(Intent.EXTRA_SUBJECT, "Check This From NewsRme");
+        share.putExtra(Intent.EXTRA_TEXT, "" + AppPreferences.postLinkBUilder(posts.getSlug(), posts.getLang()));
+        startActivity(Intent.createChooser(share, "Share link!"));
     }
 
 
@@ -596,7 +647,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     protected void onResume() {
         super.onResume();
         initFullsceen();
-        loadPostDetails(posts.getSlug(), 1);
+
 
     }
 
@@ -773,6 +824,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
                         isFollowed = res.followerCheck != null;
+                        posts = response.body().data;
 
                         followersCount.setText(res.getFollowerCount() + " Followers");
                         commentCount.setText(res.getComments().size() + " Comments");
@@ -789,8 +841,24 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         mNextListDifferAdapter.submitlist(relatedPosts);
 
                         authermodel = res.data.getAuther();
+
+
+                        String gender = authermodel.getGender();
+                        String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+                        try {
+                            if (gender.toLowerCase(Locale.ROOT).contains("fe")) {
+                                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
+                            } else {
+                                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+                            }
+                        } catch (Exception e) {
+
+                        }
+
+
                         Glide.with(getApplicationContext())
                                 .load(res.getData().getAuther().getImage() + "")
+                                .error(link)
                                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                                 .into(profile_image);
                         try {
@@ -833,6 +901,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     }
 
     public void TriggerDialogue() {
+
         Dialog dialog = new Dialog(PostDetailsPage.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -847,16 +916,19 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         highBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.HIGH);
             qualityBtn.setText("High");
+            qualityTextStr = "High";
             dialog.dismiss();
         });
         mediumBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.MEDIUM);
             qualityBtn.setText("Med");
+            qualityTextStr = "Medium";
             dialog.dismiss();
         });
         lowBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.LOW);
             qualityBtn.setText("Low");
+            qualityTextStr = "Low";
             dialog.dismiss();
         });
 
@@ -1015,5 +1087,67 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         }
 
 
+    }
+
+    private void triggerOPtions() {
+
+//        BottomSheetDialog dialog = new BottomSheetDialog(this);
+//        dialog.setContentView(R.layout.video_option_bottom_sheet);
+//        dialog.setDismissWithAnimation(true);
+
+        TextView qltyTv = mBottomSheetLayout.findViewById(R.id.video_quality_tv);
+
+
+        LinearLayout edit = mBottomSheetLayout.findViewById(R.id.edit);
+        LinearLayout share = mBottomSheetLayout.findViewById(R.id.share);
+        LinearLayout videoOption = mBottomSheetLayout.findViewById(R.id.videoQuality);
+        LinearLayout cancel = mBottomSheetLayout.findViewById(R.id.cancel);
+
+
+        qltyTv.setText("Video Quality - " + qualityTextStr);
+
+
+        try {
+            if (posts.getHls().isEmpty() || posts.getHls().toString().length() < 5) {
+                videoOption.setVisibility(View.GONE);
+                playMedia(posts.getPath());
+            } else {
+                videoOption.setVisibility(View.VISIBLE);
+                playMedia(posts.getHls());
+            }
+        } catch (Exception e) {
+            videoOption.setVisibility(View.GONE);
+            playMedia(posts.getPath());
+        }
+
+
+        videoOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //dialog.hide();
+                TriggerDialogue();
+            }
+        });
+
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //  dialog.hide();
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //  dialog.hide();
+                shareVideo();
+
+            }
+        });
+
+
+        //  dialog.show();
     }
 }

@@ -37,6 +37,7 @@ import com.varunest.sparkbutton.SparkEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -62,7 +63,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     UserModel authermodel;
     ImageView profile_image;
     EditText commentEt;
-    TextView followersCount ;
+    TextView followersCount;
 
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, followBtn, mMediaComments, mMediaDetails, authorTv;
@@ -206,7 +207,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
                 if (response.isSuccessful() && response.code() == 200) {
-                 //   Toast.makeText(getApplicationContext(), "Msg : " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    //   Toast.makeText(getApplicationContext(), "Msg : " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     if (response.body().getMessage().toLowerCase().contains("added")) {
                         like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + "");
                     } else {
@@ -263,6 +264,8 @@ public class NewsDetailsActivity extends AppCompatActivity {
         if (post.getImage() == null || post.getImage().isEmpty()) {
             imageLink = post.getThumb() + "";
         } else imageLink = post.getImage() + "";
+
+
         Glide.with(getApplicationContext())
                 .load(imageLink + "")
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
@@ -275,7 +278,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
-        Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug ,1 );
+        Call<SinglePostResponse> NetworkCall = api.getSinglePost(slug, 1);
 
         NetworkCall.enqueue(new Callback<SinglePostResponse>() {
             @Override
@@ -291,7 +294,21 @@ public class NewsDetailsActivity extends AppCompatActivity {
                         followBtn.setText("Follow");
                     }
 
-                    followersCount.setText(res.getFollowerCount()+" Followers");
+                    followersCount.setText(res.getFollowerCount() + " Followers");
+
+                    String gender = res.getData().getAuther().getGender();
+                    String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+
+                    try {
+                        if (gender.toLowerCase(Locale.ROOT).contains("fe")) {
+                            link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
+                        } else {
+                            link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+                        }
+                    } catch (Exception e) {
+
+                    }
+
 
                     Glide.with(getApplicationContext())
                             .load(res.getData().getAuther().getImage() + "")
@@ -344,7 +361,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.code() == 200) {
 
                         LoginResponse.forgetPassResponse model = response.body();
-                      //  Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(getApplicationContext(), "Msg  : " + model.getMessage(), Toast.LENGTH_SHORT).show();
                         if (followBtn.getText().toString().contains("Un-Follow")) {
                             followBtn.setText("Follow");
                         } else {
@@ -394,9 +411,9 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     try {
                         dialog.dismiss();
-                      //  Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        //  Toast.makeText(getApplicationContext(), " Msg : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                         commentEt.setText("");
-                       // loadPostDetails(post.getSlug());
+                        // loadPostDetails(post.getSlug());
 
                     } catch (Exception er) {
                         dialog.dismiss();

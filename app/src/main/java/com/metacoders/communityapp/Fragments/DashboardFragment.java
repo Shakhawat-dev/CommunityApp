@@ -81,7 +81,7 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         ).attach();
 
 
-        setDetails();
+
         loadUrPost();
 
         view.findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener() {
@@ -175,5 +175,11 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         p.putExtra("POST", model);
         startActivity(p);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setDetails();
     }
 }
