@@ -7,6 +7,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -14,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -35,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerControlView;
@@ -78,7 +80,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     PlayerView playerView;
     SimpleExoPlayer player;
     int allReadySentTime = 0;
-    long time = 0;
+    Float speed = 1f;
+    int prevCalledPage = 0;
+    PlayerManager manager;
+    PlaybackParameters param;
     EditText commentEt;
     String qualityTextStr = "Auto";
     Boolean isStopped = true;
@@ -107,6 +112,8 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     Boolean forcFinisj = false;
     AppCompatButton followBtn;
     ImageButton addComment;
+    LinearLayout controlerContainer;
+
     //   private CountDownTimer downTimer;
     long GlobarTimer = 0;
     NextListDifferAdapter mNextListDifferAdapter;
@@ -115,7 +122,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     BottomSheetBehavior sheetBehavior;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
-    private Button mMediaAllComments;
+    TextView playBackTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,26 +134,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         sheetBehavior = BottomSheetBehavior.from(mBottomSheetLayout);
         addComment = findViewById(R.id.add_comment);
         mNextListDifferAdapter = new NextListDifferAdapter(this, this, false);
-//        downTimer = new CountDownTimer(16200, 1000) {
-//            public void onTick(long millisUntilFinished) {
-//                //   Log.d(TAG, "onTick: ");.setText("seconds remaining: " + millisUntilFinished / 1000);
-//                // double sec = (double) time / 1000.00 ;
-//                //long seconds = (long) (time / 1000);
-//                // Log.d("TAG", "onTick: " + millisUntilFinished + " -> "+ sec);
-//                // if (seconds % 16 == 0 && seconds !=16) {
-//
-//                //  }
-//            }
-//
-//            public void onFinish() {
-//                if (!forcFinisj) {
-//                //    callForGift(16);
-//                }
-//                downTimer.cancel();
-//
-//
-//            }
-//        };
+
         progressBar = findViewById(R.id.spin_kit);
         progressBar.setVisibility(View.GONE);
         commentCount = findViewById(R.id.commentCount);
@@ -163,12 +151,14 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         mMediaTitle = (TextView) findViewById(R.id.media_title);
         authorTv = findViewById(R.id.author);
         followBtn = findViewById(R.id.followBtn);
+        controlerContainer = findViewById(R.id.controllerView);
+
         commentEt = findViewById(R.id.commnetET);
         //   mMediaDate = (TextView) findViewById(R.id.media_date);
         mMediaViews = (TextView) findViewById(R.id.media_views);
         mMediaComments = (TextView) findViewById(R.id.media_comments);
         mMediaDetails = findViewById(R.id.media_details);
-        mMediaAllComments = (Button) findViewById(R.id.media_see_all_comments);
+        //   mMediaAllComments = (Button) findViewById(R.id.media_see_all_comments);
         reportBtn = findViewById(R.id.reportImage);
         playerView = findViewById(R.id.player_view);
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
@@ -184,6 +174,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         // sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         sheetBehavior.setDraggable(false);
+
         findViewById(R.id.moreOption).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,8 +192,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             }
         });
 
-        triggerOPtions();
 
+        triggerOPtions();
+        playBackTv = mBottomSheetLayout.findViewById(R.id.playbackSpeedTV);
+        playBackTv.setText("Play Speed   -   " + speed.intValue() + "x");
         sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -274,15 +267,27 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         });
 
-
+        param = new PlaybackParameters(speed);
         playerView.setPlayer(PlayerManager.getSharedInstance(PostDetailsPage.this).getPlayerView().getPlayer());
 
-        PlayerManager manager = PlayerManager.getSharedInstance(this);
+        manager = PlayerManager.getSharedInstance(this);
         manager.setPlayerListener(this);
-
+        manager.getPlayer().setPlaybackParameters(param);
         PlayerControlView playerControlView = findViewById(R.id.CreateHousePlayerView);
         //ProgressBar audioProgressBar = miniPlayerCardView.findViewById(R.id.audioProgressBar);
+
         playerControlView.setPlayer(PlayerManager.getSharedInstance(this).getPlayerView().getPlayer());
+
+        playerView.setOnClickListener(v -> {
+
+            if (controlerContainer.getVisibility() == View.VISIBLE) {
+                controlerContainer.setVisibility(View.INVISIBLE);
+            } else {
+
+                controlerContainer.setVisibility(View.VISIBLE);
+                HideController();
+            }
+        });
 
 
         PlayerManager.getSharedInstance(this).getPlayer().addListener(new Player.EventListener() {
@@ -299,6 +304,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     //timer sta
                     Log.d("TAG", "onPlayerStateChanged: TIMER STARTED ");
                     //downTimer.start();
+
                     isStopped = false;
 
                 } else if (playWhenReady) {
@@ -350,43 +356,46 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
 
         });
-        playerControlView.hide();
 
-        playerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playerControlView.show();
-            }
-        });
+
+//        playerView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                playerControlView.show();
+//            }
+//        });
 
 
         playerControlView.setProgressUpdateListener((position, bufferedPosition) -> {
 
-            //  Log.d("BUFFERED", "onCreate: " + position/1000 + " -> " + bufferedPosition);
-            if ((position / 1000) - prevSec == 1) {
-                prevSec = newSec;
-                newSec = newSec + 1;
 
 
-                if (newSec % 16 == 0) {
-                    callForGift(16);
-                    Log.d("BUFFERED", "onCreate: " + newSec + " -> " + prevSec);
+
+            position = (long) ((long) position / speed);
+
+
+            int newPos = (int) (position / 1000);
+
+
+            if (newPos - prevSec == 1) {
+                //    newSec = newSec + 1;
+                prevSec = (int) newPos;
+                if (newPos % (16) == 0) {
+
+
+                    callForGift(16, newPos);
+                    Log.d("PETXY", "onCreate: " + newSec + " -> " + prevSec);
+
 
                 }
 
+
             } else {
-                prevSec = (int) position / 1000;
+                prevSec = (int) newPos;
             }
 
+            Log.d("PETXY", "onCreate: " + newPos + "    OLD POS    " + prevSec + "" + " duara -> " + position);
 
-//            if (currentDuration > 0 && currentDuration % 16 == 0 && allReadySentTime != currentDuration) {
-//                allReadySentTime = currentDuration;
-//
-//            }
-//
-//               int bufferedProgressBarPosition = (int) ((bufferedPosition * 100) / manager.getDuration());
-//              audioProgressBar.setProgress(progressBarPosition);
-//              audioProgressBar.setSecondaryProgress(bufferedProgressBarPosition);
 
         });
 
@@ -424,6 +433,19 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         setDetails(posts);
         initScrollListener();
         loadPostDetails(posts.getSlug(), 1);
+
+        HideController();
+    }
+
+    private void HideController() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //do your work here
+                controlerContainer.setVisibility(View.INVISIBLE);
+            }
+        }, 2000);
     }
 
     private void shareVideo() {
@@ -435,38 +457,38 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     }
 
 
-    private void callForGift(int currentSec) {
+    private void callForGift(int sec, int currentSec) {
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
-        Log.d("TAG", "call " + currentSec
+        Log.d("PETXY", "call " + currentSec
                 + " ");
         Call<LoginResponse.forgetPassResponse> NetworkCall = api.givePoint(
-                posts.getUser_id() + "", posts.getId(), currentSec
+                posts.getUser_id() + "", posts.getId(), sec
         );
 
-        NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
-            @Override
-            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
-                if (response.isSuccessful()) {
-                    Log.d("TAG", "onResponse: " + response.code());
-                    allReadySentTime = currentSec;
-                    Gson gson = new Gson();
-                    String str = gson.toJson(response.body());
-                    Log.d("TAG", "onResponse: " + str);
-                    // downTimer.cancel();
-                    //downTimer.start();
+        if (prevCalledPage != currentSec) {
+            NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+                @Override
+                public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+                    if (response.isSuccessful()) {
+                        Log.d("TAG", "onResponse: " + response.code());
+                        allReadySentTime = currentSec;
+                        Gson gson = new Gson();
+                        String str = gson.toJson(response.body());
+                        Log.d("PETXY", "onResponse: " + str);
+                        Toast.makeText(getApplicationContext(), "" + str, Toast.LENGTH_LONG).show();
 
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
 
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
-                //   downTimer.cancel();
-                //   downTimer.start();
-
-            }
-        });
+        prevCalledPage = currentPage;
 
 
     }
@@ -741,7 +763,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     private void setUpIcon() {
 
-        qualityBtn.setOnClickListener(v -> TriggerDialogue());
+        qualityBtn.setOnClickListener(v -> TriggerVodQualityDialogue());
 
 
         sparkButton.setEventListener(new SparkEventListener() {
@@ -900,7 +922,46 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     }
 
-    public void TriggerDialogue() {
+    public void TriggerPlaybackSpeed() {
+        Dialog dialog = new Dialog(PostDetailsPage.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.playback_speed_dialogue);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView x1 = dialog.findViewById(R.id.x1);
+        TextView x2 = dialog.findViewById(R.id.x2);
+        TextView x0_5 = dialog.findViewById(R.id.x0_5);
+
+
+        x1.setOnClickListener(v -> {
+            playBackTv.setText("Play Speed   -   " + speed.intValue() + "x");
+            speed = 1f;
+            manager.getPlayer().setPlaybackParameters(param);
+
+            dialog.dismiss();
+        });
+        x2.setOnClickListener(v -> {
+            speed = 2f;
+            playBackTv.setText("Play Speed   -   " + speed.intValue() + "x");
+            manager.getPlayer().setPlaybackParameters(param);
+
+            dialog.dismiss();
+        });
+
+        x0_5.setOnClickListener(v -> {
+            speed = 0.5f;
+            playBackTv.setText("Play Speed   -  0.5x");
+            manager.getPlayer().setPlaybackParameters(param);
+
+            dialog.dismiss();
+        });
+
+        dialog.show();
+
+    }
+
+    public void TriggerVodQualityDialogue() {
 
         Dialog dialog = new Dialog(PostDetailsPage.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1098,7 +1159,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         TextView qltyTv = mBottomSheetLayout.findViewById(R.id.video_quality_tv);
 
 
-        LinearLayout edit = mBottomSheetLayout.findViewById(R.id.edit);
+        LinearLayout playbackSpeed = mBottomSheetLayout.findViewById(R.id.playbackSpeed);
         LinearLayout share = mBottomSheetLayout.findViewById(R.id.share);
         LinearLayout videoOption = mBottomSheetLayout.findViewById(R.id.videoQuality);
         LinearLayout cancel = mBottomSheetLayout.findViewById(R.id.cancel);
@@ -1110,22 +1171,29 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         try {
             if (posts.getHls().isEmpty() || posts.getHls().toString().length() < 5) {
                 videoOption.setVisibility(View.GONE);
-                playMedia(posts.getPath());
+                //    playMedia(posts.getPath());
             } else {
                 videoOption.setVisibility(View.VISIBLE);
-                playMedia(posts.getHls());
+                //  playMedia(posts.getHls());
             }
         } catch (Exception e) {
             videoOption.setVisibility(View.GONE);
-            playMedia(posts.getPath());
+            // playMedia(posts.getPath());
         }
 
-
+        playbackSpeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                TriggerPlaybackSpeed();
+            }
+        });
         videoOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //dialog.hide();
-                TriggerDialogue();
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                TriggerVodQualityDialogue();
             }
         });
 
@@ -1142,6 +1210,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             @Override
             public void onClick(View v) {
                 //  dialog.hide();
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 shareVideo();
 
             }

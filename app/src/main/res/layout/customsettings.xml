@@ -29,7 +29,7 @@
             style="@style/ExoMediaButton.Play"/>
 
         <ImageButton android:id="@id/exo_pause"
-            android:background="@drawable/play__icon"
+
             android:layout_marginHorizontal="@dimen/_8sdp"
             android:layout_width="52dp"
             android:layout_height="52dp"/>

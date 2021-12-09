@@ -39,29 +39,43 @@
                         app:played_color="@color/com_facebook_blue"
                         app:show_buffering="always"
                         app:use_artwork="true"
-                        app:use_controller="false" />
+                        app:use_controller="false"
+                        app:show_timeout="0"
+                        app:hide_on_touch="false"/>
 
-                    <com.google.android.exoplayer2.ui.PlayerControlView
-                        android:id="@+id/CreateHousePlayerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5dp"
+                    <LinearLayout
+                        android:id="@+id/controllerView"
                         android:visibility="visible"
-                        app:controller_layout_id="@layout/customsettings"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.exoplayer2.ui.PlayerControlView
+                            android:id="@+id/CreateHousePlayerView"
+                            app:show_timeout="0"
+                            app:hide_on_touch="false"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:visibility="visible"
+                            app:controller_layout_id="@layout/customsettings"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+                    </LinearLayout>
+
+
 
                     <ImageView
                         android:id="@+id/moreOption"
-                        android:layout_width="@dimen/_35sdp"
+                        android:layout_width="@dimen/_25sdp"
                         android:layout_margin="@dimen/_8sdp"
                         android:layout_gravity="end"
                         android:clickable="true"
                         android:focusable="true"
                         android:backgroundTint="@color/white"
                         android:background="@drawable/ic_baseline_more_vert_24"
-                        android:layout_height="@dimen/_35sdp"/>
+                        android:layout_height="@dimen/_25sdp"/>
 
                     <ImageView
                         android:id="@+id/backBtn"
