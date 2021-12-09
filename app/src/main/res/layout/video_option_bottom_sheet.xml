@@ -5,25 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
-
     android:gravity="bottom"
-
     app:behavior_hideable="false"
     app:behavior_peekHeight="2dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
 
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    style="@style/CustomCardViewStyle"
+    android:elevation="@dimen/_8sdp"
+    app:cardPreventCornerOverlap="false"
+    app:cardBackgroundColor="@color/white"
+    android:layout_height="wrap_content">
     <LinearLayout
         android:clickable="true"
         android:focusable="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_background_top_radius_gray"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="#33d3d3d3"
         android:orientation="vertical"
         android:padding="16dp">
 
         <LinearLayout
+            android:id="@+id/playbackSpeed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -32,15 +38,16 @@
             android:visibility="visible">
 
             <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/play_button_2" />
 
             <TextView
+                android:id="@+id/playbackSpeedTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Play Speed   -   1x (Normal)" />
+                android:text="Play Speed   -   1x" />
         </LinearLayout>
 
         <LinearLayout
@@ -52,8 +59,8 @@
             android:padding="16dp">
 
             <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/video_player" />
 
             <TextView
@@ -73,8 +80,8 @@
             android:padding="16dp">
 
             <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/share_2" />
 
             <TextView
@@ -87,7 +94,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray" />
+            android:background="@color/pdlg_color_gray" />
 
         <LinearLayout
             android:id="@+id/cancel"
@@ -98,9 +105,10 @@
             android:padding="16dp">
 
             <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/close" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:backgroundTint="#5C5A5A"
+                android:background="@drawable/ic_baseline_close_24" />
 
             <TextView
 
@@ -111,4 +119,5 @@
         </LinearLayout>
 
     </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
 </LinearLayout>
