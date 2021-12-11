@@ -87,6 +87,7 @@
                         android:src="@drawable/door_key" />
 
                     <TextView
+                        android:id="@+id/passwordTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Password"

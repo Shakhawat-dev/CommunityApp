@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,16 +19,26 @@ import com.metacoders.communityapp.utils.SharedPrefManager;
 
 public class Settings extends AppCompatActivity {
     String link = "";
-    TextView logout;
+    TextView logout, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_new);
 
+        password = findViewById(R.id.passwordTV);
         logout = findViewById(R.id.log_out);
 
         logout.setText("Log Out " + SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getName());
+
+
+        password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getApplicationContext(), ChangePasswordActivity.class));
+            }
+        });
 
         findViewById(R.id.inviteFriends).setOnClickListener(
                 v -> {

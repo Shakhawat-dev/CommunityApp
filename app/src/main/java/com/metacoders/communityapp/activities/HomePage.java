@@ -75,6 +75,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     List<String> idlist = new ArrayList<>();
     CardView jobSide, profileSide, notificationSide;
     List<String> langList = new ArrayList<>();
+    BottomNavigationView navigationBar;
     private DrawerLayout drawerLayout;
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
 
@@ -118,12 +119,12 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 }
             };
 
-    public  String getCountryForNameCodeFromLibraryMasterList(Context context, String name) {
+    public String getCountryForNameCodeFromLibraryMasterList(Context context, String name) {
         List<CCPCountry> countries;
         countries = CCPCountry.getLibraryMasterCountryList(context, CountryCodePicker.Language.ENGLISH);
         for (CCPCountry ccpCountry : countries) {
             if (ccpCountry.getName().equalsIgnoreCase(name)) {
-            //    Toast.makeText(this  , "Toast : "+ ccpCountry.getNameCode() , Toast.LENGTH_LONG).show();
+                //    Toast.makeText(this  , "Toast : "+ ccpCountry.getNameCode() , Toast.LENGTH_LONG).show();
                 return ccpCountry.getNameCode();
             }
         }
@@ -138,7 +139,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         getSupportActionBar().hide();
         RequestPermission();
-        final BottomNavigationView navigationBar = findViewById(R.id.bottom_navigation_);
+        navigationBar = findViewById(R.id.bottom_navigation_);
         viewPager = findViewById(R.id.view_pager);
         pointView = findViewById(R.id.pointView);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -545,7 +546,11 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         });
 
         findViewById(R.id.profileSide).setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+
+           // startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            navigationBar.getMenu().findItem(R.id.dashboard).setChecked(true);
+            viewPager.setCurrentItem(4);
+            drawerLayout.closeDrawer(GravityCompat.START);
         });
 
         findViewById(R.id.categoriesSide).setOnClickListener(v -> {

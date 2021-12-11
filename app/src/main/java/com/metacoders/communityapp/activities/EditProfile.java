@@ -38,7 +38,7 @@ import retrofit2.Response;
 
 public class EditProfile extends AppCompatActivity {
 
-    TextInputEditText full_nameIn, zipCodeIn, ssLinkIn, addressIn, emailIn, phoneIn, CompanyIn, lastDegreeIn, latLongIn, cityIN, bioin;
+    TextInputEditText full_nameIn ,zipCodeIn, ssLinkIn, addressIn, emailIn, phoneIn, CompanyIn, lastDegreeIn, latLongIn, cityIN, bioin;
     String full_name, address, email, phone, bio, company, lastDegree, latLong, country, city;
     UserModel model;
     Spinner genderSpinner;
@@ -75,6 +75,7 @@ public class EditProfile extends AppCompatActivity {
                 phone = phoneIn.getText().toString();
                 company = CompanyIn.getText().toString();
                 bio = bioin.getText().toString();
+
 
                 if (genderSpinner.getSelectedItemPosition() == 0) {
                     Toast.makeText(getApplicationContext(), "Please Select Gender", Toast.LENGTH_LONG).show();
@@ -162,6 +163,8 @@ public class EditProfile extends AppCompatActivity {
             if (AppPreferences.isStringIsEmptyORNull(model.getAddress())) {
                 addressIn.setHint("Your Address");
             } else {
+                TextInputLayout textInputLayout = (TextInputLayout) findViewById(addressIn.getId()).getParent().getParent();
+                textInputLayout.setHint("Address");
                 addressIn.setText(model.getAddress() + "");
             }
 

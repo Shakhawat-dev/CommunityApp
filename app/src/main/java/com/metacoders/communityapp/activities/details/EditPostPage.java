@@ -169,6 +169,7 @@ public class EditPostPage extends AppCompatActivity {
             public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
                 if (response.isSuccessful() && response.code() == 200) {
                     Toast.makeText(getApplicationContext(), "Post Updated", Toast.LENGTH_LONG).show();
+                    finish();
                 }
                 else {
 
@@ -193,6 +194,7 @@ public class EditPostPage extends AppCompatActivity {
             public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
                 if (response.isSuccessful() && response.code() == 200) {
                     Toast.makeText(getApplicationContext(), "Post Updated", Toast.LENGTH_LONG).show();
+                    finish();
                 }
                 else {
 
@@ -223,6 +225,7 @@ public class EditPostPage extends AppCompatActivity {
             public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
                 if (response.isSuccessful() && response.code() == 200) {
                     Toast.makeText(getApplicationContext(), "Post Updated", Toast.LENGTH_LONG).show();
+                    finish();
                 } else {
 
                 }

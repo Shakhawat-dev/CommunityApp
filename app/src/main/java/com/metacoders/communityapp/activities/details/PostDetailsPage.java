@@ -476,7 +476,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         Gson gson = new Gson();
                         String str = gson.toJson(response.body());
                         Log.d("PETXY", "onResponse: " + str);
-                        Toast.makeText(getApplicationContext(), "" + str, Toast.LENGTH_LONG).show();
+                    //    Toast.makeText(getApplicationContext(), "" + str, Toast.LENGTH_LONG).show();
 
                     }
                 }
@@ -508,14 +508,14 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         } else if (post.getType().equals("video")) {
             try {
                 if (post.getHls().isEmpty() || post.getHls().toString().length() < 5) {
-                    qualityBtn.setVisibility(View.GONE);
+                  //  qualityBtn.setVisibility(View.GONE);
                     playMedia(post.getPath());
                 } else {
-                    qualityBtn.setVisibility(View.VISIBLE);
+                 //   qualityBtn.setVisibility(View.VISIBLE);
                     playMedia(post.getHls());
                 }
             } catch (Exception e) {
-                qualityBtn.setVisibility(View.GONE);
+              //  qualityBtn.setVisibility(View.GONE);
                 playMedia(post.getPath());
             }
 
@@ -763,7 +763,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     private void setUpIcon() {
 
-        qualityBtn.setOnClickListener(v -> TriggerVodQualityDialogue());
+       // qualityBtn.setOnClickListener(v -> TriggerVodQualityDialogue());
 
 
         sparkButton.setEventListener(new SparkEventListener() {
@@ -976,19 +976,19 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         highBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.HIGH);
-            qualityBtn.setText("High");
+          //  qualityBtn.setText("High");
             qualityTextStr = "High";
             dialog.dismiss();
         });
         mediumBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.MEDIUM);
-            qualityBtn.setText("Med");
+           // qualityBtn.setText("Med");
             qualityTextStr = "Medium";
             dialog.dismiss();
         });
         lowBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.LOW);
-            qualityBtn.setText("Low");
+          //  qualityBtn.setText("Low");
             qualityTextStr = "Low";
             dialog.dismiss();
         });
