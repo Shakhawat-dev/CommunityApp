@@ -33,6 +33,8 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface NewsRmeApi {
+
+
     //Short URL API
     @FormUrlEncoded
     @POST("shorturlapi")
@@ -90,8 +92,8 @@ public interface NewsRmeApi {
     // single p/ost details
     @GET("single-post/{slug}")
     Call<SinglePostResponse> getSinglePost(
-            @Path("slug") String slug ,
-            @Query("page")int page
+            @Path("slug") String slug,
+            @Query("page") int page
     );
 
     // name, email, phone,
@@ -140,6 +142,12 @@ public interface NewsRmeApi {
     Call<PostResponse.FollowerPostResponse> getFollowerPostList(
             @Query("page") int page
     );
+
+    @GET("notification")
+    Call<NotificationResponse> getNotifications(
+
+    );
+
 
     //category-country
     @GET("category-country")
@@ -250,9 +258,9 @@ public interface NewsRmeApi {
     @FormUrlEncoded
     @POST("reset-password")
     Call<LoginResponse.forgetPassResponse> changePassword(
-            @Field("old_password") String old_pass ,
+            @Field("old_password") String old_pass,
             @Field("password_confirmation") String old_password,
-            @Field("password") String new_password ,
+            @Field("password") String new_password,
             @Field("token") String token
     );
 
@@ -351,8 +359,8 @@ public interface NewsRmeApi {
             @Field("address") String address,
             @Field("gender") String gender,
             @Field("website") String social_link,
-            @Field("zip_code") String zip_code ,
-            @Field("country")String country
+            @Field("zip_code") String zip_code,
+            @Field("country") String country
     );
 
     // create a comment via
