@@ -20,6 +20,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:name=".MainApplication"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -133,6 +134,22 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.onesignal.NotificationServiceExtension"
+            android:value=".NotificationServiceExtension" /> <!-- <meta-data -->
+        <!-- android:name="com.onesignal.NotificationOpened.DEFAULT" -->
+        <!-- android:value="DISABLE" /> -->
+        <meta-data
+            android:name="com.onesignal.NotificationAccentColor.DEFAULT"
+            android:value="FF2471A3" />
+
+        <service
+            android:name=".persistant_service"
+            android:enabled="true"
+            android:exported="true" />
+
+
     </application>
 
 </manifest>
