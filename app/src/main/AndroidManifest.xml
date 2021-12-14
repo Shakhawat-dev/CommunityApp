@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.metacoders.communityapp">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -27,6 +26,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
+        <activity
+            android:name=".activities.notificaiton.NotficationPage"
+            android:exported="false" />
         <activity
             android:name=".activities.details.EditPostPage"
             android:exported="false" />
@@ -66,7 +68,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -80,7 +81,6 @@
                     android:host="newsrme.com"
                     android:scheme="https" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".activities.PostUploadActivity"
@@ -89,8 +89,7 @@
         <activity android:name=".activities.ChangePasswordActivity" />
         <activity
             android:name=".activities.details.PostDetailsPage"
-            android:configChanges="orientation|screenSize|layoutDirection"
-             />
+            android:configChanges="orientation|screenSize|layoutDirection" />
         <activity android:name=".activities.HomePage" />
         <activity
             android:name=".activities.Voice_Recoder_Activity"

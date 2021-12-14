@@ -40,6 +40,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.activities.countryWiseList.CountryList;
+import com.metacoders.communityapp.activities.notificaiton.NotficationPage;
 import com.metacoders.communityapp.activities.points.Points_withdraw_options;
 import com.metacoders.communityapp.adapter.viewPager2_adapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
@@ -66,6 +67,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     ViewPager2 viewPager;
     FloatingActionButton emergencyFuel;
     allDataResponse dataResponse;
+
     TextView lang;
     TextView userNameOnSide;
     Dialog dialog;
@@ -170,6 +172,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 }
         );
 
+
+
         dataResponse = (allDataResponse) getIntent().getSerializableExtra("MISC");
         viewPager2Adapter = new viewPager2_adapter(HomePage.this);
 
@@ -214,6 +218,12 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             }
         });
 
+        findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            startActivity(new Intent(getApplicationContext() , NotficationPage.class));
+            }
+        });
 
         hamburger.setOnClickListener(new View.OnClickListener() {
             @Override
