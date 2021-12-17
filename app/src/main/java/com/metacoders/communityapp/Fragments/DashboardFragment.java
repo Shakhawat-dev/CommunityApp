@@ -184,10 +184,13 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         setDetails();
     }
 
-    public  void upadteList(){
+    public  void  upadteList(){
+
+        int p = viewPager2.getCurrentItem() ;
         Log.d("TAG", "upadteList: ");
         viewPager2.setAdapter(null);
         viewPager2.setAdapter(new profile_viewpager_adapter(getActivity(), SharedPrefManager.getInstance(getContext()).getUser_ID()));
         viewPager2.setUserInputEnabled(true);
+        viewPager2.setCurrentItem(p);
     }
 }

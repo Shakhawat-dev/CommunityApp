@@ -2,6 +2,7 @@ package com.metacoders.communityapp.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -98,7 +99,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 dialog.dismiss();
+                                //finish();
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
                                 finish();
+
 
                             }
                         });

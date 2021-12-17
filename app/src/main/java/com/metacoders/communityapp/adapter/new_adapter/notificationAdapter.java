@@ -51,10 +51,12 @@ public class notificationAdapter extends RecyclerView.Adapter<notificationAdapte
         holder.itemView.setOnClickListener(v -> {
             itemClickListener.onItemClick(item);
         });
+        String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
 
         Glide.with(context)
                 .load(item.getData().getImage())
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .error(link)
                 .into(holder.imageView);
 
         holder.name.setText(item.getData().getName());

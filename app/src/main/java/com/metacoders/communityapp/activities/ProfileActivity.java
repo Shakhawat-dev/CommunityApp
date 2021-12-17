@@ -220,12 +220,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void BringImagePicker() {
 
-//
-//        CropImage.activity()
-//                .setGuidelines(CropImageView.Guidelines.ON)
-//                .setAspectRatio(1, 1)
-//                .setCropShape(CropImageView.CropShape.OVAL) //shaping the image
-//                .start(ProfileActivity.this);
 
         RequestPermission();
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

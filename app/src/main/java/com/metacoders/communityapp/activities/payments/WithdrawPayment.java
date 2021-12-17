@@ -14,6 +14,7 @@ import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
+import com.metacoders.communityapp.models.newModels.AuthorPostResponse;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
@@ -34,7 +35,7 @@ public class WithdrawPayment extends AppCompatActivity {
         button = findViewById(R.id.pointView);
         getSupportActionBar().hide();
 
-        button.setText(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getTotal_point() + "");
+     //   button.setText(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getTotal_point() + "");
 
         bankTypeGroup = findViewById(R.id.bankGroup);
         cardGroup = findViewById(R.id.cardGroup);
@@ -207,5 +208,41 @@ public class WithdrawPayment extends AppCompatActivity {
         });
 
 
+    }
+
+    public void loadUrPost() {
+        // findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+        Call<AuthorPostResponse> catCall = api.getAuthorPost(SharedPrefManager.getInstance(getApplicationContext()).getUser_ID() + "");
+
+        catCall.enqueue(new Callback<AuthorPostResponse>() {
+            @Override
+            public void onResponse(Call<AuthorPostResponse> call, Response<AuthorPostResponse> response) {
+                AuthorPostResponse ownListModelList = response.body();
+                // findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                if (response.code() == 200) {
+                    ownListModelList = response.body();
+
+                    //   followerCount.setText(ownListModelList.);
+                    button.setText(ownListModelList.getAuthor().getTotal_point());
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AuthorPostResponse> call, Throwable t) {
+                //  findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUrPost();
     }
 }

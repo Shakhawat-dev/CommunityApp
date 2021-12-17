@@ -26,6 +26,8 @@ public class SettingsModel implements Serializable {
         return countries;
     }
 
+
+
     public void setCountries(List<CountryModel> countries) {
         this.countries = countries;
     }

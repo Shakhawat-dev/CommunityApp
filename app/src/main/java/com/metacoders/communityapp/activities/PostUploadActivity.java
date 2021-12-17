@@ -159,32 +159,21 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         // Toast.makeText(getApplicationContext(), postType, Toast.LENGTH_LONG).show();
         if (!postType.contains("post")) {
 
-            //  Toast.makeText(getApplicationContext(), getIntent().getStringExtra("path"), Toast.LENGTH_SHORT).show();
-//            chip.setText("Media File Added ");
             try {
 
 
                 if (!postType.contains("audio")) {
                     FileUriSizeChecker = Uri.parse(getIntent().getStringExtra("path"));
-                    //  chip.setText(rand + ".mp3");
+
                 } else {
                     FileUriSizeChecker = Uri.parse(getIntent().getStringExtra("OR_PATH"));
-                    // chip.setText(rand + ".mp4");
+
                 }
 
 
             } catch (Exception e) {
                 Log.d("TAG", e.getMessage() + "");
                 //   String rand = getSaltString();
-
-                if (postType.contains("audio")) {
-
-                    //  chip.setText(rand + ".mp3");
-                } else {
-                    // chip.setText(rand + ".mp4");
-                }
-
-
             }
             try {
                 playMedia(getIntent().getStringExtra("path"));
@@ -268,8 +257,9 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
             Desc = desc.getText().toString();
             Title = title.getText().toString();
-
-            if (!TextUtils.isEmpty(Title) && !TextUtils.isEmpty(Desc) && mFilePathUri != null && !catid.equals("null") && !langid.equals("null")) {
+//&& mFilePathUri != null
+            // && !TextUtils.isEmpty(Desc)
+            if (!TextUtils.isEmpty(Title)  && !catid.equals("null") && !langid.equals("null")) {
 
                 /*
                     check video sizE
@@ -318,15 +308,17 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 }
 
 
-            } else {
-                if (Desc.isEmpty()) {
-                    desc.setError("Can't Be Empty");
-
-                }
+            }
+            else {
+//                if (Desc.isEmpty()) {
+//                    desc.setError("Can't Be Empty");
+//
+//                }
                 if (Title.isEmpty()) {
                     title.setError("Can't Be Empty");
 
                 }
+
             }
 
         });
@@ -784,8 +776,11 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
 
         searchableCountySpinner.setTitle("Select Country");
 
+        List<CountryModel> p = settingsModel.getCountries() ;
+        Collections.reverse(p);
+
         ArrayAdapter<CountryModel> country_adapter = new ArrayAdapter<CountryModel>(PostUploadActivity.this,
-                android.R.layout.simple_spinner_item, settingsModel.getCountries());
+                android.R.layout.simple_spinner_item,p);
         country_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         searchableCountySpinner.setAdapter(country_adapter);
 

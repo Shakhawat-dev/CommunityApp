@@ -937,21 +937,24 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         x1.setOnClickListener(v -> {
             playBackTv.setText("Play Speed   -   " + speed.intValue() + "x");
             speed = 1f;
+            param = new PlaybackParameters(speed);
             manager.getPlayer().setPlaybackParameters(param);
 
             dialog.dismiss();
         });
         x2.setOnClickListener(v -> {
-            speed = 4f;
+            speed = 2f;
             playBackTv.setText("Play Speed   -   " + speed.intValue() + "x");
+            param = new PlaybackParameters(3f);
             manager.getPlayer().setPlaybackParameters(param);
 
             dialog.dismiss();
         });
 
         x0_5.setOnClickListener(v -> {
-            speed = 0.2f;
+            speed = 0.5f;
             playBackTv.setText("Play Speed   -  0.5x");
+            param = new PlaybackParameters(speed);
             manager.getPlayer().setPlaybackParameters(param);
 
             dialog.dismiss();

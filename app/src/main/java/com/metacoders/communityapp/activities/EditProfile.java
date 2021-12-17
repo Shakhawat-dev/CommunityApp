@@ -1,12 +1,19 @@
 package com.metacoders.communityapp.activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,42 +23,64 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CCPCountry;
 import com.hbb20.CountryCodePicker;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.metacoders.communityapp.R;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
+import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.RegistrationResponse;
 import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EditProfile extends AppCompatActivity {
-
-    TextInputEditText full_nameIn ,zipCodeIn, ssLinkIn, addressIn, emailIn, phoneIn, CompanyIn, lastDegreeIn, latLongIn, cityIN, bioin;
+    private static final int PICK_IMAGE = 100, PICK_IMAGE_DOC = 580;
+    TextInputEditText full_nameIn, zipCodeIn, ssLinkIn, addressIn, emailIn, phoneIn, CompanyIn, lastDegreeIn, latLongIn, cityIN, bioin;
     String full_name, address, email, phone, bio, company, lastDegree, latLong, country, city;
     UserModel model;
     Spinner genderSpinner;
     String gender;
     CountryCodePicker countryCodePicker;
-
+    ProgressDialog mprogressDialog;
+    Uri mFilePathUri;
+    CircleImageView pp;
     private double lat = 1000, lon = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile_layout);
-
+        mprogressDialog = new ProgressDialog(EditProfile.this);
+        mprogressDialog.setMessage("Uploading The Image...");
 
         try {
             AppPreferences.setActionbarTextColor(getSupportActionBar(), Color.WHITE, "My Profile");
@@ -95,9 +124,71 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+
+        pp.setOnClickListener(v -> {
+            // open the gallery to
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(EditProfile.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+
+                    BringImagePicker();
+
+
+                } else {
+
+                    BringImagePicker();
+
+                }
+
+            } else {
+
+                BringImagePicker();
+
+            }
+
+        });
+
+    }
+
+    private void RequestPermission() {
+
+        Dexter.withContext(EditProfile.this)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.RECORD_AUDIO)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+
+                        permissionToken.continuePermissionRequest();
+                    }
+                }).onSameThread().check();
+    }
+
+
+    private void BringImagePicker() {
+
+
+        RequestPermission();
+        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, PICK_IMAGE);
+
+
     }
 
     private void setUpUi(UserModel model) {
+        pp = findViewById(R.id.profile_pic);
         countryCodePicker = findViewById(R.id.ccp);
         ssLinkIn = findViewById(R.id.socialLink);
         zipCodeIn = findViewById(R.id.zip_code);
@@ -120,6 +211,22 @@ public class EditProfile extends AppCompatActivity {
         Log.d("TAGGED", "sendData: " + SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry());
 
         String gendert = SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getGender();
+
+        String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+        try {
+            if (gendert.toLowerCase(Locale.ROOT).contains("fe")) {
+                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
+            } else {
+                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+            }
+        } catch (Exception e) {
+
+        }
+        Glide.with(getApplicationContext()).load( SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getImage())
+                .placeholder(R.drawable.placeholder)
+                .error(link)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(pp);
 
 
 
@@ -351,4 +458,163 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
+    public static String getPath(Context ctx, Uri uri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(ctx, uri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
+    }
+
+    private void uploadProfilePicToServer(Uri mFilePathUri) {
+
+        RequestPermission();
+        pp.setImageURI(mFilePathUri);
+        mprogressDialog.show();
+        mprogressDialog.setMessage("Uploading New Image...");
+        String path;
+        File file;
+
+        try {
+            path = getPath(EditProfile.this, mFilePathUri);
+            file = new File(path);
+        } catch (Exception e) {
+
+            path = mFilePathUri.getPath();
+            file = new File(path);
+        }
+
+        // call for network
+        File compressed;
+
+        try {
+            compressed = new Compressor(EditProfile.this)
+                    .setMaxHeight(600)
+                    .setMaxWidth(600)
+                    .setQuality(50)
+                    .compressToFile(file);
+        } catch (Exception e) {
+            compressed = file;
+        }
+
+
+        //creating request body for file
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
+
+        String name = SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getName();
+
+        MultipartBody.Part body1 = MultipartBody.Part.createFormData("image", compressed.getName(), requestFile);
+        ///  take token
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+        Call<LoginResponse.forgetPassResponse> call = api.uploadImage(AppPreferences.getUSerID(getApplicationContext()), createPartFromString(name), body1);
+
+
+        call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
+
+
+                if (response.code() == 200) {
+                    LoginResponse.forgetPassResponse result = response.body();
+                    Toast.makeText(getApplicationContext(), "Msg" + result.getMessage(), Toast.LENGTH_LONG)
+                            .show();
+                    mprogressDialog.dismiss();
+                } else {
+                    mprogressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "SomeThing Went Wrong.Please Try Again !!!" + response.code(), Toast.LENGTH_LONG)
+                            .show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                Log.d("RRR", t.getMessage().toUpperCase().toString());
+
+                mprogressDialog.dismiss();
+                //  isImageUploaded = false;
+                Toast.makeText(getApplicationContext(), "SomeThing Went Wrong Please  Try Again", Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+
+    }
+
+
+    @Override
+    public void onActivityResult(/*int requestCode, int resultCode, @Nullable Intent data*/
+            int requestCode, int resultCode, Intent data) {
+
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                RequestPermission();
+                mFilePathUri = result.getUri();
+
+                //    uploadPicToServer(mFilePathUri) ;
+                pp.setImageURI(mFilePathUri);
+
+                uploadProfilePicToServer(mFilePathUri);
+
+                // createPostServer(mFilePathUri , postType);
+
+                //sending data once  user select the image
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
+                Exception error = result.getError();
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else if (requestCode == PICK_IMAGE) {
+
+            //   mFilePathUri = data.getData();
+            // Toast.makeText(getApplicationContext() , "TEst" + mFilePathUri.toString(), Toast.LENGTH_LONG) .show();
+            try {
+                Uri selectedMediaUri = data.getData();
+                if (!Uri.EMPTY.equals(selectedMediaUri)) {
+                    mFilePathUri = selectedMediaUri;
+                    // sendTheFile(selectedMediaUri);
+                    RequestPermission();
+
+                    CropImage.activity(mFilePathUri)
+                            .setAspectRatio(1, 1)
+                            .setCropShape(CropImageView.CropShape.OVAL) //shaping the image
+                            .start(this);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please Choose Image To Upload " + selectedMediaUri.toString(), Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "Please Choose Image " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+
+        } else if (requestCode == PICK_IMAGE_DOC) {
+
+            //   mFilePathUri = data.getData();
+            // Toast.makeText(getApplicationContext() , "TEst" + mFilePathUri.toString(), Toast.LENGTH_LONG) .show();
+            Uri selectedMediaUri = data.getData();
+
+            mFilePathUri = selectedMediaUri;
+            //uploadDocumentation(selectedMediaUri);
+
+
+        }
+
+
+        // uploadDocumentation(mFilePathUri);
+    }
+
+    private RequestBody createPartFromString(String value) {
+        return RequestBody.create(
+                okhttp3.MultipartBody.FORM, value);
+    }
 }
