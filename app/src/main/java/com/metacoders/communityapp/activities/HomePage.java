@@ -1,5 +1,7 @@
 package com.metacoders.communityapp.activities;
 
+import static androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -133,11 +135,13 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         return null;
     }
 
+    viewPager2_adapter viewPager2Adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        viewPager2_adapter viewPager2Adapter;
+
 
         getSupportActionBar().hide();
         RequestPermission();
@@ -171,7 +175,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     }
                 }
         );
-
 
 
         dataResponse = (allDataResponse) getIntent().getSerializableExtra("MISC");
@@ -221,7 +224,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         findViewById(R.id.notification).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            startActivity(new Intent(getApplicationContext() , NotficationPage.class));
+                startActivity(new Intent(getApplicationContext(), NotficationPage.class));
             }
         });
 
@@ -446,6 +449,13 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         loadUrPost();
 
+        if (viewPager.getCurrentItem() == 4) {
+
+            viewPager2Adapter.updateFragmentByCurrentPageNumber(4);
+
+        }
+
+
     }
 
     public void loadUrPost() {
@@ -557,7 +567,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         findViewById(R.id.profileSide).setOnClickListener(v -> {
 
-           // startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            // startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
             navigationBar.getMenu().findItem(R.id.dashboard).setChecked(true);
             viewPager.setCurrentItem(4);
             drawerLayout.closeDrawer(GravityCompat.START);

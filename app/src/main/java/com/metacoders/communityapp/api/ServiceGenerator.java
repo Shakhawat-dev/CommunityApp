@@ -33,20 +33,20 @@ public class ServiceGenerator {
             tokenInterceptor2 interceptor =
                     new tokenInterceptor2(authToken);
             if (!httpClient.interceptors().contains(interceptor)) {
-               // Log.d("okhttp", "createService: " + authToken);
+                // Log.d("okhttp", "createService: " + authToken);
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-                httpClient.addInterceptor(logging);
+             //   httpClient.addInterceptor(logging);
                 httpClient.addInterceptor(interceptor);
                 httpClient
                         .connectTimeout(5, TimeUnit.MINUTES)
                         .writeTimeout(5, TimeUnit.MINUTES)
-                        .readTimeout(5 , TimeUnit.MINUTES)
-                        //.protocols( Collections.singletonList(Protocol.HTTP_1_1));
-                        ;
+                        .readTimeout(5, TimeUnit.MINUTES)
+                //.protocols( Collections.singletonList(Protocol.HTTP_1_1));
+                ;
 
-                
-             //
+
+                //
 
 
                 retrofit =
@@ -59,17 +59,16 @@ public class ServiceGenerator {
 //                Log.d("TAG", "createService: ME OffasdfN  "  );
             }
         } else {
-          //  Log.d("TAG", "createService: ME ON  ");
+            //  Log.d("TAG", "createService: ME ON  ");
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
 
 
             OkHttpClient client = new OkHttpClient.Builder()
                     .connectTimeout(500, TimeUnit.SECONDS)
                     .writeTimeout(500, TimeUnit.SECONDS)
-                    .readTimeout(500 , TimeUnit.SECONDS)
-                   .addInterceptor(logging)
+                    .readTimeout(500, TimeUnit.SECONDS)
+                    .addInterceptor(logging)
                     .build();
             retrofit =
                     new Retrofit.Builder()

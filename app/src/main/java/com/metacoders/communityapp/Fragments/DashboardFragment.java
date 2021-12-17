@@ -3,6 +3,7 @@ package com.metacoders.communityapp.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,7 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
     }
 
 
-    private void setDetails() {
+    public void setDetails() {
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
         // String   accessTokens = ;
         name.setText(sharedPrefManager.getUserModel().getName() + " ");
@@ -181,5 +182,12 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
     public void onResume() {
         super.onResume();
         setDetails();
+    }
+
+    public  void upadteList(){
+        Log.d("TAG", "upadteList: ");
+        viewPager2.setAdapter(null);
+        viewPager2.setAdapter(new profile_viewpager_adapter(getActivity(), SharedPrefManager.getInstance(getContext()).getUser_ID()));
+        viewPager2.setUserInputEnabled(true);
     }
 }

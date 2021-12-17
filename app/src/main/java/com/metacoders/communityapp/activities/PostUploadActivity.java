@@ -237,7 +237,6 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
         langugaNameSelector = findViewById(R.id.langList);
 
 
-
         addImage.setOnClickListener(v -> {
 
             // open the gallery to
@@ -270,7 +269,7 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             Desc = desc.getText().toString();
             Title = title.getText().toString();
 
-            if (!TextUtils.isEmpty(Title) &&!TextUtils.isEmpty(Desc) && mFilePathUri != null && !catid.equals("null") && !langid.equals("null")) {
+            if (!TextUtils.isEmpty(Title) && !TextUtils.isEmpty(Desc) && mFilePathUri != null && !catid.equals("null") && !langid.equals("null")) {
 
                 /*
                     check video sizE
@@ -319,13 +318,12 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 }
 
 
-            }
-            else {
-                if(Desc.isEmpty()){
+            } else {
+                if (Desc.isEmpty()) {
                     desc.setError("Can't Be Empty");
 
                 }
-                if(Title.isEmpty()){
+                if (Title.isEmpty()) {
                     title.setError("Can't Be Empty");
 
                 }
@@ -388,7 +386,6 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                 langid = "null";
             }
         });
-
 
 
         findViewById(R.id.closeBtn).setOnClickListener(new View.OnClickListener() {
@@ -531,114 +528,105 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
             desc, String catid, String langid) {
 
 
-            // upload the data
-            String path2 = null;
-            File file, compressed;
-         if(mFilePathUri != null){
-             try {
-                 path2 = getPath(PostUploadActivity.this, mFilePathUri);
-                 file = new File(path2);
-             } catch (Exception e) {
-                 path2 = mFilePathUri.getPath();
-                 file = new File(path2);
-                 //
-
-             }
-             try {
-                 compressed = new Compressor(getApplicationContext())
-                         .setMaxHeight(600)
-                         .setMaxWidth(600)
-                         .setQuality(40)
-                         .compressToFile(file);
-             } catch (Exception e) {
-                 compressed = file;
-             }
-         }
-         else {
-             compressed = null ;
-             file = null ;
-         }
-            progressDialog.show();
-
-
-            if (postType.equals("post")) {
-
-                //creating request body for file
-                RequestBody requestFile = null ;
-                if(mFilePathUri != null){
-
-                    requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
-                    body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
-                }else {
-                    body1 = null ;
-                }
-                //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
-                api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
-
-                NetworkCall = api.uploadPost(
-                        createPartFromString(title),
-                        createPartFromString(desc),
-                        createPartFromString(langid),
-                        createPartFromString(countyID),
-                        createPartFromString(catid),
-                        body1);
-
+        // upload the data
+        String path2 = null;
+        File file, compressed;
+        if (mFilePathUri != null) {
+            try {
+                path2 = getPath(PostUploadActivity.this, mFilePathUri);
+                file = new File(path2);
+            } catch (Exception e) {
+                path2 = mFilePathUri.getPath();
+                file = new File(path2);
+                //
 
             }
-            else {
-                //getting the vido uri
-                // mediaUri = mFilePathUri;
-                mediaUri = Uri.parse(getIntent().getStringExtra("path"));
-                ;
+            try {
+                compressed = new Compressor(getApplicationContext())
+                        .setMaxHeight(600)
+                        .setMaxWidth(600)
+                        .setQuality(40)
+                        .compressToFile(file);
+            } catch (Exception e) {
+                compressed = file;
+            }
+        } else {
+            compressed = null;
+            file = null;
+        }
+        progressDialog.show();
 
-                File mediaFile = null, backupFile = null;
-                String path = null;
 
-                if (mediaUri != null) {
+        if (postType.equals("post")) {
 
-                    try {
-                        path = getPath(PostUploadActivity.this, mediaUri);
-                        mediaFile = new File(path);
-                        backupFile = mediaFile;
-                    } catch (Exception e) {
-                        path = mediaUri.getPath();
-                        mediaFile = new File(path);
-                        backupFile = mediaFile;
-                        Log.d("TAG", "createPostServer: im here " + mediaFile + " path" + path);
-                    }
-                } else
-                    Toast.makeText(getApplicationContext(), "Media File  is empty", Toast.LENGTH_LONG).show();
+            //creating request body for file
+            RequestBody requestFile = null;
+            if (mFilePathUri != null) {
 
-                RequestBody requestFile = null ;
-                //creating request body for file
-                if(mFilePathUri != null){
-                     requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
+                requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
+                body1 = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+            } else {
+                body1 = null;
+            }
+            //  RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), desc);
+            api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+            NetworkCall = api.uploadPost(
+                    createPartFromString(title),
+                    createPartFromString(desc),
+                    createPartFromString(langid),
+                    createPartFromString(countyID),
+                    createPartFromString(catid),
+                    body1);
+
+
+        } else {
+            //getting the vido uri
+            // mediaUri = mFilePathUri;
+            mediaUri = Uri.parse(getIntent().getStringExtra("path"));
+            ;
+
+            File mediaFile = null, backupFile = null;
+            String path = null;
+
+            if (mediaUri != null) {
+
+                try {
+                    path = getPath(PostUploadActivity.this, mediaUri);
+                    mediaFile = new File(path);
+                    backupFile = mediaFile;
+                } catch (Exception e) {
+                    path = mediaUri.getPath();
+                    mediaFile = new File(path);
+                    backupFile = mediaFile;
+                    Log.d("TAG", "createPostServer: im here " + mediaFile + " path" + path);
                 }
+            } else
+                Toast.makeText(getApplicationContext(), "Media File  is empty", Toast.LENGTH_LONG).show();
 
-                // changing media_type
-                RequestBody requestMediaFile;
+            RequestBody requestFile = null;
+            //creating request body for file
+            if (mFilePathUri != null) {
+                requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
+            }
 
-                if (postType.equals("audio")) {
-                    String orginaPath = getIntent().getStringExtra("OR_PATH");
-                    Log.d("EE", "createPostServer: " + orginaPath);
-                    if (orginaPath != null) {
-                        mediaFile = new File(orginaPath);
-                        Log.d("EE", "createPostServer: ");
-                        //   Toast.makeText(getApplicationContext(), " " + orginaPath , Toast.LENGTH_LONG).show();
-                        if (mediaFile == null) {
-                            //  Toast.makeText(getApplicationContext(), " M3edia File Null"  , Toast.LENGTH_LONG).show();
-                            requestMediaFile = RequestBody.create(backupFile, MediaType.parse("audio/*"));
-                            // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
-                            ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/*", this);
+            // changing media_type
+            RequestBody requestMediaFile;
 
-                            body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), fileBody);
-                        } else {
-                            requestMediaFile = RequestBody.create(mediaFile, MediaType.parse("audio/*"));
-                            // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
-                            ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/*", this);
-                            body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), fileBody);
-                        }
+            if (postType.equals("audio")) {
+                String orginaPath = getIntent().getStringExtra("OR_PATH");
+                Log.d("EE", "createPostServer: " + orginaPath);
+                if (orginaPath != null) {
+                    mediaFile = new File(orginaPath);
+                    Log.d("EE", "createPostServer: ");
+                    //   Toast.makeText(getApplicationContext(), " " + orginaPath , Toast.LENGTH_LONG).show();
+                    if (mediaFile == null) {
+                        //  Toast.makeText(getApplicationContext(), " M3edia File Null"  , Toast.LENGTH_LONG).show();
+                        requestMediaFile = RequestBody.create(backupFile, MediaType.parse("audio/*"));
+                        // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
+                        ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/*", this);
 
+                        body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), fileBody);
                     } else {
                         requestMediaFile = RequestBody.create(mediaFile, MediaType.parse("audio/*"));
                         // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
@@ -646,27 +634,32 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                         body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), fileBody);
                     }
 
-
                 } else {
-                    requestMediaFile = RequestBody.create(MediaType.parse("video/mp4"), mediaFile);
-                    ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "video/mp4", this);
-                    body2 = MultipartBody.Part.createFormData("video", mediaFile.getName(), fileBody);
+                    requestMediaFile = RequestBody.create(mediaFile, MediaType.parse("audio/*"));
+                    // ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/mp3*",this);
+                    ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "audio/*", this);
+                    body2 = MultipartBody.Part.createFormData("audio", mediaFile.getName(), fileBody);
                 }
 
-                if(mFilePathUri != null){
-                    body1 = MultipartBody.Part.createFormData("thumb_image", file.getName(), requestFile);
-                }else {
-                    body1 = null ;
-                }
 
-                Log.d("TAG", "createPostServer: " + mediaFile.getName() + requestMediaFile.contentType());
-                api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+            } else {
+                requestMediaFile = RequestBody.create(MediaType.parse("video/mp4"), mediaFile);
+                ProgressRequestBody fileBody = new ProgressRequestBody(mediaFile, "video/mp4", this);
+                body2 = MultipartBody.Part.createFormData("video", mediaFile.getName(), fileBody);
+            }
+
+            if (mFilePathUri != null) {
+                body1 = MultipartBody.Part.createFormData("thumb_image", file.getName(), requestFile);
+            } else {
+                body1 = null;
+            }
+
+            Log.d("TAG", "createPostServer: " + mediaFile.getName() + requestMediaFile.contentType());
+            api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
 
-
-
-                if (postType.equals("audio")) {
-                    // audio update
+            if (postType.equals("audio")) {
+                // audio update
                     /*
                                                              @Part MultipartBody.Part audio,
                                                           @Part("title") RequestBody title,
@@ -677,13 +670,13 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                                                           @Part MultipartBody.Part image);
                      */
 
-                    NetworkCall = api.uploadAudioFilePost(body2, createPartFromString(title),
-                            createPartFromString(desc),
-                            createPartFromString(langid), createPartFromString(catid),
-                            createPartFromString(countyID),
-                            body1);
+                NetworkCall = api.uploadAudioFilePost(body2, createPartFromString(title),
+                        createPartFromString(desc),
+                        createPartFromString(langid), createPartFromString(catid),
+                        createPartFromString(countyID),
+                        body1);
 
-                } else {
+            } else {
 /*
                                                                 @Part MultipartBody.Part file,
                                                                @Part("title") RequestBody title,
@@ -693,48 +686,48 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                                                                @Part("country") RequestBody sub_category_id,
                                                                @Part MultipartBody.Part image);
  */
-                    NetworkCall = api.uploadVideoFilePost(body2, createPartFromString(title),
-                            createPartFromString(desc), createPartFromString(langid),
-                            createPartFromString(catid), createPartFromString(countyID),
-                            body1);
-
-                }
-
+                NetworkCall = api.uploadVideoFilePost(body2, createPartFromString(title),
+                        createPartFromString(desc), createPartFromString(langid),
+                        createPartFromString(catid), createPartFromString(countyID),
+                        body1);
 
             }
 
-            if(postType.equals("post") && mFilePathUri == null){
-                progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Please Pick An Image!!", Toast.LENGTH_LONG).show();
-            }else {
-                NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
-                    @Override
-                    public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
 
-                        //   Toast.makeText(getApplicationContext(), "CODE" + response.code(), Toast.LENGTH_LONG).show();
-                        if (response.code() == 200 || response.code() == 201) {
-                            LoginResponse.forgetPassResponse testRes = response.body();
-                            Toast.makeText(getApplicationContext(), "" + testRes.getMessage(), Toast.LENGTH_LONG).show();
-                            progressDialog.dismiss();
-                            Intent p = new Intent(getApplicationContext(), HomePage.class);
-                            startActivity(p);
-                            //   finish();
+        }
 
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Error Server Code : " + response.code() + " Please Try Again !!", Toast.LENGTH_LONG).show();
-                            Log.d("TAG", "onResponse: " + response.raw());
-                            progressDialog.dismiss();
-                        }
-                    }
+        if (postType.equals("post") && mFilePathUri == null) {
+            progressDialog.dismiss();
+            Toast.makeText(getApplicationContext(), "Please Pick An Image!!", Toast.LENGTH_LONG).show();
+        } else {
+            NetworkCall.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
+                @Override
+                public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
 
-                    @Override
-                    public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG)
-                                .show();
+                    //   Toast.makeText(getApplicationContext(), "CODE" + response.code(), Toast.LENGTH_LONG).show();
+                    if (response.code() == 200 || response.code() == 201) {
+                        LoginResponse.forgetPassResponse testRes = response.body();
+                        Toast.makeText(getApplicationContext(), "" + testRes.getMessage(), Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
+                        Intent p = new Intent(getApplicationContext(), HomePage.class);
+                        startActivity(p);
+                        //   finish();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error Server Code : " + response.code() + " Please Try Again !!", Toast.LENGTH_LONG).show();
+                        Log.d("TAG", "onResponse: " + response.raw());
                         progressDialog.dismiss();
                     }
-                });
-            }
+                }
+
+                @Override
+                public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG)
+                            .show();
+                    progressDialog.dismiss();
+                }
+            });
+        }
 
 //        }
 //        else {

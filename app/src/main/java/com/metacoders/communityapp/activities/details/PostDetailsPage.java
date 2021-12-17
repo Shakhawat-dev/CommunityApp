@@ -942,7 +942,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
             dialog.dismiss();
         });
         x2.setOnClickListener(v -> {
-            speed = 2f;
+            speed = 4f;
             playBackTv.setText("Play Speed   -   " + speed.intValue() + "x");
             manager.getPlayer().setPlaybackParameters(param);
 
@@ -950,7 +950,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         });
 
         x0_5.setOnClickListener(v -> {
-            speed = 0.5f;
+            speed = 0.2f;
             playBackTv.setText("Play Speed   -  0.5x");
             manager.getPlayer().setPlaybackParameters(param);
 
