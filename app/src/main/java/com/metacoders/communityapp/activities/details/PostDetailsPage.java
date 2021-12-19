@@ -107,7 +107,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     int prevSec = 0;
     int newSec = 0;
     RelativeLayout loadingPanel;
-    TextView qualityBtn;
+    TextView qualityBtn ,likeText;
     ShowMoreTextView mMediaDetails;
     Boolean forcFinisj = false;
     AppCompatButton followBtn;
@@ -141,6 +141,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         followersCount = findViewById(R.id.followerCount);
         loadingPanel = findViewById(R.id.loadingPanel);
         qualityBtn = findViewById(R.id.qualitu);
+        likeText = findViewById(R.id.likeText);
         Intent o = getIntent();
         nestedScrollView = findViewById(R.id.nestedScroll);
         nextList = findViewById(R.id.nextList);
@@ -801,12 +802,19 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     //  Toast.makeText(getApplicationContext(), "Message : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                     if (response.body().getMessage().toLowerCase().contains("added")) {
                         like_count.setText((Integer.parseInt(like_count.getText().toString()) + 1) + "");
+
                     } else {
                         if ((Integer.parseInt(like_count.getText().toString()) > 0)) {
                             like_count.setText((Integer.parseInt(like_count.getText().toString()) - 1) + "");
                         } else {
                             like_count.setText("0");
                         }
+                    }
+
+                    if(Integer.parseInt(like_count.getText().toString()) > 1 ){
+                        likeText.setText(" Likes");
+                    }else {
+                        likeText.setText(" Like");
                     }
 
                 } else {
@@ -856,7 +864,15 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
 
                         followersCount.setText(res.getFollowerCount() + " Followers");
-                        commentCount.setText(res.getComments().size() + " Comments");
+
+                        if(res.getComments().size()<=1)
+                        {
+                            commentCount.setText(res.getComments().size() + " Comment");
+                        }else {
+                            commentCount.setText(res.getComments().size() + " Comments");
+                        }
+
+
                         if (isFollowed) {
                             followBtn.setText("Un-Follow");
                         } else {
@@ -865,6 +881,15 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         currentPage = res.getRelatedPosts().getCurrent_page();
                         totalPage = res.getRelatedPosts().getLast_page();
                         like_count.setText(res.getPostLikesCount() + "");
+
+                        if(Integer.parseInt(like_count.getText().toString()) > 1 ){
+                            likeText.setText(" Likes");
+                        }else {
+                            likeText.setText(" Like");
+                        }
+
+
+
                         relatedPosts = res.getRelatedPosts().getRelatedPosts();
                         Collections.shuffle(relatedPosts);
                         mNextListDifferAdapter.submitlist(relatedPosts);
