@@ -71,7 +71,9 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
         boolean isFollow = getIntent().getBooleanExtra("is_followed", false);
         setView();
         authermodel = (UserModel) getIntent().getSerializableExtra("auther");
-        setViewToData(authermodel);
+        if(authermodel!=null){
+            setViewToData(authermodel);
+        }
 
 
         if (isFollow) {
@@ -228,6 +230,7 @@ public class AuthorPageActivity extends AppCompatActivity implements ProductList
                     try {
                         followerCount.setText("" + ownListModelList.otherProfileFollowersCount);
                         totalCount.setText("" + ownListModelList.totalPostCount);
+                        setViewToData(ownListModelList.getAuthor());
                     } catch (Exception e) {
 
                     }

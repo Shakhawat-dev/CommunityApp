@@ -44,7 +44,7 @@
                         android:id="@+id/nameTv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Sarah Crisp"
+
                         android:textColor="@color/black"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -55,7 +55,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:maxLength="120"
-                        android:text="120 character bio goes here."
                         android:textColor="#777777"
                         android:textSize="11sp" />
 
@@ -64,7 +63,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Country: England"
                         android:textColor="@color/black"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -77,14 +75,13 @@
 
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="A\C Number:"
                             android:textColor="@color/colorBlue"
                             android:textSize="10sp" />
                         <TextView
                             android:id="@+id/link"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="www.website Link.com"
+
                             android:textColor="@color/colorBlue"
                             android:textSize="10sp" />
                     </LinearLayout>

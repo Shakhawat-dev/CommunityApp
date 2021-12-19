@@ -269,7 +269,10 @@ public interface NewsRmeApi {
             @Query("page") int page,
             @Query("search") String search
     );
-
+    @GET("read-notification/{id}")
+    Call<JSONObject>ReadNotifications(
+            @Path("id") String id
+    );
 
     @GET("common/get-all-data-list")
     Call<allDataResponse> getCategoryList();

@@ -1,12 +1,15 @@
 package com.metacoders.communityapp.adapter.new_adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -51,6 +54,16 @@ public class notificationAdapter extends RecyclerView.Adapter<notificationAdapte
         holder.itemView.setOnClickListener(v -> {
             itemClickListener.onItemClick(item);
         });
+
+       try {
+           if(item.getRead_at()==null){
+               holder.conatainer.setBackgroundColor(Color.parseColor("#33000000"));
+           }else {
+               holder.conatainer.setBackgroundColor(Color.parseColor("#ffffff"));
+           }
+       }catch (Exception e ){
+           holder.conatainer.setBackgroundColor(Color.parseColor("#33000000"));
+       }
         String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
 
         Glide.with(context)
@@ -79,9 +92,12 @@ public class notificationAdapter extends RecyclerView.Adapter<notificationAdapte
     class viewholder extends RecyclerView.ViewHolder {
         TextView name, sub_title, desc, date;
         CircleImageView imageView;
+        FrameLayout conatainer;
+
 
         viewholder(@NonNull View itemView) {
             super(itemView);
+            conatainer = itemView.findViewById(R.id.contianer);
             name = itemView.findViewById(R.id.title);
             sub_title = itemView.findViewById(R.id.subTitle);
             desc = itemView.findViewById(R.id.desc);

@@ -120,9 +120,9 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     List<Post.PostModel> relatedPosts = new ArrayList<>();
     LinearLayout mBottomSheetLayout;
     BottomSheetBehavior sheetBehavior;
+    TextView playBackTv;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
-    TextView playBackTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -368,15 +368,10 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         playerControlView.setProgressUpdateListener((position, bufferedPosition) -> {
 
-
-
-
             position = (long) ((long) position / speed);
 
 
             int newPos = (int) (position / 1000);
-
-
             if (newPos - prevSec == 1) {
                 //    newSec = newSec + 1;
                 prevSec = (int) newPos;
@@ -430,9 +425,15 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         });
 
-        setDetails(posts);
+
         initScrollListener();
-        loadPostDetails(posts.getSlug(), 1);
+        if (posts != null) {
+            loadPostDetails(posts.getSlug(), 1);
+            setDetails(posts);
+
+        } else {
+            loadPostDetails(getIntent().getStringExtra("slug"), 1);
+        }
 
         HideController();
     }
@@ -476,7 +477,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         Gson gson = new Gson();
                         String str = gson.toJson(response.body());
                         Log.d("PETXY", "onResponse: " + str);
-                    //    Toast.makeText(getApplicationContext(), "" + str, Toast.LENGTH_LONG).show();
+                        //    Toast.makeText(getApplicationContext(), "" + str, Toast.LENGTH_LONG).show();
 
                     }
                 }
@@ -508,14 +509,14 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         } else if (post.getType().equals("video")) {
             try {
                 if (post.getHls().isEmpty() || post.getHls().toString().length() < 5) {
-                  //  qualityBtn.setVisibility(View.GONE);
+                    //  qualityBtn.setVisibility(View.GONE);
                     playMedia(post.getPath());
                 } else {
-                 //   qualityBtn.setVisibility(View.VISIBLE);
+                    //   qualityBtn.setVisibility(View.VISIBLE);
                     playMedia(post.getHls());
                 }
             } catch (Exception e) {
-              //  qualityBtn.setVisibility(View.GONE);
+                //  qualityBtn.setVisibility(View.GONE);
                 playMedia(post.getPath());
             }
 
@@ -763,7 +764,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     private void setUpIcon() {
 
-       // qualityBtn.setOnClickListener(v -> TriggerVodQualityDialogue());
+        // qualityBtn.setOnClickListener(v -> TriggerVodQualityDialogue());
 
 
         sparkButton.setEventListener(new SparkEventListener() {
@@ -846,7 +847,13 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         Log.d("TAG", "onResponse: " + SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
 
                         isFollowed = res.followerCheck != null;
+                        if (posts == null) {
+                            posts = response.body().data;
+                            setDetails(posts);
+                        }
+
                         posts = response.body().data;
+
 
                         followersCount.setText(res.getFollowerCount() + " Followers");
                         commentCount.setText(res.getComments().size() + " Comments");
@@ -979,19 +986,19 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         highBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.HIGH);
-          //  qualityBtn.setText("High");
+            //  qualityBtn.setText("High");
             qualityTextStr = "High";
             dialog.dismiss();
         });
         mediumBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.MEDIUM);
-           // qualityBtn.setText("Med");
+            // qualityBtn.setText("Med");
             qualityTextStr = "Medium";
             dialog.dismiss();
         });
         lowBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.LOW);
-          //  qualityBtn.setText("Low");
+            //  qualityBtn.setText("Low");
             qualityTextStr = "Low";
             dialog.dismiss();
         });

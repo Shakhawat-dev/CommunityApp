@@ -1,5 +1,7 @@
 package com.metacoders.communityapp.activities.notificaiton;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -10,12 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.metacoders.communityapp.R;
+import com.metacoders.communityapp.activities.auther.AuthorPageActivity;
+import com.metacoders.communityapp.activities.details.PostDetailsPage;
 import com.metacoders.communityapp.adapter.new_adapter.notificationAdapter;
 import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.NotificationResponse;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.newModels.NotificationData;
 import com.metacoders.communityapp.utils.AppPreferences;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +43,7 @@ public class NotficationPage extends AppCompatActivity implements notificationAd
 
         list.setLayoutManager(new LinearLayoutManager(this));
 
-        loadAllComments();
+      loadAllComments();
 
     }
 
@@ -83,5 +89,55 @@ public class NotficationPage extends AppCompatActivity implements notificationAd
     @Override
     public void onItemClick(NotificationData model) {
 
+        ProgressDialog dialog = new ProgressDialog(NotficationPage.this);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
+        dialog.show();
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+
+        Call<JSONObject> NetworkCall = api.ReadNotifications(
+
+                model.getId()
+        );
+
+
+        NetworkCall.enqueue(new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+
+                dialog.dismiss();
+                getToSpecificPage(model);
+
+            }
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                dialog.dismiss();
+                getToSpecificPage(model);
+            }
+        });
+
+
+    }
+
+    public void getToSpecificPage(NotificationData model) {
+
+        if (model.getData().getType().equals("post")) {
+            Intent p = new Intent(getApplicationContext(), PostDetailsPage.class);
+            p.putExtra("slug", model.getData().getUrl());
+            startActivity(p);
+
+        } else if (model.getData().getType().equals("follow")) {
+            Intent p = new Intent(getApplicationContext(), AuthorPageActivity.class);
+            p.putExtra("author_id", Integer.parseInt(model.getData().getUrl()));
+            startActivity(p);
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadAllComments();
     }
 }

@@ -6,10 +6,13 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_8sdp"
     android:layout_marginTop="@dimen/_8sdp"
-    android:background="@color/white"
     android:elevation="10dp"
-    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="5dp">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/contianer"
+        android:background="@color/white"
+        android:layout_height="match_parent"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
