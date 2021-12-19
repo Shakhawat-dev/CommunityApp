@@ -28,6 +28,7 @@ public class WithdrawPayment extends AppCompatActivity {
     EditText b_nameET, bra_nameET, ac_nameET, ac_numberET, amt_bankET, card_numET, nameCardET, amt_cardET;
     NewsRmeApi api;
     MaterialButton button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,7 @@ public class WithdrawPayment extends AppCompatActivity {
         button = findViewById(R.id.pointView);
         getSupportActionBar().hide();
 
-     //   button.setText(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getTotal_point() + "");
+        //   button.setText(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getTotal_point() + "");
 
         bankTypeGroup = findViewById(R.id.bankGroup);
         cardGroup = findViewById(R.id.cardGroup);
@@ -72,15 +73,15 @@ public class WithdrawPayment extends AppCompatActivity {
 
         allClick();
         button.setOnClickListener(v -> {
-            int point = 0 ;
-            double money = 0.0 ;
+            int point = 0;
+            double money = 0.0;
             //Log.d("TAG", "onCreate: " );
-            try{
-            point  = Integer.parseInt(button.getText().toString() );
-            money = 0.0000122 * point ;
-            button.setText("£ " + String.format("%.4f" , money));
+            try {
+                point = Integer.parseInt(button.getText().toString());
+                money = 0.0000122 * point;
+                button.setText("£ " + String.format("%.4f", money));
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e("TAG", "onCreate: " + e.getMessage());
             }
         });
@@ -91,7 +92,9 @@ public class WithdrawPayment extends AppCompatActivity {
         findViewById(R.id.backBtn).setOnClickListener(v -> finish());
 
         findViewById(R.id.bank_withdraw).setOnClickListener(v -> {
+
             getBankingData();
+
         });
 
         findViewById(R.id.card_withdraw).setOnClickListener(v -> {
@@ -108,11 +111,21 @@ public class WithdrawPayment extends AppCompatActivity {
         amt = amt_cardET.getText().toString();
 
         if (c_name.isEmpty() || c_number.isEmpty() || amt.isEmpty()) {
+            if (c_name.isEmpty()) {
+                nameCardET.setError("Can't Be Empty");
+            }
+            if (c_number.isEmpty()) {
+                card_numET.setError("Can't Be Empty");
+            }
+            if (amt.isEmpty()) {
+                amt_cardET.setError("Can't Be Empty");
+            }
             Toast.makeText(getApplicationContext(), "Error : Check All The fields", Toast.LENGTH_LONG).show();
 
         } else {
             amt_int = Double.parseDouble(amt);
             if (amt_int < 20) {
+                amt_bankET.setError("Amount Must Be > 20 Pound");
                 Toast.makeText(getApplicationContext(), "Error : Transfer Amount Can not be Less Than 20 Pound", Toast.LENGTH_LONG).show();
             } else {
                 postWithdrawRequestCard(c_name, c_number, amt);
@@ -166,10 +179,28 @@ public class WithdrawPayment extends AppCompatActivity {
 
         if (b_name.isEmpty() || bra_name.isEmpty() || ac_name.isEmpty() || ac_number.isEmpty() || amt.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Error : Check All The fields", Toast.LENGTH_LONG).show();
+            if (b_name.isEmpty()) {
+                b_nameET.setError("Can't Be Empty");
+            }
+            if (bra_name.isEmpty()) {
+                bra_nameET.setError("Can't Be Empty");
+            }
+            if (ac_name.isEmpty()) {
+                ac_nameET.setError("Can't Be Empty");
+            }
+
+            if (amt.isEmpty()) {
+                amt_bankET.setError("Can't Be Empty");
+            }
+            if (ac_number.isEmpty()) {
+                ac_numberET.setError("Can't Be Empty");
+            }
+
 
         } else {
             amt_int = Double.parseDouble(amt);
             if (amt_int < 20) {
+                amt_bankET.setError("Amount Must Be > 20 Pound");
                 Toast.makeText(getApplicationContext(), "Error : Transfer Amount Can not be Less Than 20 Pound", Toast.LENGTH_LONG).show();
             } else {
                 postWithDrawRequestBank(b_name, bra_name, ac_name, ac_number, amt);
@@ -240,6 +271,7 @@ public class WithdrawPayment extends AppCompatActivity {
             }
         });
     }
+
     @Override
     protected void onResume() {
         super.onResume();

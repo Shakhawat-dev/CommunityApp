@@ -75,6 +75,17 @@ public class EditProfile extends AppCompatActivity {
     CircleImageView pp;
     private double lat = 1000, lon = 1000;
 
+    public static String getPath(Context ctx, Uri uri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(ctx, uri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,7 +187,6 @@ public class EditProfile extends AppCompatActivity {
                 }).onSameThread().check();
     }
 
-
     private void BringImagePicker() {
 
 
@@ -222,12 +232,11 @@ public class EditProfile extends AppCompatActivity {
         } catch (Exception e) {
 
         }
-        Glide.with(getApplicationContext()).load( SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getImage())
+        Glide.with(getApplicationContext()).load(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getImage())
                 .placeholder(R.drawable.placeholder)
                 .error(link)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(pp);
-
 
 
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -402,7 +411,6 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-
     public void statusCheck() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         try {
@@ -427,7 +435,6 @@ public class EditProfile extends AppCompatActivity {
         alert.setCancelable(false);
         alert.show();
     }
-
 
     @Override
     protected void onResume() {
@@ -456,17 +463,6 @@ public class EditProfile extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    public static String getPath(Context ctx, Uri uri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        CursorLoader loader = new CursorLoader(ctx, uri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String result = cursor.getString(column_index);
-        cursor.close();
-        return result;
     }
 
     private void uploadProfilePicToServer(Uri mFilePathUri) {
@@ -510,7 +506,12 @@ public class EditProfile extends AppCompatActivity {
         ///  take token
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
-        Call<LoginResponse.forgetPassResponse> call = api.uploadImage(AppPreferences.getUSerID(getApplicationContext()), createPartFromString(name), body1);
+        Call<LoginResponse.forgetPassResponse> call = api.uploadImage(AppPreferences.getUSerID(getApplicationContext()), createPartFromString(name), body1,
+
+                createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry()),
+                createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getGender())
+
+        );
 
 
         call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {

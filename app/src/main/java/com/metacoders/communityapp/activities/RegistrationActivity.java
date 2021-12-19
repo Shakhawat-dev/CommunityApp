@@ -223,7 +223,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, "00");
 
-            Call<RegistrationResp> call = api.registration(name, email, gender, password, password, countryCodePicker.getSelectedCountryEnglishName().toLowerCase());
+            Call<RegistrationResp> call = api.registration(name, email, gender, password, password, countryCodePicker.getSelectedCountryName().toLowerCase());
 
             call.enqueue(new Callback<RegistrationResp>() {
                 @Override

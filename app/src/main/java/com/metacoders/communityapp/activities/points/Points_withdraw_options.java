@@ -2,8 +2,6 @@ package com.metacoders.communityapp.activities.points;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,11 +69,10 @@ public class Points_withdraw_options extends AppCompatActivity {
             @Override
             public void onResponse(Call<AuthorPostResponse> call, Response<AuthorPostResponse> response) {
                 AuthorPostResponse ownListModelList = response.body();
-                // findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
                 if (response.code() == 200) {
                     ownListModelList = response.body();
 
-                    //   followerCount.setText(ownListModelList.);
                     button.setText(ownListModelList.getAuthor().getTotal_point());
 
                 } else {

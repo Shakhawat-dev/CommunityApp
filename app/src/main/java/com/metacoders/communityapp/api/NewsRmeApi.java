@@ -297,7 +297,11 @@ public interface NewsRmeApi {
     Call<LoginResponse.forgetPassResponse> uploadImage(
             @Path("user_id") String user_id,
             @Part("name") RequestBody name,
-            @Part MultipartBody.Part image);
+            @Part MultipartBody.Part image,
+            @Part("country") RequestBody country,
+            @Part("gender") RequestBody gender
+
+    );
 
     // @FormUrlEncoded
     @Multipart

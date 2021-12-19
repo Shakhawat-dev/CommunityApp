@@ -61,7 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE = 100, PICK_IMAGE_DOC = 580;
     Context context;
-    TextView nameHeader, emailHeader, name, phone, email, address, user_bio, zipCode , country , gender  , website , company ;
+    TextView nameHeader, emailHeader, name, phone, email, address, user_bio, zipCode, country, gender, website, company;
     CircleImageView pp;
     ProgressDialog mprogressDialog;
     CardView changePassCard, LogOutCard, addDoc;
@@ -103,12 +103,12 @@ public class ProfileActivity extends AppCompatActivity {
         emailHeader = findViewById(R.id.profile_email_txt);
         pp = findViewById(R.id.profile_pic);
         LogOutCard = findViewById(R.id.logout_card);
-     //   addDoc = findViewById(R.id.add_card);
+        //   addDoc = findViewById(R.id.add_card);
         user_bio = findViewById(R.id.user_bio);
         zipCode = findViewById(R.id.zipCodeTxt);
         country = findViewById(R.id.country_name);
-        gender =  findViewById(R.id.gender) ;
-        website  = findViewById(R.id.websiteName);
+        gender = findViewById(R.id.gender);
+        website = findViewById(R.id.websiteName);
         company = findViewById(R.id.companyName);
         RequestPermission();
 
@@ -486,8 +486,12 @@ public class ProfileActivity extends AppCompatActivity {
         ///  take token
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
-        Call<LoginResponse.forgetPassResponse> call = api.uploadImage(AppPreferences.getUSerID(getApplicationContext()), createPartFromString(name), body1);
+        Call<LoginResponse.forgetPassResponse> call = api.uploadImage(
+                AppPreferences.getUSerID(getApplicationContext()), createPartFromString(name), body1,
+                createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry()),
+                createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getGender())
 
+        );
 
         call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
             @Override
