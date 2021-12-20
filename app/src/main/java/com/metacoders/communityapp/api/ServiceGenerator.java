@@ -36,7 +36,7 @@ public class ServiceGenerator {
                 // Log.d("okhttp", "createService: " + authToken);
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-               httpClient.addInterceptor(logging);
+            //   httpClient.addInterceptor(logging);
                 httpClient.addInterceptor(interceptor);
                 httpClient
                         .connectTimeout(5, TimeUnit.MINUTES)

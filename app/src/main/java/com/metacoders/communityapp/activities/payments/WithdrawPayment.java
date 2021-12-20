@@ -1,5 +1,6 @@
 package com.metacoders.communityapp.activities.payments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,7 @@ public class WithdrawPayment extends AppCompatActivity {
     EditText b_nameET, bra_nameET, ac_nameET, ac_numberET, amt_bankET, card_numET, nameCardET, amt_cardET;
     NewsRmeApi api;
     MaterialButton button;
+    String totalPoint = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class WithdrawPayment extends AppCompatActivity {
             double money = 0.0;
             //Log.d("TAG", "onCreate: " );
             try {
-                point = Integer.parseInt(button.getText().toString());
+                point = Integer.parseInt(totalPoint);
                 money = 0.0000122 * point;
                 button.setText("£ " + String.format("%.4f", money));
 
@@ -242,6 +244,12 @@ public class WithdrawPayment extends AppCompatActivity {
     }
 
     public void loadUrPost() {
+
+        ProgressDialog dialog = new ProgressDialog(WithdrawPayment.this);
+        dialog.setMessage("Getting Your Details...");
+        dialog.setCancelable(false);
+        dialog.show();
+
         // findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
         Call<AuthorPostResponse> catCall = api.getAuthorPost(SharedPrefManager.getInstance(getApplicationContext()).getUser_ID() + "");
@@ -251,12 +259,13 @@ public class WithdrawPayment extends AppCompatActivity {
             public void onResponse(Call<AuthorPostResponse> call, Response<AuthorPostResponse> response) {
                 AuthorPostResponse ownListModelList = response.body();
                 // findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                dialog.dismiss();
                 if (response.code() == 200) {
                     ownListModelList = response.body();
 
-                    //   followerCount.setText(ownListModelList.);
-                    button.setText(ownListModelList.getAuthor().getTotal_point());
 
+                    // button.setText(ownListModelList.getAuthor().getTotal_point());
+                    totalPoint = ownListModelList.getAuthor().getTotal_point();
                 } else {
                     Toast.makeText(getApplicationContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();
                 }
@@ -267,7 +276,7 @@ public class WithdrawPayment extends AppCompatActivity {
             public void onFailure(Call<AuthorPostResponse> call, Throwable t) {
                 //  findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
-
+                dialog.dismiss();
             }
         });
     }
