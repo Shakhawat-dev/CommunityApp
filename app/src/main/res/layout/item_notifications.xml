@@ -21,54 +21,60 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/image"
+
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:scaleType="centerCrop"
-             />
+            android:scaleType="centerCrop" />
 
-
-        <TextView
-            android:id="@+id/title"
+        <LinearLayout
+            android:id="@+id/container"
+            android:weightSum="4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/timeTv"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="@dimen/_55sdp"
-            android:layout_toEndOf="@+id/image"
-            android:fontFamily="@font/sf"
-            android:text="asdkkkkkkkkkkasdkasdaskdkasdkaskdkasfasdf"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/timeTv"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginHorizontal="@dimen/_6sdp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="6dp"
-            android:fontFamily="@font/sf"
-            android:text="10 min ago"
-            android:textSize="13sp" />
+            android:layout_toEndOf="@+id/image"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_weight="3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/sf"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/timeTv"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textAlignment="viewEnd"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:fontFamily="@font/sf"
+                android:text="10 min ago"
+                android:textSize="13sp" />
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/subTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
+            android:layout_below="@+id/container"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="45dp"
             android:layout_marginEnd="20dp"
             android:fontFamily="@font/sf"
             android:maxLines="1"
-            android:text="asdfsdkfasndjkfnasjkdnfjkasdnfjkasndjkfnasdjkfsdklfamsdkfmaskldfmalskdfmasdfsadf" />
+            />
 
         <TextView
             android:id="@+id/desc"

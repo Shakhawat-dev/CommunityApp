@@ -11,8 +11,8 @@ android {
         applicationId "com.metacoders.communityapp"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 17
-        versionName "3.0.47"
+        versionCode 19
+        versionName "3.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -106,5 +106,6 @@ dependencies {
     implementation 'com.github.mahimrocky:ShowMoreText:1.0.2'
     implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
     implementation 'com.google.firebase:firebase-dynamic-links:21.0.0'
+    implementation 'com.github.GrenderG:Toasty:1.5.2'
 
 }

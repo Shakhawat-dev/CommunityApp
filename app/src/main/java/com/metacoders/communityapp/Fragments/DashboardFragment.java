@@ -96,6 +96,7 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
 
 
     public void setDetails() {
+
         SharedPrefManager sharedPrefManager = new SharedPrefManager(context);
         // String   accessTokens = ;
         name.setText(sharedPrefManager.getUserModel().getName() + " ");

@@ -19,6 +19,7 @@ import com.metacoders.communityapp.models.newModels.AuthorPostResponse;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
+import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -128,7 +129,8 @@ public class WithdrawPayment extends AppCompatActivity {
             amt_int = Double.parseDouble(amt);
             if (amt_int < 20) {
                 amt_bankET.setError("Amount Must Be > 20 Pound");
-                Toast.makeText(getApplicationContext(), "Error : Transfer Amount Can not be Less Than 20 Pound", Toast.LENGTH_LONG).show();
+              //  Toast.makeText(getApplicationContext()).show();
+                Toasty.warning(getApplicationContext() , "Error : Transfer Amount Can not be Less Than 20 Pound", Toast.LENGTH_LONG ).show();
             } else {
                 postWithdrawRequestCard(c_name, c_number, amt);
             }
@@ -203,7 +205,9 @@ public class WithdrawPayment extends AppCompatActivity {
             amt_int = Double.parseDouble(amt);
             if (amt_int < 20) {
                 amt_bankET.setError("Amount Must Be > 20 Pound");
-                Toast.makeText(getApplicationContext(), "Error : Transfer Amount Can not be Less Than 20 Pound", Toast.LENGTH_LONG).show();
+                Toasty.warning(getApplicationContext() , "Error : Transfer Amount Can not be Less Than 20 Pound", Toast.LENGTH_LONG ).show();
+
+                //Toast.makeText(getApplicationContext(), "Error : Transfer Amount Can not be Less Than 20 Pound", Toast.LENGTH_LONG).show();
             } else {
                 postWithDrawRequestBank(b_name, bra_name, ac_name, ac_number, amt);
             }

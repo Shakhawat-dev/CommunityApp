@@ -42,6 +42,7 @@ import com.metacoders.communityapp.api.NewsRmeApi;
 import com.metacoders.communityapp.api.ServiceGenerator;
 import com.metacoders.communityapp.models.LoginResponse;
 import com.metacoders.communityapp.models.RegistrationResponse;
+import com.metacoders.communityapp.models.newModels.AuthorPostResponse;
 import com.metacoders.communityapp.models.newModels.UserModel;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
@@ -511,6 +512,7 @@ public class EditProfile extends AppCompatActivity {
                 createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry()),
                 createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getGender())
 
+
         );
 
 
@@ -521,9 +523,8 @@ public class EditProfile extends AppCompatActivity {
 
                 if (response.code() == 200) {
                     LoginResponse.forgetPassResponse result = response.body();
-                    Toast.makeText(getApplicationContext(), "Msg" + result.getMessage(), Toast.LENGTH_LONG)
-                            .show();
-                    mprogressDialog.dismiss();
+
+                    loadUrPost(mprogressDialog);
                 } else {
                     mprogressDialog.dismiss();
                     Toast.makeText(getApplicationContext(), "SomeThing Went Wrong.Please Try Again !!!" + response.code(), Toast.LENGTH_LONG)
@@ -617,5 +618,40 @@ public class EditProfile extends AppCompatActivity {
     private RequestBody createPartFromString(String value) {
         return RequestBody.create(
                 okhttp3.MultipartBody.FORM, value);
+    }
+
+    public void loadUrPost(ProgressDialog mprogressDialog) {
+
+        NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
+        Call<AuthorPostResponse> catCall = api.getAuthorPost(SharedPrefManager.getInstance(getApplicationContext()).getUser_ID() + "");
+
+        catCall.enqueue(new Callback<AuthorPostResponse>() {
+            @Override
+            public void onResponse(Call<AuthorPostResponse> call, Response<AuthorPostResponse> response) {
+                mprogressDialog.dismiss();
+                if (response.code() == 200) {
+                    try {
+                        AuthorPostResponse ownListModelList = response.body();
+                        SharedPrefManager.getInstance(getApplicationContext()).saveUserModel(ownListModelList.getAuthor());
+
+                    } catch (Exception e) {
+
+                        Toast.makeText(getApplicationContext(), "Error : Code " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error : Code " + response.code(), Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AuthorPostResponse> call, Throwable t) {
+                mprogressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Error : Code " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 }
