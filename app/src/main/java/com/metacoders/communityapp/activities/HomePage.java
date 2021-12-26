@@ -1,7 +1,5 @@
 package com.metacoders.communityapp.activities;
 
-import static androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -80,6 +78,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     CardView jobSide, profileSide, notificationSide;
     List<String> langList = new ArrayList<>();
     BottomNavigationView navigationBar;
+    viewPager2_adapter viewPager2Adapter;
     private DrawerLayout drawerLayout;
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
 
@@ -134,8 +133,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         }
         return null;
     }
-
-    viewPager2_adapter viewPager2Adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -519,6 +516,15 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     public void SideBarClick() {
+
+        findViewById(R.id.contact_us).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://newsrme.com/en/contact-us")));
+
+            }
+        });
+
 
         findViewById(R.id.settings).setOnClickListener(new View.OnClickListener() {
             @Override
