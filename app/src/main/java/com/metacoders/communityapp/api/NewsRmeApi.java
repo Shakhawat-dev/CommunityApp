@@ -295,16 +295,6 @@ public interface NewsRmeApi {
     @GET("get-comment-with-reply/{slug}")
     Call<CommentModel> getCommentsList(@Path("slug") String slug);
 
-    @Multipart
-    @POST("update-user-profile/{user_id}")
-    Call<LoginResponse.forgetPassResponse> uploadImage(
-            @Path("user_id") String user_id,
-            @Part("name") RequestBody name,
-            @Part MultipartBody.Part image,
-            @Part("country") RequestBody country,
-            @Part("gender") RequestBody gender
-
-    );
 
     // @FormUrlEncoded
     @Multipart
@@ -354,6 +344,23 @@ public interface NewsRmeApi {
                         company,
                         address
  */
+
+    @Multipart
+    @POST("update-user-profile/{user_id}")
+    Call<LoginResponse.forgetPassResponse> uploadImage(
+            @Path("user_id") String  user_id,
+            @Part MultipartBody.Part image,
+            @Part("name") RequestBody  name,
+            @Part("phone") RequestBody  phone,
+            @Part("bio") RequestBody  bio,
+            @Part("company") RequestBody  company,
+            @Part("address") RequestBody  address,
+            @Part("gender") RequestBody  gender,
+            @Part("website") RequestBody  social_link,
+            @Part("zip_code") RequestBody  zip_code,
+            @Part("country") RequestBody  country
+
+    );
 
     @FormUrlEncoded
     @POST("update-user-profile/{user_id}")

@@ -282,12 +282,12 @@ public class PostUploadActivity extends AppCompatActivity implements CallBacks.p
                     // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
                     long fileSizeInMB = fileSizeInKB / 1024;
                     Log.d("TAG", "FIle SIze :  " + fileSizeInMB);
-                    if (fileSizeInMB > 205) {
+                    if (fileSizeInMB > 502) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder
                                 .setCancelable(false)
                                 .setTitle("Error !! Too Big File")
-                                .setMessage("Please Upload File Which are less Than  205 MB . ")
+                                .setMessage("Please Upload File Which are less Than  500 MB . ")
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

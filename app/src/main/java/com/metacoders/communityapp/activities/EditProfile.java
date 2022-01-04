@@ -260,11 +260,10 @@ public class EditProfile extends AppCompatActivity {
             if (gender == null || gender.isEmpty()) {
 
             } else {
-                //   genderSpinner.setSelection(getIndexOfSpinner(genderSpinner, gender.toLowerCase()));
 
-                if (gendert.equalsIgnoreCase("male")) {
+                if (gendert.toLowerCase().trim().equals("male")) {
                     genderSpinner.setSelection(1);
-                } else if (gendert.equalsIgnoreCase("female")) {
+                } else if (gendert.toLowerCase().trim().equals("female")) {
                     genderSpinner.setSelection(2);
                 } else {
                     genderSpinner.setSelection(3);
@@ -358,8 +357,10 @@ public class EditProfile extends AppCompatActivity {
         model.setPhone(phone);
         model.setBio(bio);
         model.setCompany(company);
-        model.setAddress(address);
-        if (gender.contains("male")) {
+        model.setWebsite(ssLinkIn.getText().toString());
+        model.setCountry(countryCodePicker.getSelectedCountryName());
+
+        if (gender.contains("male") || gender.contains("other")) {
             model.setGender(gender);
         }
         model.setSocial_link(ssLinkIn.getText().toString());
@@ -446,7 +447,7 @@ public class EditProfile extends AppCompatActivity {
     private int getIndexOfSpinner(Spinner spinner, String myString) {
         for (int i = 0; i < spinner.getCount(); i++) {
             String compare = ((String) spinner.getItemAtPosition(i)).toString() + "";
-            if (compare.equalsIgnoreCase(myString)) {
+            if (compare.trim().equalsIgnoreCase(myString)) {
                 return i;
             }
         }
@@ -454,6 +455,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void detectCountry(String name) {
+
         if (name != null && !name.isEmpty()) {
             //   CCPCountry country = CCPCountry.getCountryForNameCodeFromLibraryMasterList(getApplicationContext(), CountryCodePicker.Language.ENGLISH, name.toLowerCase()); //xml stores data in string format, but want to allow only numeric value to country code to user.
             List<CCPCountry> countries = new ArrayList<>();
@@ -467,6 +469,12 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void uploadProfilePicToServer(Uri mFilePathUri) {
+
+        full_name = full_nameIn.getText().toString();
+        address = addressIn.getText().toString();
+        phone = phoneIn.getText().toString();
+        company = CompanyIn.getText().toString();
+        bio = bioin.getText().toString();
 
         RequestPermission();
         pp.setImageURI(mFilePathUri);
@@ -501,17 +509,40 @@ public class EditProfile extends AppCompatActivity {
         //creating request body for file
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressed);
 
-        String name = SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getName();
+        //    String name = SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getName();
 
         MultipartBody.Part body1 = MultipartBody.Part.createFormData("image", compressed.getName(), requestFile);
         ///  take token
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
-        Call<LoginResponse.forgetPassResponse> call = api.uploadImage(AppPreferences.getUSerID(getApplicationContext()), createPartFromString(name), body1,
+//        UserModel model = SharedPrefManager.getInstance(getApplicationContext()).getUserModel();
+//
+//        model.setAddress(address);
+//        model.setName(full_name);
+//        model.setPhone(phone);
+//        model.setBio(bio);
+//        model.setCompany(company);
+//        model.setWebsite(ssLinkIn.getText().toString());
+//        model.setCountry(countryCodePicker.getSelectedCountryName());
+//
+//        if (gender.contains("male") || gender.contains("other")) {
+//            model.setGender(gender);
+//        }
+//        model.setSocial_link(ssLinkIn.getText().toString());
+//        model.setZip_code(zipCodeIn.getText().toString());
 
-                createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry()),
-                createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getGender())
 
+        Call<LoginResponse.forgetPassResponse> call = api.uploadImage(AppPreferences.getUSerID(getApplicationContext()),
+                body1,
+                createPartFromString(full_name),
+                createPartFromString(phone),
+                createPartFromString(bio),
+                createPartFromString(company),
+                createPartFromString(address),
+                createPartFromString(gender),
+                createPartFromString(ssLinkIn.getText().toString()),
+                createPartFromString(zipCodeIn.getText().toString()),
+                createPartFromString(countryCodePicker.getSelectedCountryName())
 
         );
 
@@ -523,8 +554,7 @@ public class EditProfile extends AppCompatActivity {
 
                 if (response.code() == 200) {
                     LoginResponse.forgetPassResponse result = response.body();
-
-                    loadUrPost(mprogressDialog);
+                    loadUrPost(mprogressDialog, model);
                 } else {
                     mprogressDialog.dismiss();
                     Toast.makeText(getApplicationContext(), "SomeThing Went Wrong.Please Try Again !!!" + response.code(), Toast.LENGTH_LONG)
@@ -620,7 +650,7 @@ public class EditProfile extends AppCompatActivity {
                 okhttp3.MultipartBody.FORM, value);
     }
 
-    public void loadUrPost(ProgressDialog mprogressDialog) {
+    public void loadUrPost(ProgressDialog mprogressDialog, UserModel model) {
 
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
         Call<AuthorPostResponse> catCall = api.getAuthorPost(SharedPrefManager.getInstance(getApplicationContext()).getUser_ID() + "");
@@ -632,6 +662,7 @@ public class EditProfile extends AppCompatActivity {
                 if (response.code() == 200) {
                     try {
                         AuthorPostResponse ownListModelList = response.body();
+//                        model.setImage(ownListModelList.getAuthor().getImage() + "");
                         SharedPrefManager.getInstance(getApplicationContext()).saveUserModel(ownListModelList.getAuthor());
 
                     } catch (Exception e) {

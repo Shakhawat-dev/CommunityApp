@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String userName, password;
 
-        if (!TextUtils.isEmpty(mUsername.getText().toString().trim()) && !TextUtils.isEmpty(mPassword.getText().toString().trim())) {
+        if (!TextUtils.isEmpty(mUsername.getText().toString().trim()) && !TextUtils.isEmpty(mPassword.getText().toString().trim())   ) {
 
             pbar.setVisibility(View.VISIBLE);
             userName = mUsername.getText().toString().trim();
@@ -213,6 +213,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         } else {
+
             if (TextUtils.isEmpty(mUsername.getText().toString().trim())) {
                 mUsername.setError("Email Can't Be Empty");
             }

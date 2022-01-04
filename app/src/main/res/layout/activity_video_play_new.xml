@@ -20,12 +20,9 @@
 
 
                 <FrameLayout
-
                     android:id="@+id/parent_relative"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_220sdp">
-
-
 
                     <com.google.android.exoplayer2.ui.PlayerView
                         android:focusable="false"
@@ -33,7 +30,6 @@
                         android:id="@+id/player_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:resize_mode="fill"
                         android:background="@color/black"
                         app:default_artwork="@drawable/musicicon"
                         app:played_color="@color/com_facebook_blue"
@@ -53,7 +49,6 @@
                             android:id="@+id/CreateHousePlayerView"
                             app:show_timeout="0"
                             app:hide_on_touch="false"
-
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="5dp"

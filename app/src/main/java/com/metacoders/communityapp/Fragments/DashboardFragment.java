@@ -30,8 +30,6 @@ import com.metacoders.communityapp.models.newModels.Post;
 import com.metacoders.communityapp.utils.AppPreferences;
 import com.metacoders.communityapp.utils.SharedPrefManager;
 
-import java.util.Locale;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,7 +80,6 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
         ).attach();
 
 
-
         loadUrPost();
 
         view.findViewById(R.id.edit_myProfile).setOnClickListener(new View.OnClickListener() {
@@ -114,15 +111,15 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
 
         String gender = sharedPrefManager.getUserModel().getGender();
         String link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
-      try {
-          if (gender.toLowerCase().contains("female")) {
-              link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
-          } else {
-              link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
-          }
-      }catch (Exception e){
+        try {
+            if (gender.toLowerCase().contains("female")) {
+                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/Vzsa4eUZNCmRvuNVUWToGyu0Xobb6DyQgcX4oDoI.png\n";
+            } else {
+                link = "https://newsrme.s3-ap-southeast-1.amazonaws.com/frontend/profile/TgBDz5Ti5AZiposXXwvRmTKP1VpIJouIctyaILih.png";
+            }
+        } catch (Exception e) {
 
-      }
+        }
 
         Glide.with(context)
                 .load(sharedPrefManager.getUserModel().getImage())
@@ -183,11 +180,12 @@ public class DashboardFragment extends Fragment implements ProductListDifferAdap
     public void onResume() {
         super.onResume();
         setDetails();
+        country_name.setText("Country: " + SharedPrefManager.getInstance(getContext()).getUserModel().getCountry());
     }
 
-    public  void  upadteList(){
+    public void upadteList() {
 
-        int p = viewPager2.getCurrentItem() ;
+        int p = viewPager2.getCurrentItem();
         Log.d("TAG", "upadteList: ");
         viewPager2.setAdapter(null);
         viewPager2.setAdapter(new profile_viewpager_adapter(getActivity(), SharedPrefManager.getInstance(getContext()).getUser_ID()));

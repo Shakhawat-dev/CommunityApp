@@ -39,6 +39,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -81,6 +82,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     SimpleExoPlayer player;
     int allReadySentTime = 0;
     Float speed = 1f;
+    PlayerControlView playerControlView;
     int prevCalledPage = 0;
     PlayerManager manager;
     PlaybackParameters param;
@@ -107,7 +109,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     int prevSec = 0;
     int newSec = 0;
     RelativeLayout loadingPanel;
-    TextView qualityBtn ,likeText;
+    TextView qualityBtn, likeText;
     ShowMoreTextView mMediaDetails;
     Boolean forcFinisj = false;
     AppCompatButton followBtn;
@@ -121,6 +123,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
     LinearLayout mBottomSheetLayout;
     BottomSheetBehavior sheetBehavior;
     TextView playBackTv;
+    ImageView moreOptions, backBtn;
     private boolean mExoPlayerFullscreen = false;
     private TextView mMediaTitle, mMediaDate, mMediaViews, mMediaComments, authorTv;
 
@@ -134,7 +137,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         sheetBehavior = BottomSheetBehavior.from(mBottomSheetLayout);
         addComment = findViewById(R.id.add_comment);
         mNextListDifferAdapter = new NextListDifferAdapter(this, this, false);
-
+        moreOptions = findViewById(R.id.moreOption);
         progressBar = findViewById(R.id.spin_kit);
         progressBar.setVisibility(View.GONE);
         commentCount = findViewById(R.id.commentCount);
@@ -142,6 +145,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         loadingPanel = findViewById(R.id.loadingPanel);
         qualityBtn = findViewById(R.id.qualitu);
         likeText = findViewById(R.id.likeText);
+        playerControlView = findViewById(R.id.CreateHousePlayerView);
         Intent o = getIntent();
         nestedScrollView = findViewById(R.id.nestedScroll);
         nextList = findViewById(R.id.nextList);
@@ -162,6 +166,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         //   mMediaAllComments = (Button) findViewById(R.id.media_see_all_comments);
         reportBtn = findViewById(R.id.reportImage);
         playerView = findViewById(R.id.player_view);
+        backBtn = findViewById(R.id.backBtn);
         fullscreenButton = findViewById(R.id.exo_fullscreen_icon);
         playerView.setUseArtwork(true);
         posts = (Post.PostModel) o.getSerializableExtra("POST");
@@ -176,7 +181,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
         sheetBehavior.setDraggable(false);
 
-        findViewById(R.id.moreOption).setOnClickListener(new View.OnClickListener() {
+        moreOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -194,7 +199,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         });
 
 
-        triggerOPtions();
+        triggerOptions();
         playBackTv = mBottomSheetLayout.findViewById(R.id.playbackSpeedTV);
         playBackTv.setText("Play Speed   -   " + speed.intValue() + "x");
         sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -260,7 +265,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                     startActivity(intent);
                 });
 
-        findViewById(R.id.backBtn).setOnClickListener(v -> finish());
+        backBtn.setOnClickListener(v -> finish());
 
         findViewById(R.id.shareIcon).setOnClickListener(v -> {
 
@@ -274,7 +279,9 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         manager = PlayerManager.getSharedInstance(this);
         manager.setPlayerListener(this);
         manager.getPlayer().setPlaybackParameters(param);
-        PlayerControlView playerControlView = findViewById(R.id.CreateHousePlayerView);
+        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        //manager.getPlayer().setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+
         //ProgressBar audioProgressBar = miniPlayerCardView.findViewById(R.id.audioProgressBar);
 
         playerControlView.setPlayer(PlayerManager.getSharedInstance(this).getPlayerView().getPlayer());
@@ -447,7 +454,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                 //do your work here
                 controlerContainer.setVisibility(View.INVISIBLE);
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void shareVideo() {
@@ -535,7 +542,14 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 //            mMediaDate.setText(post.getCreated_at() + "");
 //        }
 
-        mMediaViews.setText(post.getHit() + " Views");
+       // mMediaViews.setText(post.getHit() + " Views");
+         if ((post.getHit()) > 1) {
+             mMediaViews.setText(post.getHit()  + " Views");
+        } else {
+             mMediaViews.setText("0 View");
+        }
+
+
         if (post.getDescription() == null || post.getDescription().isEmpty()) {
             mMediaDetails.setText("No Description");
         } else {
@@ -601,11 +615,28 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
 
         ((FrameLayout) findViewById(R.id.parent_relative)).addView(playerView);
+        ((FrameLayout) findViewById(R.id.parent_relative)).addView(controlerContainer);
 
+        ((FrameLayout) findViewById(R.id.parent_relative)).addView(moreOptions);
+        ((FrameLayout) findViewById(R.id.parent_relative)).addView(backBtn);
+        playerView.setClickable(true);
         mExoPlayerFullscreen = false;
 
-        mFullScreenDialog.dismiss();
 
+        mFullScreenDialog.dismiss();
+//
+//        playerControlView.setPlayer(PlayerManager.getSharedInstance(this).getPlayerView().getPlayer());
+//        playerView.setOnClickListener(v -> {
+//
+//            Log.d("TAG", "closeFullScreenDialog: " + controlerContainer.getVisibility() );
+//            if (controlerContainer.getVisibility() == View.VISIBLE) {
+//                controlerContainer.setVisibility(View.INVISIBLE);
+//            } else {
+//
+//                controlerContainer.setVisibility(View.VISIBLE);
+//                HideController();
+//            }
+//        });
 
         // change the full screen image
         fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostDetailsPage.this, R.drawable.full));
@@ -619,9 +650,22 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ((ViewGroup) playerView.getParent()).removeView(playerView); // removes the player screen
 
-        mFullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+//        ViewGroup.LayoutParams framelayout = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        //Create LinearLayout Dynamically
+        FrameLayout fra = new FrameLayout(PostDetailsPage.this);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        fra.setLayoutParams(params);
+        fra.addView(playerView);
+        fra.addView(controlerContainer);
+
+
+        mFullScreenDialog.setContentView(fra);
         // change the full screen image
+//
+//        playerView.setClickable(true);
         fullscreenButton.setImageDrawable(ContextCompat.getDrawable(PostDetailsPage.this, R.drawable.full));
+
 
         mExoPlayerFullscreen = true;
 
@@ -811,9 +855,9 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         }
                     }
 
-                    if(Integer.parseInt(like_count.getText().toString()) > 1 ){
+                    if (Integer.parseInt(like_count.getText().toString()) > 1) {
                         likeText.setText(" Likes");
-                    }else {
+                    } else {
                         likeText.setText(" Like");
                     }
 
@@ -863,12 +907,17 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         posts = response.body().data;
 
 
-                        followersCount.setText(res.getFollowerCount() + " Followers");
+                      //  followersCount.setText( + " Followers");
+                        if (res.getFollowerCount() <= 1) {
+                            followersCount.setText(res.getFollowerCount() + " Follower");
+                        } else {
+                            followersCount.setText(res.getFollowerCount() + " Followers");
+                        }
 
-                        if(res.getComments().size()<=1)
-                        {
+
+                        if (res.getComments().size() <= 1) {
                             commentCount.setText(res.getComments().size() + " Comment");
-                        }else {
+                        } else {
                             commentCount.setText(res.getComments().size() + " Comments");
                         }
 
@@ -882,12 +931,11 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
                         totalPage = res.getRelatedPosts().getLast_page();
                         like_count.setText(res.getPostLikesCount() + "");
 
-                        if(Integer.parseInt(like_count.getText().toString()) > 1 ){
+                        if (Integer.parseInt(like_count.getText().toString()) > 1) {
                             likeText.setText(" Likes");
-                        }else {
+                        } else {
                             likeText.setText(" Like");
                         }
-
 
 
                         relatedPosts = res.getRelatedPosts().getRelatedPosts();
@@ -1008,6 +1056,11 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
         TextView highBtn = dialog.findViewById(R.id.high);
         TextView mediumBtn = dialog.findViewById(R.id.medium);
         TextView lowBtn = dialog.findViewById(R.id.low);
+        ImageView cancel = dialog.findViewById(R.id.cancel_action);
+
+        cancel.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
 
         highBtn.setOnClickListener(v -> {
             PlayerManager.getSharedInstance(PostDetailsPage.this).setStreamBitrate(Constants.HIGH);
@@ -1185,7 +1238,7 @@ public class PostDetailsPage extends AppCompatActivity implements CallBacks.play
 
     }
 
-    private void triggerOPtions() {
+    private void triggerOptions() {
 
 //        BottomSheetDialog dialog = new BottomSheetDialog(this);
 //        dialog.setContentView(R.layout.video_option_bottom_sheet);

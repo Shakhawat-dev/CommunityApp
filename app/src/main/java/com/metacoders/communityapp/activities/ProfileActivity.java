@@ -486,42 +486,8 @@ public class ProfileActivity extends AppCompatActivity {
         ///  take token
         NewsRmeApi api = ServiceGenerator.createService(NewsRmeApi.class, AppPreferences.getAccessToken(getApplicationContext()));
 
-        Call<LoginResponse.forgetPassResponse> call = api.uploadImage(
-                AppPreferences.getUSerID(getApplicationContext()), createPartFromString(name), body1,
-                createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getCountry()),
-                createPartFromString(SharedPrefManager.getInstance(getApplicationContext()).getUserModel().getGender())
-
-        );
-
-        call.enqueue(new Callback<LoginResponse.forgetPassResponse>() {
-            @Override
-            public void onResponse(Call<LoginResponse.forgetPassResponse> call, Response<LoginResponse.forgetPassResponse> response) {
 
 
-                if (response.code() == 200) {
-                    LoginResponse.forgetPassResponse result = response.body();
-                    Toast.makeText(context, "Msg" + result.getMessage(), Toast.LENGTH_LONG)
-                            .show();
-                    mprogressDialog.dismiss();
-                } else {
-                    mprogressDialog.dismiss();
-                    //   isImageUploaded = false;
-                    Toast.makeText(context, "SomeThing Went Wrong.Please Try Again !!!" + response.code(), Toast.LENGTH_LONG)
-                            .show();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<LoginResponse.forgetPassResponse> call, Throwable t) {
-                Log.d("RRR", t.getMessage().toUpperCase().toString());
-
-                mprogressDialog.dismiss();
-                //  isImageUploaded = false;
-                Toast.makeText(context, "SomeTHing Went Wrong Please  Try Again", Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
 
     }
 

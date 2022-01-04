@@ -77,7 +77,7 @@
                     android:layout_marginTop="10dp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/nunito_regular"
-                    android:text=" Please Select an Image (Click On The Pluse Sign)"
+                    android:text="@string/please_select_an_image_click_on_the_plus_sign"
                     android:layout_height="wrap_content"/>
                 <ImageView
                     android:id="@+id/add_image"

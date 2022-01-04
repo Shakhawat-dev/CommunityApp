@@ -64,6 +64,7 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(R.drawable.back);
         setContentView(R.layout.new_signup_layout);
         isCehcked = findViewById(R.id.termsCheck);
         countryCodePicker = findViewById(R.id.ccp);
@@ -96,18 +97,26 @@ public class RegistrationActivity extends AppCompatActivity {
                 if (isCehcked.isChecked()) {
                     if (gender.contains("gender")) {
                         Toast.makeText(getApplicationContext(), "Please Select Your Gender", Toast.LENGTH_SHORT).show();
-                    }
-                    else if (TextUtils.isEmpty(mName.getText().toString())){
+                    } else if (TextUtils.isEmpty(mName.getText().toString())) {
                         mName.setError("Can't Be Empty");
-                    }
-
-                    else {
-                        if (mPassword.getText().toString().equals(mConfirmationPass.getText().toString())) {
+                    } else {
+                        if (mPassword.getText().toString().equals(mConfirmationPass.getText().toString())
+                                && mPassword.length() >= 6) {
                             register();
                         } else {
-                            mPassword.setError("Password Don't Match");
-                            mConfirmationPass.setError("Password Don't Match");
-                            Toast.makeText(getApplicationContext(), "Password Don't Match !!", Toast.LENGTH_SHORT).show();
+
+                            if(mPassword.length() >= 6 ){
+                                mPassword.setError("Password Don't Match");
+                                mConfirmationPass.setError("Password Don't Match");
+                                Toast.makeText(getApplicationContext(), "Password Don't Match !!", Toast.LENGTH_SHORT).show();
+
+                            }else  {
+                                mPassword.setError("Must Be Equal or more than 6 characters");
+                                mConfirmationPass.setError("Must Be Equal or more than 6 characters");
+                                Toast.makeText(getApplicationContext(), "Password Must Be equal or more than 6 characters !!", Toast.LENGTH_SHORT).show();
+
+                            }
+
                         }
 
                     }

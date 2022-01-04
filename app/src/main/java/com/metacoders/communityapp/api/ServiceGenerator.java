@@ -1,15 +1,10 @@
 package com.metacoders.communityapp.api;
 
-import android.text.TextUtils;
-import android.util.Log;
-
 import com.metacoders.communityapp.utils.Constants;
 
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -36,7 +31,7 @@ public class ServiceGenerator {
                 // Log.d("okhttp", "createService: " + authToken);
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            //   httpClient.addInterceptor(logging);
+                httpClient.addInterceptor(logging);
                 httpClient.addInterceptor(interceptor);
                 httpClient
                         .connectTimeout(5, TimeUnit.MINUTES)

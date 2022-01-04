@@ -268,125 +268,131 @@
                 android:textAllCaps="false" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/ic_baseline_credit_card_24"
-                    android:backgroundTint="@color/black" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:fontFamily="@font/nunito_semi_bold"
-                    android:text="Withdraw To Card"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_8sdp"
-                android:orientation="horizontal">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|start"
-                    android:fontFamily="@font/nunito_semi_bold"
-                    android:text="Card Type"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <RadioGroup
-                    android:id="@+id/cardGroup"
+                android:orientation="vertical">
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
                     android:orientation="horizontal">
 
-                    <RadioButton
-                        android:id="@+id/master"
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/ic_baseline_credit_card_24"
+                        android:backgroundTint="@color/black" />
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_2sdp"
-                        android:checked="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_8sdp"
                         android:fontFamily="@font/nunito_semi_bold"
-                        android:text="MasterCard" />
+                        android:text="Withdraw To Card"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
-                    <RadioButton
-                        android:id="@+id/visa"
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginVertical="@dimen/_8sdp"
+                    android:orientation="horizontal">
+
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_gravity="center_vertical|start"
                         android:fontFamily="@font/nunito_semi_bold"
-                        android:text="Visa" />
+                        android:text="Card Type"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/cardGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/master"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_2sdp"
+                            android:checked="true"
+                            android:fontFamily="@font/nunito_semi_bold"
+                            android:text="MasterCard" />
+
+                        <RadioButton
+                            android:id="@+id/visa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_2sdp"
+                            android:fontFamily="@font/nunito_semi_bold"
+                            android:text="Visa" />
 
 
-                </RadioGroup>
+                    </RadioGroup>
 
 
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/card_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:background="@drawable/rounded_edittext"
+                    android:fontFamily="@font/nunito_semi_bold"
+                    android:hint="Card Number"
+                    android:paddingHorizontal="@dimen/_8sdp"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/name_on_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:background="@drawable/rounded_edittext"
+                    android:fontFamily="@font/nunito_semi_bold"
+                    android:hint="Name On Card"
+                    android:paddingHorizontal="@dimen/_8sdp"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/transfer_amount_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:background="@drawable/rounded_edittext"
+                    android:fontFamily="@font/nunito_semi_bold"
+                    android:hint="Withdraw Amount"
+                    android:inputType="number"
+                    android:paddingHorizontal="@dimen/_8sdp"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/card_withdraw"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/rounded_boarder_tint_blue"
+                    android:text="Withdraw"
+                    android:textAllCaps="false" />
             </LinearLayout>
-
-            <EditText
-                android:id="@+id/card_number"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginHorizontal="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_4sdp"
-                android:background="@drawable/rounded_edittext"
-                android:fontFamily="@font/nunito_semi_bold"
-                android:hint="Card Number"
-                android:paddingHorizontal="@dimen/_8sdp"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/name_on_card"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginHorizontal="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_4sdp"
-                android:background="@drawable/rounded_edittext"
-                android:fontFamily="@font/nunito_semi_bold"
-                android:hint="Name On Card"
-                android:paddingHorizontal="@dimen/_8sdp"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/transfer_amount_card"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginHorizontal="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_4sdp"
-                android:background="@drawable/rounded_edittext"
-                android:fontFamily="@font/nunito_semi_bold"
-                android:hint="Withdraw Amount"
-                android:inputType="number"
-                android:paddingHorizontal="@dimen/_8sdp"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/card_withdraw"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_35sdp"
-                android:layout_marginHorizontal="@dimen/_20sdp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/rounded_boarder_tint_blue"
-                android:text="Withdraw"
-                android:textAllCaps="false" />
 
         </LinearLayout>
 
